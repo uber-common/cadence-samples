@@ -8,6 +8,12 @@ Run Cadence Server
 
 See instructions for running the Cadence Server: https://github.com/uber/cadence/blob/master/README.md
 
+Alternatively you can use the Docker Compose setup in this repo:
+
+```
+docker-compose up -d
+```
+
 ## Steps to run samples
 ### Build Samples
 ```
