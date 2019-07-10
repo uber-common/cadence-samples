@@ -8,8 +8,19 @@ Run Cadence Server
 
 See instructions for running the Cadence Server: https://github.com/uber/cadence/blob/master/README.md
 
-See instructions for using CLI to register a domain(name as "samples-domain"): https://cadenceworkflow.io/docs/08_cli
- or https://github.com/uber/cadence/blob/master/tools/cli/README.md 
+See instructions for using CLI to register a domain(name as "samples-domain"): 
+```
+docker run --rm ubercadence/cli:master --domain samples-domain domain register --global_domain false
+```
+OR using short alias  
+```
+docker run --rm ubercadence/cli:master --do samples-domain d re --gd false
+```
+You may use "--network=host" or "--address host.docker.internal:7933" to let the container connect to your local server with some docker versions. For more info 
+```
+docker run --rm ubercadence/cli:master --address host.docker.internal:7933 --do samples-domain d re --gd false
+```
+See more details about CLI: https://cadenceworkflow.io/docs/08_cli
  
  
 ## Steps to run samples
