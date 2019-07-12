@@ -24,8 +24,8 @@ func startWorkers(h *common.SampleHelper) {
 
 	// Configure worker options.
 	workerOptions := worker.Options{
-		MetricsScope: h.Scope,
-		Logger:       h.Logger,
+		MetricsScope:              h.Scope,
+		Logger:                    h.Logger,
 		BackgroundActivityContext: ctx,
 	}
 
@@ -33,17 +33,20 @@ func startWorkers(h *common.SampleHelper) {
 }
 
 func startWorkflow(h *common.SampleHelper) {
-	searchAttr := map[string]interface{} {
-		"CustomIntField": 1,
-	}
 	workflowOptions := client.StartWorkflowOptions{
 		ID:                              "searchAttributes_" + uuid.New(),
 		TaskList:                        ApplicationName,
 		ExecutionStartToCloseTimeout:    time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
-		SearchAttributes: searchAttr, // optional search attributes when start workflow
+		SearchAttributes:                getSearchAttributesForStart(), // optional search attributes when start workflow
 	}
-	h.StartWorkflow(workflowOptions, SearchAttributesWorkflow, "Cadence")
+	h.StartWorkflow(workflowOptions, SearchAttributesWorkflow)
+}
+
+func getSearchAttributesForStart() map[string]interface{} {
+	return map[string]interface{}{
+		"CustomIntField": 1,
+	}
 }
 
 func main() {

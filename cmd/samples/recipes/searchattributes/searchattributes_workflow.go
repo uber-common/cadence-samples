@@ -46,7 +46,7 @@ func init() {
 }
 
 // SearchAttributesWorkflow workflow decider
-func SearchAttributesWorkflow(ctx workflow.Context, name string) error {
+func SearchAttributesWorkflow(ctx workflow.Context) error {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("SearchAttributes workflow started")
 
@@ -62,13 +62,13 @@ func SearchAttributesWorkflow(ctx workflow.Context, name string) error {
 	logger.Info("Current Search Attributes: ", zap.String("CustomIntField", strconv.Itoa(currentIntValue)))
 
 	// upsert search attributes
-	attributes := map[string]interface{} {
-		"CustomIntField": 2, // update CustomIntField from 1 to 2, then insert other fields
-		"CustomKeywordField": "Update1",
-		"CustomBoolField": true,
-		"CustomDoubleField": 3.14,
-		"CustomDatetimeField": time.Now(),
-		"CustomStringField": "String field is for text. When query, it will be tokenized for partial match. StringTypeField cannot be used in Order By",
+	attributes := map[string]interface{}{
+		"CustomIntField":      2, // update CustomIntField from 1 to 2, then insert other fields
+		"CustomKeywordField":  "Update1",
+		"CustomBoolField":     true,
+		"CustomDoubleField":   3.14,
+		"CustomDatetimeField": time.Date(2019, 1, 1, 0, 0, 0, 0, time.Local),
+		"CustomStringField":   "String field is for text. When query, it will be tokenized for partial match. StringTypeField cannot be used in Order By",
 	}
 	workflow.UpsertSearchAttributes(ctx, attributes)
 
@@ -80,7 +80,7 @@ func SearchAttributesWorkflow(ctx workflow.Context, name string) error {
 	}
 
 	// update search attributes again
-	attributes = map[string]interface{} {
+	attributes = map[string]interface{}{
 		"CustomKeywordField": "Update2",
 	}
 	workflow.UpsertSearchAttributes(ctx, attributes)
@@ -92,7 +92,8 @@ func SearchAttributesWorkflow(ctx workflow.Context, name string) error {
 		return err
 	}
 
-	workflow.Sleep(ctx, 2 * time.Second) // wait update reflected on ElasticSearch
+	workflow.Sleep(ctx, 2*time.Second) // wait update reflected on ElasticSearch
+
 	// list workflow
 	ao := workflow.ActivityOptions{
 		ScheduleToStartTimeout: 2 * time.Minute,
@@ -142,10 +143,10 @@ func listExecutions(ctx context.Context, query string) ([]*shared.WorkflowExecut
 	var nextPageToken []byte
 	for hasMore := true; hasMore; hasMore = len(nextPageToken) > 0 {
 		resp, err := cadenceClient.ListWorkflow(ctx, &shared.ListWorkflowExecutionsRequest{
-			Domain:          common.StringPtr(DomainName),
-			PageSize: 		 common.Int32Ptr(10),
-			NextPageToken:   nextPageToken,
-			Query: 			 common.StringPtr(query),
+			Domain:        common.StringPtr(DomainName),
+			PageSize:      common.Int32Ptr(10),
+			NextPageToken: nextPageToken,
+			Query:         common.StringPtr(query),
 		})
 		if err != nil {
 			return nil, err
