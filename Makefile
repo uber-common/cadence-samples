@@ -1,5 +1,5 @@
 .PHONY: test bins clean
-PROJECT_ROOT = github.com/samarabbas/cadence-samples
+PROJECT_ROOT = github.com/uber-common/cadence-samples
 
 export PATH := $(GOPATH)/bin:$(PATH)
 
@@ -46,7 +46,7 @@ TEST_DIRS=./cmd/samples/cron \
 	./cmd/samples/recipes/choice \
 	./cmd/samples/recipes/greetings \
 	./cmd/samples/recipes/helloworld \
-	./cmd/samples/recipes/cancel \
+	./cmd/samples/recipes/cancelactivity \
 	./cmd/samples/recipes/pickfirst \
 	./cmd/samples/recipes/retryactivity \
 	./cmd/samples/recipes/splitmerge \

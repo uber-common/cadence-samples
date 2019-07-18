@@ -5,11 +5,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/samarabbas/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/activity"
 	"strconv"
 	"time"
 
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/.gen/go/shared"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/workflow"
