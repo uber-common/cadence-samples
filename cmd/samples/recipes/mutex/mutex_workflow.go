@@ -115,6 +115,7 @@ func MutexWorkflow(
 			// If the senderWorkflowID is closed (terminated/canceled/timeouted/completed/etc), this would return error.
 			// In this case we release the lock immediately instead of failing the mutex workflow.
 			// Mutex workflow failing would lead to all workflows that have sent requestLock will be waiting.
+			logger.With(zap.Error(err)).Info("SignalExternalWorkflow error")
 			continue
 		}
 		logger.With(zap.Error(err)).Info("signaled external workflow")
