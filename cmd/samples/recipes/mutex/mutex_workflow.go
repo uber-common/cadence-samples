@@ -52,12 +52,11 @@ func (s *Mutex) Lock(ctx workflow.Context,
 	activityCtx := workflow.WithLocalActivityOptions(ctx, workflow.LocalActivityOptions{
 		ScheduleToCloseTimeout: time.Minute * 1,
 		RetryPolicy: &cadence.RetryPolicy{
-			InitialInterval:          time.Second,
-			BackoffCoefficient:       2.0,
-			MaximumInterval:          time.Minute,
-			ExpirationInterval:       time.Minute * 10,
-			MaximumAttempts:          5,
-			NonRetriableErrorReasons: []string{"bad-error"},
+			InitialInterval:    time.Second,
+			BackoffCoefficient: 2.0,
+			MaximumInterval:    time.Minute,
+			ExpirationInterval: time.Minute * 10,
+			MaximumAttempts:    5,
 		},
 	})
 
@@ -154,12 +153,11 @@ func SignalWithStartMutexWorkflowActivity(
 		ExecutionStartToCloseTimeout:    time.Hour,
 		DecisionTaskStartToCloseTimeout: time.Hour,
 		RetryPolicy: &cadence.RetryPolicy{
-			InitialInterval:          time.Second,
-			BackoffCoefficient:       2.0,
-			MaximumInterval:          time.Minute,
-			ExpirationInterval:       time.Minute * 10,
-			MaximumAttempts:          5,
-			NonRetriableErrorReasons: []string{"bad-error"},
+			InitialInterval:    time.Second,
+			BackoffCoefficient: 2.0,
+			MaximumInterval:    time.Minute,
+			ExpirationInterval: time.Minute * 10,
+			MaximumAttempts:    5,
 		},
 		WorkflowIDReusePolicy: client.WorkflowIDReusePolicyAllowDuplicate,
 	}
