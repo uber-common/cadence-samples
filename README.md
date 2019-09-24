@@ -14,11 +14,11 @@ docker run --rm ubercadence/cli:master --domain samples-domain domain register -
 ```
 OR using short alias  
 ```
-docker run --rm ubercadence/cli:master --do samples-domain d re --gd false
+docker run --rm ubercadence/cli:master --do samples-domain d re 
 ```
 You may use "--network=host" or "--address host.docker.internal:7933" to let the container connect to your local server with some docker versions. For more info 
 ```
-docker run --rm ubercadence/cli:master --address host.docker.internal:7933 --do samples-domain d re --gd false
+docker run --rm ubercadence/cli:master --address host.docker.internal:7933 --do samples-domain d re 
 ```
 See more details about CLI: https://cadenceworkflow.io/docs/08_cli
  
