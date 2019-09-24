@@ -60,7 +60,7 @@ Start workflow with cron expression scheduled to run every minute.
 ```
 
 #### expense
-See more details in https://github.com/samarabbas/cadence-samples/blob/master/cmd/samples/expense/README.md
+See more details in https://github.com/uber-common/cadence-samples/blob/master/cmd/samples/expense/README.md
 
 #### fileprocessing
 ```
@@ -112,6 +112,14 @@ Run the multi choice workflow
 ./bin/pickfirst -m trigger
 ```
 
+#### mutex
+```
+./bin/mutex -m worker
+```
+```
+./bin/mutex -m trigger
+```
+
 #### retryactivity
 ```
 ./bin/retryactivity -m worker
@@ -153,10 +161,11 @@ Run the multi choice workflow
 ```
 
 #### localactivity
-See more details in https://github.com/samarabbas/cadence-samples/blob/master/cmd/samples/recipes/localactivity/README.md
+See more details in https://github.com/uber-common/cadence-samples/blob/master/cmd/samples/recipes/localactivity/README.md
 
 #### query
-See more details in https://github.com/samarabbas/cadence-samples/blob/master/cmd/samples/recipes/query/README.md
+See more details in https://github.com/uber-common/cadence-samples/blob/master/cmd/samples/recipes/query/README.md
 
 #### recovery
-See more details in https://github.com/samarabbas/cadence-samples/blob/master/cmd/samples/recovery/README.md
+See more details in https://github.com/uber-common/cadence-samples/blob/master/cmd/samples/recovery/README.md
+

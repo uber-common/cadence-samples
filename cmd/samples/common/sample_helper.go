@@ -82,7 +82,7 @@ func (h *SampleHelper) SetupServiceConfig() {
 	if err != nil {
 		logger.Info("Domain doesn't exist", zap.String("Domain", h.Config.DomainName), zap.Error(err))
 	} else {
-		logger.Info("Domain succeesfully registered.", zap.String("Domain", h.Config.DomainName))
+		logger.Info("Domain successfully registered.", zap.String("Domain", h.Config.DomainName))
 	}
 }
 
@@ -107,6 +107,26 @@ func (h *SampleHelper) StartWorkflowWithCtx(ctx context.Context, options client.
 	} else {
 		h.Logger.Info("Started Workflow", zap.String("WorkflowID", we.ID), zap.String("RunID", we.RunID))
 	}
+}
+
+// SignalWithStartWorkflowWithCtx signals workflow and starts it if it's not yet started
+func (h *SampleHelper) SignalWithStartWorkflowWithCtx(ctx context.Context, workflowID string, signalName string, signalArg interface{},
+	options client.StartWorkflowOptions, workflow interface{}, workflowArgs ...interface{}) *workflow.Execution {
+	workflowClient, err := h.Builder.BuildCadenceClient()
+	if err != nil {
+		h.Logger.Error("Failed to build cadence client.", zap.Error(err))
+		panic(err)
+	}
+
+	we, err := workflowClient.SignalWithStartWorkflow(ctx, workflowID, signalName, signalArg, options, workflow, workflowArgs...)
+	if err != nil {
+		h.Logger.Error("Failed to signal with start workflow", zap.Error(err))
+		panic("Failed to signal with start workflow.")
+
+	} else {
+		h.Logger.Info("Signaled and started Workflow", zap.String("WorkflowID", we.ID), zap.String("RunID", we.RunID))
+	}
+	return we
 }
 
 // StartWorkers starts workflow worker and activity worker based on configured options.

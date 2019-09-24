@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"time"
 
@@ -10,6 +11,13 @@ import (
 	"go.uber.org/cadence/worker"
 )
 
+const (
+	// ApplicationName is the task list for this sample
+	ApplicationName = "mutexExample"
+
+	_sampleHelperContextKey = "sampleHelper"
+)
+
 // This needs to be done as part of a bootstrap step when the process starts.
 // The workers are supposed to be long running.
 func startWorkers(h *common.SampleHelper) {
@@ -17,6 +25,7 @@ func startWorkers(h *common.SampleHelper) {
 	workerOptions := worker.Options{
 		MetricsScope: h.Scope,
 		Logger:       h.Logger,
+		BackgroundActivityContext: context.WithValue(context.Background(), _sampleHelperContextKey, h),
 	}
 
 	// Start Worker.
@@ -31,30 +40,30 @@ func startWorkers(h *common.SampleHelper) {
 	}
 }
 
-func startWorkflowMultiChoice(h *common.SampleHelper) {
-	workflowOptions := client.StartWorkflowOptions{
-		ID:                              "multi_choice_" + uuid.New(),
+// startTwoWorkflows starts two workflows that operate on the same recourceID
+func startTwoWorkflows(h *common.SampleHelper) {
+	resourceID := uuid.New()
+	h.StartWorkflow(client.StartWorkflowOptions{
+		ID:                              "SampleWorkflowWithMutex_" + uuid.New(),
 		TaskList:                        ApplicationName,
-		ExecutionStartToCloseTimeout:    time.Minute,
+		ExecutionStartToCloseTimeout:    10 * time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
-	}
-	h.StartWorkflow(workflowOptions, MultiChoiceWorkflow)
-}
-
-func startWorkflowExclusiveChoice(h *common.SampleHelper) {
-	workflowOptions := client.StartWorkflowOptions{
-		ID:                              "single_choice_" + uuid.New(),
+	},
+		SampleWorkflowWithMutex,
+		resourceID)
+	h.StartWorkflow(client.StartWorkflowOptions{
+		ID:                              "SampleWorkflowWithMutex_" + uuid.New(),
 		TaskList:                        ApplicationName,
-		ExecutionStartToCloseTimeout:    time.Minute,
+		ExecutionStartToCloseTimeout:    10 * time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
-	}
-	h.StartWorkflow(workflowOptions, ExclusiveChoiceWorkflow)
+	},
+		SampleWorkflowWithMutex,
+		resourceID)
 }
 
 func main() {
-	var mode, sampleCase string
+	var mode string
 	flag.StringVar(&mode, "m", "trigger", "Mode is worker or trigger.")
-	flag.StringVar(&sampleCase, "c", "single", "Sample case to run.")
 	flag.Parse()
 
 	var h common.SampleHelper
@@ -68,11 +77,6 @@ func main() {
 		// Use select{} to block indefinitely for samples, you can quit by CMD+C.
 		select {}
 	case "trigger":
-		switch sampleCase {
-		case "multi":
-			startWorkflowMultiChoice(&h)
-		default:
-			startWorkflowExclusiveChoice(&h)
-		}
+		startTwoWorkflows(&h)
 	}
 }
