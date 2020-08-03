@@ -18,7 +18,7 @@ func TestUnitTestSuite(t *testing.T) {
 
 func (s *UnitTestSuite) Test_BranchWorkflow() {
 	env := s.NewTestWorkflowEnvironment()
-	env.ExecuteWorkflow(SampleBranchWorkflow)
+	env.ExecuteWorkflow(sampleBranchWorkflow)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())
@@ -26,7 +26,7 @@ func (s *UnitTestSuite) Test_BranchWorkflow() {
 
 func (s *UnitTestSuite) Test_ParallelWorkflow() {
 	env := s.NewTestWorkflowEnvironment()
-	env.ExecuteWorkflow(SampleParallelWorkflow)
+	env.ExecuteWorkflow(sampleParallelWorkflow)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())

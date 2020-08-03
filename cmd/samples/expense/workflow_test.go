@@ -27,7 +27,7 @@ func (s *UnitTestSuite) Test_WorkflowWithMockActivities() {
 	env.OnActivity(waitForDecisionActivity, mock.Anything, mock.Anything).Return("APPROVED", nil).Once()
 	env.OnActivity(paymentActivity, mock.Anything, mock.Anything).Return(nil).Once()
 
-	env.ExecuteWorkflow(SampleExpenseWorkflow, "test-expense-id")
+	env.ExecuteWorkflow(sampleExpenseWorkflow, "test-expense-id")
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())
@@ -62,7 +62,7 @@ func (s *UnitTestSuite) Test_WorkflowWithMockServer() {
 	// pointing server to test mock
 	expenseServerHostPort = server.URL
 
-	env.ExecuteWorkflow(SampleExpenseWorkflow, "test-expense-id")
+	env.ExecuteWorkflow(sampleExpenseWorkflow, "test-expense-id")
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())

@@ -6,20 +6,14 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/mock"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence"
-	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/testsuite"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
-)
 
-func init() {
-	activity.Register(SignalWithStartMutexWorkflowActivity)
-	workflow.Register(MutexWorkflow)
-	workflow.Register(SampleWorkflowWithMutex)
-}
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
+)
 
 const (
 	// AcquireLockSignalName signal channel name for lock acquisition
@@ -63,7 +57,7 @@ func (s *Mutex) Lock(ctx workflow.Context,
 	var releaseLockChannelName string
 	var execution workflow.Execution
 	err := workflow.ExecuteLocalActivity(activityCtx,
-		SignalWithStartMutexWorkflowActivity, s.lockNamespace,
+		signalWithStartMutexWorkflowActivity, s.lockNamespace,
 		resourceID, s.currentWorkflowID, unlockTimeout).Get(ctx, &execution)
 	if err != nil {
 		return nil, err
@@ -78,8 +72,8 @@ func (s *Mutex) Lock(ctx workflow.Context,
 	return unlockFunc, nil
 }
 
-// MutexWorkflow used for locking a resource
-func MutexWorkflow(
+// mutexWorkflow used for locking a resource
+func mutexWorkflow(
 	ctx workflow.Context,
 	namespace string,
 	resourceID string,
@@ -132,8 +126,8 @@ func MutexWorkflow(
 	return nil
 }
 
-// SignalWithStartMutexWorkflowActivity ...
-func SignalWithStartMutexWorkflowActivity(
+// signalWithStartMutexWorkflowActivity ...
+func signalWithStartMutexWorkflowActivity(
 	ctx context.Context,
 	namespace string,
 	resourceID string,
@@ -164,7 +158,7 @@ func SignalWithStartMutexWorkflowActivity(
 	}
 	we := h.SignalWithStartWorkflowWithCtx(
 		ctx, workflowID, RequestLockSignalName, senderWorkflowID,
-		workflowOptions, MutexWorkflow, namespace, resourceID, unlockTimeout)
+		workflowOptions, mutexWorkflow, namespace, resourceID, unlockTimeout)
 	return we, nil
 }
 
@@ -176,7 +170,7 @@ func _generateUnlockChannelName(senderWorkflowID string) string {
 // MockMutexLock stubs cadence mutex.Lock call
 func MockMutexLock(env *testsuite.TestWorkflowEnvironment, resourceID string, mockError error) {
 	mockExecution := &workflow.Execution{ID: "mockID", RunID: "mockRunID"}
-	env.OnActivity(SignalWithStartMutexWorkflowActivity,
+	env.OnActivity(signalWithStartMutexWorkflowActivity,
 		mock.Anything, mock.Anything, resourceID, mock.Anything, mock.Anything).
 		Return(mockExecution, mockError)
 	env.RegisterDelayedCallback(func() {
@@ -188,7 +182,7 @@ func MockMutexLock(env *testsuite.TestWorkflowEnvironment, resourceID string, mo
 	}
 }
 
-func SampleWorkflowWithMutex(
+func sampleWorkflowWithMutex(
 	ctx workflow.Context,
 	resourceID string,
 ) error {

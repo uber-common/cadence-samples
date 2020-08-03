@@ -18,7 +18,7 @@ func TestUnitTestSuite(t *testing.T) {
 
 func (s *UnitTestSuite) Test_ExclusiveChoiceWorkflow() {
 	env := s.NewTestWorkflowEnvironment()
-	env.ExecuteWorkflow(ExclusiveChoiceWorkflow)
+	env.ExecuteWorkflow(exclusiveChoiceWorkflow)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())
@@ -26,7 +26,7 @@ func (s *UnitTestSuite) Test_ExclusiveChoiceWorkflow() {
 
 func (s *UnitTestSuite) Test_MultiChoiceWorkflow() {
 	env := s.NewTestWorkflowEnvironment()
-	env.ExecuteWorkflow(MultiChoiceWorkflow)
+	env.ExecuteWorkflow(multiChoiceWorkflow)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())

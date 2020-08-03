@@ -6,9 +6,10 @@ import (
 	"time"
 
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 const (
@@ -49,7 +50,7 @@ func startTwoWorkflows(h *common.SampleHelper) {
 		ExecutionStartToCloseTimeout:    10 * time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
 	},
-		SampleWorkflowWithMutex,
+		sampleWorkflowWithMutex,
 		resourceID)
 	h.StartWorkflow(client.StartWorkflowOptions{
 		ID:                              "SampleWorkflowWithMutex_" + uuid.New(),
@@ -57,7 +58,7 @@ func startTwoWorkflows(h *common.SampleHelper) {
 		ExecutionStartToCloseTimeout:    10 * time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
 	},
-		SampleWorkflowWithMutex,
+		sampleWorkflowWithMutex,
 		resourceID)
 }
 
@@ -71,6 +72,9 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(mutexWorkflow)
+		h.RegisterWorkflow(sampleWorkflowWithMutex)
+		h.RegisterActivity(signalWithStartMutexWorkflowActivity)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

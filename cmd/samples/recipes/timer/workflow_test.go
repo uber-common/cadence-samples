@@ -31,7 +31,7 @@ func (s *UnitTestSuite) Test_Workflow_FastProcessing() {
 		return nil
 	})
 
-	env.ExecuteWorkflow(SampleTimerWorkflow, time.Minute)
+	env.ExecuteWorkflow(sampleTimerWorkflow, time.Minute)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())
@@ -52,7 +52,7 @@ func (s *UnitTestSuite) Test_Workflow_SlowProcessing() {
 		return nil
 	})
 
-	env.ExecuteWorkflow(SampleTimerWorkflow, time.Microsecond)
+	env.ExecuteWorkflow(sampleTimerWorkflow, time.Microsecond)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())

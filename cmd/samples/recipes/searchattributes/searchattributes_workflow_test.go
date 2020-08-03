@@ -35,7 +35,7 @@ func Test_Workflow(t *testing.T) {
 	// mock activity
 	env.OnActivity(listExecutions, mock.Anything, mock.Anything).Return([]*shared.WorkflowExecutionInfo{{}}, nil).Once()
 
-	env.ExecuteWorkflow(SearchAttributesWorkflow)
+	env.ExecuteWorkflow(searchAttributesWorkflow)
 	require.True(t, env.IsWorkflowCompleted())
 	require.NoError(t, env.GetWorkflowError())
 }

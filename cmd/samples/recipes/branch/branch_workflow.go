@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/workflow"
 )
 
@@ -19,15 +18,8 @@ const (
 	totalBranches = 3
 )
 
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.Register(SampleBranchWorkflow)
-	activity.Register(sampleActivity)
-}
-
-// SampleBranchWorkflow workflow decider
-func SampleBranchWorkflow(ctx workflow.Context) error {
+// sampleBranchWorkflow workflow decider
+func sampleBranchWorkflow(ctx workflow.Context) error {
 	var futures []workflow.Future
 	// starts activities in parallel
 	ao := workflow.ActivityOptions{

@@ -70,13 +70,13 @@ var (
 // This is registration process where you register all your workflows
 // and activity function handlers.
 func init() {
-	workflow.RegisterWithOptions(RecoverWorkflow, workflow.RegisterOptions{Name: "RecoverWorkflow"})
+	workflow.RegisterWithOptions(recoverWorkflow, workflow.RegisterOptions{Name: "recoverWorkflow"})
 	activity.Register(listOpenExecutions)
 	activity.Register(recoverExecutions)
 }
 
-// RecoverWorkflow is the workflow implementation to recover TripWorkflow executions
-func RecoverWorkflow(ctx workflow.Context, params Params) error {
+// recoverWorkflow is the workflow implementation to recover TripWorkflow executions
+func recoverWorkflow(ctx workflow.Context, params Params) error {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("Recover workflow started.")
 

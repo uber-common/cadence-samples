@@ -30,16 +30,10 @@ const (
 	QueryName = "counter"
 )
 
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.RegisterWithOptions(TripWorkflow, workflow.RegisterOptions{Name: "TripWorkflow"})
-}
-
-// TripWorkflow to keep track of total trip count for a user
+// tripWorkflow to keep track of total trip count for a user
 // It waits on a TripEvent signal and increments a counter on each signal received by this workflow
 // Trip count is managed as workflow state and passed to new run after 10 signals received by each execution
-func TripWorkflow(ctx workflow.Context, state UserState) error {
+func tripWorkflow(ctx workflow.Context, state UserState) error {
 	logger := workflow.GetLogger(ctx)
 	workflowID := workflow.GetInfo(ctx).WorkflowExecution.ID
 	logger.Info("Trip Workflow Started for User.",

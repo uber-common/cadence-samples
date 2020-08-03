@@ -15,7 +15,7 @@ func TestDynamicWorkflow(t *testing.T) {
 	env.OnActivity(getNameActivity).Return("Name", nil).Times(1)
 	env.OnActivity(sayGreetingActivity, "Greet", "Name").Return("Greet Name", nil).Times(1)
 
-	env.ExecuteWorkflow(SampleGreetingsWorkflow)
+	env.ExecuteWorkflow(sampleGreetingsWorkflow)
 
 	a.True(env.IsWorkflowCompleted())
 	a.NoError(env.GetWorkflowError())

@@ -4,12 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
-	"github.com/uber-common/cadence-samples/cmd/samples/recovery/cache"
+	"time"
+
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
 	"go.uber.org/zap"
-	"time"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
+	"github.com/uber-common/cadence-samples/cmd/samples/recovery/cache"
 )
 
 // This needs to be done as part of a bootstrap step when the process starts.
@@ -50,7 +52,7 @@ func startTripWorkflow(h *common.SampleHelper, workflowID string, user UserState
 		ExecutionStartToCloseTimeout:    time.Hour * 24,
 		DecisionTaskStartToCloseTimeout: time.Second * 10,
 	}
-	h.StartWorkflow(workflowOptions, TripWorkflow, user)
+	h.StartWorkflow(workflowOptions, tripWorkflow, user)
 }
 
 func startRecoveryWorkflow(h *common.SampleHelper, workflowID string, params Params) {
@@ -60,7 +62,7 @@ func startRecoveryWorkflow(h *common.SampleHelper, workflowID string, params Par
 		ExecutionStartToCloseTimeout:    time.Hour * 24,
 		DecisionTaskStartToCloseTimeout: time.Second * 10,
 	}
-	h.StartWorkflow(workflowOptions, RecoverWorkflow, params)
+	h.StartWorkflow(workflowOptions, recoverWorkflow, params)
 }
 
 func main() {
@@ -69,7 +71,7 @@ func main() {
 	flag.StringVar(&workflowID, "w", "workflow_A", "WorkflowID")
 	flag.StringVar(&signal, "s", "signal_data", "SignalData")
 	flag.StringVar(&input, "i", "{}", "Workflow input parameters.")
-	flag.StringVar(&workflowType, "wt", "main.TripWorkflow", "Workflow type.")
+	flag.StringVar(&workflowType, "wt", "main.tripWorkflow", "Workflow type.")
 	flag.Parse()
 
 	var h common.SampleHelper
@@ -77,6 +79,10 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflowWithAlias(recoverWorkflow, "recoverWorkflow")
+		h.RegisterWorkflowWithAlias(tripWorkflow, "tripWorkflow")
+		h.RegisterActivity(listOpenExecutions)
+		h.RegisterActivity(recoverExecutions)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

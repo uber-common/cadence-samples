@@ -36,14 +36,8 @@ var ActivityOptions = workflow.ActivityOptions{
 
 const ContinueAsNewStr = "CONTINUEASNEW"
 
-// This is registration process where you register all your workflow handlers.
-func init() {
-	workflow.Register(PSOWorkflow)
-	workflow.Register(PSOChildWorkflow)
-}
-
-//PSOWorkflow workflow decider
-func PSOWorkflow(ctx workflow.Context, functionName string) (string, error) {
+//samplePSOWorkflow workflow decider
+func samplePSOWorkflow(ctx workflow.Context, functionName string) (string, error) {
 	logger := workflow.GetLogger(ctx)
 	logger.Info(fmt.Sprintf("Optimizing function %s", functionName))
 
@@ -82,7 +76,7 @@ func PSOWorkflow(ctx workflow.Context, functionName string) (string, error) {
 		}
 		ctx = workflow.WithChildOptions(ctx, cwo)
 
-		childWorkflowFuture := workflow.ExecuteChildWorkflow(ctx, PSOChildWorkflow, *swarm, 1)
+		childWorkflowFuture := workflow.ExecuteChildWorkflow(ctx, samplePSOChildWorkflow, *swarm, 1)
 		var childWE workflow.Execution
 		childWorkflowFuture.GetChildWorkflowExecution().Get(ctx, &childWE)
 		childWorkflowID = childWE.ID
@@ -105,9 +99,9 @@ func PSOWorkflow(ctx workflow.Context, functionName string) (string, error) {
 	return msg, nil
 }
 
-// PSOChildWorkflow workflow decider
+// samplePSOChildWorkflow workflow decider
 // Returns true if the optimization has converged
-func PSOChildWorkflow(ctx workflow.Context, swarm Swarm, startingStep int) (WorkflowResult, error) {
+func samplePSOChildWorkflow(ctx workflow.Context, swarm Swarm, startingStep int) (WorkflowResult, error) {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("Child workflow execution started.")
 
@@ -118,7 +112,7 @@ func PSOChildWorkflow(ctx workflow.Context, swarm Swarm, startingStep int) (Work
 	result, err := swarm.Run(ctx, startingStep)
 	if err != nil {
 		if err.Error() == ContinueAsNewStr {
-			return WorkflowResult{"NewContinueAsNewError", false}, workflow.NewContinueAsNewError(ctx, PSOChildWorkflow, swarm, result.Step+1)
+			return WorkflowResult{"NewContinueAsNewError", false}, workflow.NewContinueAsNewError(ctx, samplePSOChildWorkflow, swarm, result.Step+1)
 		}
 
 		msg := fmt.Sprintf("Error in swarm loop: " + err.Error())

@@ -16,7 +16,7 @@ func Test_Workflow(t *testing.T) {
 	env.SetOnActivityCompletedListener(func(activityInfo *activity.Info, result encoded.Value, err error) {
 		result.Get(&activityMessage)
 	})
-	env.ExecuteWorkflow(Workflow, "world")
+	env.ExecuteWorkflow(helloWorldWorkflow, "world")
 	require.True(t, env.IsWorkflowCompleted())
 	require.NoError(t, env.GetWorkflowError())
 	require.Equal(t, "Hello world!", activityMessage)

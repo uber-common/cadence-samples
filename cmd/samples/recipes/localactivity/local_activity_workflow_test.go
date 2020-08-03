@@ -14,7 +14,7 @@ func Test_ProcessingWorkflow_SingleAction(t *testing.T) {
 	env := testSuite.NewTestWorkflowEnvironment()
 	// mock activityForCondition1 so it won't wait on real clock
 	env.OnActivity(activityForCondition1, mock.Anything, signalData).Return("processed_1", nil)
-	env.ExecuteWorkflow(ProcessingWorkflow, signalData)
+	env.ExecuteWorkflow(processingWorkflow, signalData)
 	env.AssertExpectations(t)
 	require.True(t, env.IsWorkflowCompleted())
 	require.NoError(t, env.GetWorkflowError())
@@ -30,7 +30,7 @@ func Test_ProcessingWorkflow_MultiAction(t *testing.T) {
 	// mock activityForCondition1 so it won't wait on real clock
 	env.OnActivity(activityForCondition1, mock.Anything, signalData).Return("processed_1", nil)
 	env.OnActivity(activityForCondition3, mock.Anything, signalData).Return("processed_3", nil)
-	env.ExecuteWorkflow(ProcessingWorkflow, signalData)
+	env.ExecuteWorkflow(processingWorkflow, signalData)
 	env.AssertExpectations(t)
 	require.True(t, env.IsWorkflowCompleted())
 	require.NoError(t, env.GetWorkflowError())
@@ -53,7 +53,7 @@ func Test_SignalHandlingWorkflow(t *testing.T) {
 		env.SignalWorkflow("trigger-signal", "exit")
 	}, time.Minute*2)
 
-	env.ExecuteWorkflow(SignalHandlingWorkflow)
+	env.ExecuteWorkflow(signalHandlingWorkflow)
 	env.AssertExpectations(t)
 	require.True(t, env.IsWorkflowCompleted())
 	require.NoError(t, env.GetWorkflowError())

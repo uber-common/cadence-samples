@@ -33,7 +33,7 @@ func (s *UnitTestSuite) Test_CtxPropWorkflow() {
 			panic("unexpected activity call")
 		}
 	})
-	env.ExecuteWorkflow(CtxPropWorkflow)
+	env.ExecuteWorkflow(sampleCtxPropWorkflow)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())

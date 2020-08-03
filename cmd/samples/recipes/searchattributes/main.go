@@ -3,13 +3,15 @@ package main
 import (
 	"context"
 	"flag"
-	"go.uber.org/zap"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 // This needs to be done as part of a bootstrap step when the process starts.
@@ -40,7 +42,7 @@ func startWorkflow(h *common.SampleHelper) {
 		DecisionTaskStartToCloseTimeout: time.Minute,
 		SearchAttributes:                getSearchAttributesForStart(), // optional search attributes when start workflow
 	}
-	h.StartWorkflow(workflowOptions, SearchAttributesWorkflow)
+	h.StartWorkflow(workflowOptions, searchAttributesWorkflow)
 }
 
 func getSearchAttributesForStart() map[string]interface{} {
@@ -59,6 +61,8 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(searchAttributesWorkflow)
+		h.RegisterActivity(listExecutions)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

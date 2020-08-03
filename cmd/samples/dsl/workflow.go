@@ -3,7 +3,6 @@ package main
 import (
 	"time"
 
-	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
 )
@@ -51,19 +50,8 @@ type (
 	}
 )
 
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.Register(SimpleDSLWorkflow)
-	activity.Register(sampleActivity1)
-	activity.Register(sampleActivity2)
-	activity.Register(sampleActivity3)
-	activity.Register(sampleActivity4)
-	activity.Register(sampleActivity5)
-}
-
-// SimpleDSLWorkflow workflow decider
-func SimpleDSLWorkflow(ctx workflow.Context, dslWorkflow Workflow) ([]byte, error) {
+// simpleDSLWorkflow workflow decider
+func simpleDSLWorkflow(ctx workflow.Context, dslWorkflow Workflow) ([]byte, error) {
 	bindings := make(map[string]string)
 	for k, v := range dslWorkflow.Variables {
 		bindings[k] = v
