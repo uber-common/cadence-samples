@@ -11,7 +11,7 @@ import (
  * This sample workflow executes multiple branches in parallel using workflow.Go() method.
  */
 
-// SampleParallelWorkflow workflow decider
+// sampleParallelWorkflow workflow decider
 func sampleParallelWorkflow(ctx workflow.Context) error {
 	waitChannel := workflow.NewChannel(ctx)
 

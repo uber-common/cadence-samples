@@ -152,7 +152,7 @@ func (h *SampleHelper) RegisterWorkflowWithAlias(workflow interface{}, alias str
 	h.workflowRegistries = append(h.workflowRegistries, registryOption)
 }
 
-func (h *SampleHelper) RegisterActivity(activity interface{}, ) {
+func (h *SampleHelper) RegisterActivity(activity interface{}) {
 	h.RegisterActivityWithAlias(activity, "")
 }
 
