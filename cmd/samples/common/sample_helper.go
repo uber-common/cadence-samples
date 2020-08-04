@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/encoded"
 	"go.uber.org/cadence/worker"
 	"go.uber.org/cadence/workflow"
@@ -30,6 +31,8 @@ type (
 		Builder        *WorkflowClientBuilder
 		DataConverter  encoded.DataConverter
 		CtxPropagators []workflow.ContextPropagator
+		workflowRegistries []registryOption
+		activityRegistries []registryOption
 	}
 
 	// Configuration for running samples.
@@ -37,6 +40,11 @@ type (
 		DomainName      string `yaml:"domain"`
 		ServiceName     string `yaml:"service"`
 		HostNameAndPort string `yaml:"host"`
+	}
+
+	registryOption struct {
+		registry interface{}
+		alias    string
 	}
 )
 
@@ -84,6 +92,9 @@ func (h *SampleHelper) SetupServiceConfig() {
 	} else {
 		logger.Info("Domain successfully registered.", zap.String("Domain", h.Config.DomainName))
 	}
+
+	h.workflowRegistries = make([]registryOption, 0, 1)
+	h.activityRegistries = make([]registryOption, 0, 1)
 }
 
 // StartWorkflow starts a workflow
@@ -129,9 +140,35 @@ func (h *SampleHelper) SignalWithStartWorkflowWithCtx(ctx context.Context, workf
 	return we
 }
 
+func (h *SampleHelper) RegisterWorkflow(workflow interface{}) {
+	h.RegisterWorkflowWithAlias(workflow, "")
+}
+
+func (h *SampleHelper) RegisterWorkflowWithAlias(workflow interface{}, alias string) {
+	registryOption := registryOption{
+		registry: workflow,
+		alias:    alias,
+	}
+	h.workflowRegistries = append(h.workflowRegistries, registryOption)
+}
+
+func (h *SampleHelper) RegisterActivity(activity interface{}) {
+	h.RegisterActivityWithAlias(activity, "")
+}
+
+func (h *SampleHelper) RegisterActivityWithAlias(activity interface{}, alias string) {
+	registryOption := registryOption{
+		registry: activity,
+		alias:    alias,
+	}
+	h.activityRegistries = append(h.activityRegistries, registryOption)
+}
+
 // StartWorkers starts workflow worker and activity worker based on configured options.
-func (h *SampleHelper) StartWorkers(domainName, groupName string, options worker.Options) {
+func (h *SampleHelper) StartWorkers(domainName string, groupName string, options worker.Options) {
 	worker := worker.New(h.Service, domainName, groupName, options)
+	h.registerWorkflowAndActivity(worker)
+
 	err := worker.Start()
 	if err != nil {
 		h.Logger.Error("Failed to start workers.", zap.Error(err))
@@ -183,5 +220,22 @@ func (h *SampleHelper) CancelWorkflow(workflowID string) {
 	if err != nil {
 		h.Logger.Error("Failed to cancel workflow", zap.Error(err))
 		panic("Failed to cancel workflow.")
+	}
+}
+
+func (h *SampleHelper) registerWorkflowAndActivity(worker worker.Worker) {
+	for _, w := range h.workflowRegistries {
+		if len(w.alias) == 0 {
+			worker.RegisterWorkflow(w.registry)
+		} else {
+			worker.RegisterWorkflowWithOptions(w.registry, workflow.RegisterOptions{Name: w.alias})
+		}
+	}
+	for _, act := range h.activityRegistries {
+		if len(act.alias) == 0 {
+			worker.RegisterActivity(act.registry)
+		} else {
+			worker.RegisterActivityWithOptions(act.registry, activity.RegisterOptions{Name: act.alias})
+		}
 	}
 }

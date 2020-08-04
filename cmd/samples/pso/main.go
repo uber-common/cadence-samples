@@ -6,10 +6,11 @@ import (
 	"time"
 
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/encoded"
 	"go.uber.org/cadence/worker"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 // This needs to be done as part of a bootstrap step when the process starts.
@@ -32,7 +33,7 @@ func startWorkflow(h *common.SampleHelper, functionName string) {
 		ExecutionStartToCloseTimeout:    time.Minute * 60,
 		DecisionTaskStartToCloseTimeout: time.Second * 10, // Measure of responsiveness of the worker to various server signals apart from start workflow. Small means faster recovery in the case of worker failure
 	}
-	h.StartWorkflow(workflowOptions, PSOWorkflow, functionName)
+	h.StartWorkflow(workflowOptions, samplePSOWorkflow, functionName)
 }
 
 func main() {
@@ -66,6 +67,10 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(samplePSOWorkflow)
+		h.RegisterWorkflow(samplePSOChildWorkflow)
+		h.RegisterActivityWithAlias(initParticleActivity, initParticleActivityName)
+		h.RegisterActivityWithAlias(updateParticleActivity, updateParticleActivityName)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

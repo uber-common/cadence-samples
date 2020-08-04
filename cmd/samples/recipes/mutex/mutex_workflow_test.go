@@ -36,7 +36,7 @@ func (s *UnitTestSuite) Test_Workflow_Success() {
 	env := s.NewTestWorkflowEnvironment()
 	mockResourceID := "mockResourceID"
 	MockMutexLock(env, mockResourceID, nil)
-	env.ExecuteWorkflow(SampleWorkflowWithMutex, mockResourceID)
+	env.ExecuteWorkflow(sampleWorkflowWithMutex, mockResourceID)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())
@@ -47,7 +47,7 @@ func (s *UnitTestSuite) Test_Workflow_Error() {
 	env := s.NewTestWorkflowEnvironment()
 	mockResourceID := "mockResourceID"
 	MockMutexLock(env, mockResourceID, errors.New("bad-error"))
-	env.ExecuteWorkflow(SampleWorkflowWithMutex, mockResourceID)
+	env.ExecuteWorkflow(sampleWorkflowWithMutex, mockResourceID)
 
 	s.True(env.IsWorkflowCompleted())
 	s.EqualError(env.GetWorkflowError(), "bad-error")
@@ -69,7 +69,7 @@ func (s *UnitTestSuite) Test_MutexWorkflow_Success() {
 		AcquireLockSignalName, mock.Anything).Return(nil)
 
 	s.env.ExecuteWorkflow(
-		MutexWorkflow,
+		mutexWorkflow,
 		mockNamespace,
 		mockResourceID,
 		mockUnlockTimeout,
@@ -91,7 +91,7 @@ func (s *UnitTestSuite) Test_MutexWorkflow_TimeoutSuccess() {
 		AcquireLockSignalName, mock.Anything).Return(nil)
 
 	s.env.ExecuteWorkflow(
-		MutexWorkflow,
+		mutexWorkflow,
 		mockNamespace,
 		mockResourceID,
 		mockUnlockTimeout,

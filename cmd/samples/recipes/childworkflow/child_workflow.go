@@ -13,14 +13,8 @@ import (
  * workflow execution is starting a new run and parent execution is notified only after the completion of last run.
  */
 
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.Register(SampleChildWorkflow)
-}
-
-// SampleChildWorkflow workflow decider
-func SampleChildWorkflow(ctx workflow.Context, totalCount, runCount int) (string, error) {
+// sampleChildWorkflow workflow decider
+func sampleChildWorkflow(ctx workflow.Context, totalCount, runCount int) (string, error) {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("Child workflow execution started.")
 	if runCount <= 0 {
@@ -38,5 +32,5 @@ func SampleChildWorkflow(ctx workflow.Context, totalCount, runCount int) (string
 
 	logger.Info("Child workflow starting new run.", zap.Int("RunCount", runCount), zap.Int("TotalCount",
 		totalCount))
-	return "", workflow.NewContinueAsNewError(ctx, SampleChildWorkflow, totalCount, runCount)
+	return "", workflow.NewContinueAsNewError(ctx, sampleChildWorkflow, totalCount, runCount)
 }

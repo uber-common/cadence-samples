@@ -53,7 +53,7 @@ func (s *UnitTestSuite) Test_SampleFileProcessingWorkflow() {
 			panic("unexpected activity call")
 		}
 	})
-	env.ExecuteWorkflow(SampleFileProcessingWorkflow, fileID)
+	env.ExecuteWorkflow(sampleFileProcessingWorkflow, fileID)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())

@@ -29,7 +29,7 @@ func (s *UnitTestSuite) Test_Workflow() {
 			}
 			return sampleActivity(ctx, currentBranchID, totalDuration)
 		}).Once()
-	env.ExecuteWorkflow(SamplePickFirstWorkflow)
+	env.ExecuteWorkflow(samplePickFirstWorkflow)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())

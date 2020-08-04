@@ -19,7 +19,7 @@ func TestUnitTestSuite(t *testing.T) {
 func (s *UnitTestSuite) Test_Workflow() {
 	env := s.NewTestWorkflowEnvironment()
 	workerCount := 5
-	env.ExecuteWorkflow(SampleSplitMergeWorkflow, workerCount)
+	env.ExecuteWorkflow(sampleSplitMergeWorkflow, workerCount)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())

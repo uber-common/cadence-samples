@@ -10,13 +10,8 @@ import (
 // ApplicationName is the task list for this sample
 const ApplicationName = "CtxPropagatorGroup"
 
-// This is registration process where you register all your workflow handlers.
-func init() {
-	workflow.Register(CtxPropWorkflow)
-}
-
-// CtxPropWorkflow workflow decider
-func CtxPropWorkflow(ctx workflow.Context) (err error) {
+// sampleCtxPropWorkflow workflow decider
+func sampleCtxPropWorkflow(ctx workflow.Context) (err error) {
 	ao := workflow.ActivityOptions{
 		ScheduleToStartTimeout: time.Second * 5,
 		StartToCloseTimeout:    time.Minute,

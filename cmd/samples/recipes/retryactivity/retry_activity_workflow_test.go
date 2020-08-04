@@ -36,7 +36,7 @@ func (s *UnitTestSuite) Test_Workflow() {
 
 			return batchProcessingActivity(ctx, firstTaskID, batchSize, time.Nanosecond /* override for test */)
 		})
-	env.ExecuteWorkflow(RetryWorkflow)
+	env.ExecuteWorkflow(retryWorkflow)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())

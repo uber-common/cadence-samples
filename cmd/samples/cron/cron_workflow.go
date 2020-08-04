@@ -27,15 +27,6 @@ const (
 )
 
 //
-// This is registration process where you register all your workflows
-// and activity function handlers.
-//
-func init() {
-	workflow.Register(SampleCronWorkflow)
-	activity.Register(sampleCronActivity)
-}
-
-//
 // Cron sample job activity.
 //
 func sampleCronActivity(ctx context.Context, beginTime, endTime time.Time) error {
@@ -49,8 +40,8 @@ type SampleCronResult struct {
 	EndTime time.Time
 }
 
-// SampleCronWorkflow workflow decider
-func SampleCronWorkflow(ctx workflow.Context) (*SampleCronResult, error) {
+// sampleCronWorkflow workflow decider
+func sampleCronWorkflow(ctx workflow.Context) (*SampleCronResult, error) {
 	workflow.GetLogger(ctx).Info("Cron workflow started.", zap.Time("StartTime", workflow.Now(ctx)))
 
 	ao := workflow.ActivityOptions{

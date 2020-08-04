@@ -2,11 +2,13 @@ package main
 
 import (
 	"flag"
+	"time"
+
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
-	"time"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 // This needs to be done as part of a bootstrap step when the process starts.
@@ -28,7 +30,7 @@ func startWorkflow(h *common.SampleHelper) {
 		DecisionTaskStartToCloseTimeout: time.Minute,
 		WorkflowIDReusePolicy:           client.WorkflowIDReusePolicyAllowDuplicate,
 	}
-	h.StartWorkflow(workflowOptions, SignalHandlingWorkflow)
+	h.StartWorkflow(workflowOptions, signalHandlingWorkflow)
 }
 
 func main() {
@@ -43,6 +45,13 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(processingWorkflow)
+		h.RegisterWorkflow(signalHandlingWorkflow)
+		h.RegisterActivity(activityForCondition0)
+		h.RegisterActivity(activityForCondition1)
+		h.RegisterActivity(activityForCondition2)
+		h.RegisterActivity(activityForCondition3)
+		h.RegisterActivity(activityForCondition4)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

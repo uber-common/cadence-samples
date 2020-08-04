@@ -41,7 +41,7 @@ func (s *UnitTestSuite) Test_SampleGreetingsWorkflow() {
 		}
 	})
 
-	env.ExecuteWorkflow(SampleGreetingsWorkflow)
+	env.ExecuteWorkflow(sampleGreetingsWorkflow)
 
 	s.True(env.IsWorkflowCompleted())
 	s.NoError(env.GetWorkflowError())

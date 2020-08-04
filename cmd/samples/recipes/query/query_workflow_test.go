@@ -17,7 +17,7 @@ func Test_QueryWorkflow(t *testing.T) {
 		w = true
 	}, time.Minute*1)
 
-	env.ExecuteWorkflow(QueryWorkflow)
+	env.ExecuteWorkflow(queryWorkflow)
 	require.True(t, env.IsWorkflowCompleted())
 	require.NoError(t, env.GetWorkflowError())
 	require.True(t, w, "state at timer not verified")

@@ -39,7 +39,7 @@ func startWorkflow(h *common.SampleHelper, cron string) {
 		DecisionTaskStartToCloseTimeout: time.Minute,
 		CronSchedule:                    cron,
 	}
-	h.StartWorkflow(workflowOptions, SampleCronWorkflow)
+	h.StartWorkflow(workflowOptions, sampleCronWorkflow)
 }
 
 func main() {
@@ -54,6 +54,8 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(sampleCronWorkflow)
+		h.RegisterActivity(sampleCronActivity)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

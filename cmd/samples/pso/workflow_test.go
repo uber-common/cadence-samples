@@ -46,7 +46,7 @@ func Test_Workflow(t *testing.T) {
 		childWorkflowID = workflowInfo.WorkflowExecution.ID
 	})
 
-	env.ExecuteWorkflow(PSOWorkflow, "sphere")
+	env.ExecuteWorkflow(samplePSOWorkflow, "sphere")
 
 	require.True(t, env.IsWorkflowCompleted())
 	queryAndVerify(t, env, "child", childWorkflowID)

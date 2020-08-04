@@ -28,7 +28,7 @@ func startWorkflow(h *common.SampleHelper) {
 		ExecutionStartToCloseTimeout:    time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
 	}
-	h.StartWorkflow(workflowOptions, SampleParentWorkflow)
+	h.StartWorkflow(workflowOptions, sampleParentWorkflow)
 }
 
 func main() {
@@ -41,6 +41,8 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(sampleChildWorkflow)
+		h.RegisterWorkflow(sampleParentWorkflow)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.
