@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
@@ -12,10 +13,12 @@ import (
 
 const ApplicationName = "HelloSideEffect"
 
-func SideEffectWorkflow(ctx workflow.Context, value string) error {
+func SideEffectWorkflow(ctx workflow.Context) error {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("SideEffectWorkflow started")
 	// setup query handler for query type "state"
+
+	value := ""
 
 	err := workflow.SetQueryHandler(ctx, "value", func(input []byte) (string, error) {
 		return value, nil
@@ -26,9 +29,8 @@ func SideEffectWorkflow(ctx workflow.Context, value string) error {
 	}
 
 	workflow.SideEffect(ctx, func(ctx workflow.Context) interface{} {
-		return value
-	})
-
+		return uuid.New().String()
+	}).Get(&value)
 
 	logger.Info("SideEffectWorkflow completed")
 	return nil
@@ -36,13 +38,13 @@ func SideEffectWorkflow(ctx workflow.Context, value string) error {
 
 func startWorkflow(h *common.SampleHelper) {
 	workflowOptions := client.StartWorkflowOptions{
-		ID: "sideffectflow",
+		ID:                              "sideffectflow",
 		TaskList:                        ApplicationName,
 		ExecutionStartToCloseTimeout:    time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
-		WorkflowIDReusePolicy: client.WorkflowIDReusePolicyAllowDuplicate,
+		WorkflowIDReusePolicy:           client.WorkflowIDReusePolicyAllowDuplicate,
 	}
-	h.StartWorkflow(workflowOptions, SideEffectWorkflow, "test")
+	h.StartWorkflow(workflowOptions, SideEffectWorkflow)
 }
 
 func startWorkers(h *common.SampleHelper) {
@@ -74,7 +76,7 @@ func main() {
 		panic(err)
 	}
 
-	resp, err := workflowClient.QueryWorkflow(context.Background(), "sideffectflow", "", "value" )
+	resp, err := workflowClient.QueryWorkflow(context.Background(), "sideffectflow", "", "value")
 	if err != nil {
 		h.Logger.Error("Failed to query workflow", zap.Error(err))
 		panic("Failed to query workflow.")
