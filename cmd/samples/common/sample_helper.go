@@ -43,7 +43,7 @@ type (
 		DomainName      string `yaml:"domain"`
 		ServiceName     string `yaml:"service"`
 		HostNameAndPort string `yaml:"host"`
-		WorkerMetrics      *prometheus.Configuration `yaml:"workerMetrics"`
+		Prometheus      *prometheus.Configuration `yaml:"prometheus"`
 	}
 
 	registryOption struct {
@@ -97,10 +97,10 @@ func (h *SampleHelper) SetupServiceConfig() {
 	logger.Info("Logger created.")
 	h.Logger = logger
 	h.ServiceMetricScope = tally.NoopScope
-	if h.Config.WorkerMetrics == nil{
-		h.WorkerMetricScope = tally.NoopScope
-	}else{
-		reporter, err := h.Config.WorkerMetrics.NewReporter(
+	h.WorkerMetricScope = tally.NoopScope
+
+	if h.Config.Prometheus != nil{
+		reporter, err := h.Config.Prometheus.NewReporter(
 			prometheus.ConfigurationOptions{
 				Registry: prom.NewRegistry(),
 				OnError: func(err error) {
@@ -111,7 +111,17 @@ func (h *SampleHelper) SetupServiceConfig() {
 		if err != nil {
 			panic(err)
 		}
+
 		h.WorkerMetricScope, _ = tally.NewRootScope(tally.ScopeOptions{
+			Prefix: "Worker_",
+			Tags:           map[string]string{},
+			CachedReporter: reporter,
+			Separator:      prometheus.DefaultSeparator,
+			SanitizeOptions: &sanitizeOptions,
+		}, 1*time.Second)
+
+		h.ServiceMetricScope, _ = tally.NewRootScope(tally.ScopeOptions{
+			Prefix: "Service_",
 			Tags:           map[string]string{},
 			CachedReporter: reporter,
 			Separator:      prometheus.DefaultSeparator,
