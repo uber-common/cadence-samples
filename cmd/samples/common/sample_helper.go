@@ -120,6 +120,7 @@ func (h *SampleHelper) SetupServiceConfig() {
 			SanitizeOptions: &sanitizeOptions,
 		}, 1*time.Second)
 
+		// NOTE: this must be a different scope with different prefix, otherwise the metric will conflict 
 		h.ServiceMetricScope, _ = tally.NewRootScope(tally.ScopeOptions{
 			Prefix: "Service_",
 			Tags:           map[string]string{},
