@@ -92,11 +92,14 @@ func (s *propagator) ExtractToWorkflow(ctx workflow.Context, reader workflow.Hea
 	return ctx, nil
 }
 
-// SetValusTestHeader places the Values container inside the header 
-func SetValuesTestHeader(values Values, header *shared.Header) {
+// SetValuesInHeader places the Values container inside the header 
+func SetValuesInHeader(values Values, header *shared.Header) error {
 	payload, err := json.Marshal(values)
 	if err == nil {
 		header.Fields[propagationKey] = payload
+	} else {
+		return err
 	}
+	return nil
 }
 

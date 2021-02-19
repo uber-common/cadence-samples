@@ -49,7 +49,7 @@ func (s *UnitTestSuite) Test_CtxPropWorkflow() {
 	var activityCalled []string
 	values := Values{Key: "sampleKey", Value: "sampleValue"}
 	// Place the values to be propagated in the header
-	SetValuesTestHeader(values, s.header)
+	SetValuesInHeader(values, s.header)
 
 	s.env.SetOnActivityStartedListener(func(activityInfo *activity.Info, ctx context.Context, args encoded.Values) {
 		activityType := activityInfo.ActivityType.Name
