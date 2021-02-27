@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"go.uber.org/cadence/.gen/go/shared"
 	"go.uber.org/cadence/workflow"
 )
 
@@ -90,3 +91,15 @@ func (s *propagator) ExtractToWorkflow(ctx workflow.Context, reader workflow.Hea
 	}
 	return ctx, nil
 }
+
+// SetValuesInHeader places the Values container inside the header 
+func SetValuesInHeader(values Values, header *shared.Header) error {
+	payload, err := json.Marshal(values)
+	if err == nil {
+		header.Fields[propagationKey] = payload
+	} else {
+		return err
+	}
+	return nil
+}
+
