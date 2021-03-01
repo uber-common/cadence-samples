@@ -2,5 +2,6 @@
 domain: "samples-domain"
 service: "cadence-frontend"
 host: "127.0.0.1:7933"
-prometheus:
-  listenAddress: "127.0.0.1:9098"
+# config for emitting metrics
+#prometheus:
+#  listenAddress: "127.0.0.1:9098"
