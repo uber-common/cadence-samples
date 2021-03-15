@@ -24,7 +24,7 @@ const (
 func startWorkers(h *common.SampleHelper) {
 	// Configure worker options.
 	workerOptions := worker.Options{
-		MetricsScope: h.Scope,
+		MetricsScope: h.WorkerMetricScope,
 		Logger:       h.Logger,
 		BackgroundActivityContext: context.WithValue(context.Background(), _sampleHelperContextKey, h),
 	}

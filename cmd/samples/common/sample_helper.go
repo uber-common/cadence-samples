@@ -4,16 +4,18 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"time"
 
+	prom "github.com/m3db/prometheus_client_golang/prometheus"
+	"github.com/uber-go/tally"
+	"github.com/uber-go/tally/prometheus"
+	"go.uber.org/cadence/.gen/go/cadence/workflowserviceclient"
 	"go.uber.org/cadence/activity"
+	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/encoded"
 	"go.uber.org/cadence/worker"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
-
-	"github.com/uber-go/tally"
-	"go.uber.org/cadence/.gen/go/cadence/workflowserviceclient"
-	"go.uber.org/cadence/client"
 	"gopkg.in/yaml.v2"
 )
 
@@ -24,13 +26,14 @@ const (
 type (
 	// SampleHelper class for workflow sample helper.
 	SampleHelper struct {
-		Service        workflowserviceclient.Interface
-		Scope          tally.Scope
-		Logger         *zap.Logger
-		Config         Configuration
-		Builder        *WorkflowClientBuilder
-		DataConverter  encoded.DataConverter
-		CtxPropagators []workflow.ContextPropagator
+		Service            workflowserviceclient.Interface
+		WorkerMetricScope  tally.Scope
+		ServiceMetricScope tally.Scope
+		Logger             *zap.Logger
+		Config             Configuration
+		Builder            *WorkflowClientBuilder
+		DataConverter      encoded.DataConverter
+		CtxPropagators     []workflow.ContextPropagator
 		workflowRegistries []registryOption
 		activityRegistries []registryOption
 	}
@@ -40,11 +43,32 @@ type (
 		DomainName      string `yaml:"domain"`
 		ServiceName     string `yaml:"service"`
 		HostNameAndPort string `yaml:"host"`
+		Prometheus      *prometheus.Configuration `yaml:"prometheus"`
 	}
 
 	registryOption struct {
 		registry interface{}
 		alias    string
+	}
+)
+
+var(
+	safeCharacters = []rune{'_'}
+
+	sanitizeOptions = tally.SanitizeOptions{
+		NameCharacters: tally.ValidCharacters{
+			Ranges:     tally.AlphanumericRange,
+			Characters: safeCharacters,
+		},
+		KeyCharacters: tally.ValidCharacters{
+			Ranges:     tally.AlphanumericRange,
+			Characters: safeCharacters,
+		},
+		ValueCharacters: tally.ValidCharacters{
+			Ranges:     tally.AlphanumericRange,
+			Characters: safeCharacters,
+		},
+		ReplacementCharacter: tally.DefaultReplacementCharacter,
 	}
 )
 
@@ -72,11 +96,43 @@ func (h *SampleHelper) SetupServiceConfig() {
 
 	logger.Info("Logger created.")
 	h.Logger = logger
-	h.Scope = tally.NoopScope
+	h.ServiceMetricScope = tally.NoopScope
+	h.WorkerMetricScope = tally.NoopScope
+
+	if h.Config.Prometheus != nil{
+		reporter, err := h.Config.Prometheus.NewReporter(
+			prometheus.ConfigurationOptions{
+				Registry: prom.NewRegistry(),
+				OnError: func(err error) {
+					logger.Warn("error in prometheus reporter", zap.Error(err))
+				},
+			},
+			)
+		if err != nil {
+			panic(err)
+		}
+
+		h.WorkerMetricScope, _ = tally.NewRootScope(tally.ScopeOptions{
+			Prefix: "Worker_",
+			Tags:           map[string]string{},
+			CachedReporter: reporter,
+			Separator:      prometheus.DefaultSeparator,
+			SanitizeOptions: &sanitizeOptions,
+		}, 1*time.Second)
+
+		// NOTE: this must be a different scope with different prefix, otherwise the metric will conflict 
+		h.ServiceMetricScope, _ = tally.NewRootScope(tally.ScopeOptions{
+			Prefix: "Service_",
+			Tags:           map[string]string{},
+			CachedReporter: reporter,
+			Separator:      prometheus.DefaultSeparator,
+			SanitizeOptions: &sanitizeOptions,
+		}, 1*time.Second)
+	}
 	h.Builder = NewBuilder(logger).
 		SetHostPort(h.Config.HostNameAndPort).
 		SetDomain(h.Config.DomainName).
-		SetMetricsScope(h.Scope).
+		SetMetricsScope(h.ServiceMetricScope).
 		SetDataConverter(h.DataConverter).
 		SetContextPropagators(h.CtxPropagators)
 	service, err := h.Builder.BuildServiceClient()
