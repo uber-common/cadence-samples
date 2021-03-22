@@ -1,7 +1,8 @@
 import {
   BrowserRouter as Router,
-  Switch,
+  Redirect,
   Route,
+  Switch,
 } from "react-router-dom";
 import {
   CreateProduct,
@@ -18,21 +19,22 @@ function App() {
       <div class="App">
         <div class="App-header">
           <Switch>
-            <Route path="/product/abc/review">
+            <Route exact path="/product/abc/review">
               <ReviewSplitView />
             </Route>
-            <Route path="/product/abc/success">
+            <Route exact path="/product/abc/success">
               <ProductSuccess />
             </Route>
-            <Route path="/product/abc">
+            <Route exact path="/product/abc">
               <ProductPage />
             </Route>
-            <Route path="/product">
+            <Route exact path="/product">
               <CreateProduct />
             </Route>
-            <Route path="/">
+            <Route exact path="/">
               <Home />
             </Route>
+            <Redirect to="/" />
           </Switch>
         </div>
       </div>
