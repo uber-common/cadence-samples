@@ -35,7 +35,7 @@ const ReviewPage = () => (
            - Setup enable / disable
            - Setup loading spinner
            */}
-          <Link to="/product/abc" class="App-link">
+          <Link to="/product/abc/success" class="App-link">
             Approve
           </Link>
         </div>

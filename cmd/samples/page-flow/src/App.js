@@ -7,6 +7,7 @@ import {
   CreateProduct,
   Home,
   ProductPage,
+  ProductSuccess,
   ReviewSplitView,
 } from './routes';
 import './App.css';
@@ -19,6 +20,9 @@ function App() {
           <Switch>
             <Route path="/product/abc/review">
               <ReviewSplitView />
+            </Route>
+            <Route path="/product/abc/success">
+              <ProductSuccess />
             </Route>
             <Route path="/product/abc">
               <ProductPage />
