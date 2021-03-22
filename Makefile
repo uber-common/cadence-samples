@@ -27,6 +27,7 @@ PROGS = helloworld \
 	cancelactivity \
 	ctxpropagation \
 	pso \
+	pageflow \
 
 TEST_ARG ?= -race -v -timeout 5m
 BUILD := ./build
@@ -129,6 +130,9 @@ recovery:
 pso:
 	go build -i -o bin/pso cmd/samples/pso/*.go
 
+pageflow:
+	go build -i -o bin/pageflow cmd/samples/pageflow/*.go
+
 bins: helloworld \
 	branch \
 	childworkflow \
@@ -151,6 +155,7 @@ bins: helloworld \
 	recovery \
 	ctxpropagation \
 	pso \
+	pageflow \
 
 test: bins
 	@rm -f test

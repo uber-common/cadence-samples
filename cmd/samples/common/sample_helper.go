@@ -3,6 +3,7 @@ package common
 import (
 	"context"
 	"fmt"
+	"go.uber.org/cadence/.gen/go/shared"
 	"io/ioutil"
 	"time"
 
@@ -40,9 +41,9 @@ type (
 
 	// Configuration for running samples.
 	Configuration struct {
-		DomainName      string `yaml:"domain"`
-		ServiceName     string `yaml:"service"`
-		HostNameAndPort string `yaml:"host"`
+		DomainName      string                    `yaml:"domain"`
+		ServiceName     string                    `yaml:"service"`
+		HostNameAndPort string                    `yaml:"host"`
 		Prometheus      *prometheus.Configuration `yaml:"prometheus"`
 	}
 
@@ -52,7 +53,7 @@ type (
 	}
 )
 
-var(
+var (
 	safeCharacters = []rune{'_'}
 
 	sanitizeOptions = tally.SanitizeOptions{
@@ -99,7 +100,7 @@ func (h *SampleHelper) SetupServiceConfig() {
 	h.ServiceMetricScope = tally.NoopScope
 	h.WorkerMetricScope = tally.NoopScope
 
-	if h.Config.Prometheus != nil{
+	if h.Config.Prometheus != nil {
 		reporter, err := h.Config.Prometheus.NewReporter(
 			prometheus.ConfigurationOptions{
 				Registry: prom.NewRegistry(),
@@ -107,25 +108,25 @@ func (h *SampleHelper) SetupServiceConfig() {
 					logger.Warn("error in prometheus reporter", zap.Error(err))
 				},
 			},
-			)
+		)
 		if err != nil {
 			panic(err)
 		}
 
 		h.WorkerMetricScope, _ = tally.NewRootScope(tally.ScopeOptions{
-			Prefix: "Worker_",
-			Tags:           map[string]string{},
-			CachedReporter: reporter,
-			Separator:      prometheus.DefaultSeparator,
+			Prefix:          "Worker_",
+			Tags:            map[string]string{},
+			CachedReporter:  reporter,
+			Separator:       prometheus.DefaultSeparator,
 			SanitizeOptions: &sanitizeOptions,
 		}, 1*time.Second)
 
 		// NOTE: this must be a different scope with different prefix, otherwise the metric will conflict 
 		h.ServiceMetricScope, _ = tally.NewRootScope(tally.ScopeOptions{
-			Prefix: "Service_",
-			Tags:           map[string]string{},
-			CachedReporter: reporter,
-			Separator:      prometheus.DefaultSeparator,
+			Prefix:          "Service_",
+			Tags:            map[string]string{},
+			CachedReporter:  reporter,
+			Separator:       prometheus.DefaultSeparator,
 			SanitizeOptions: &sanitizeOptions,
 		}, 1*time.Second)
 	}
@@ -154,12 +155,21 @@ func (h *SampleHelper) SetupServiceConfig() {
 }
 
 // StartWorkflow starts a workflow
-func (h *SampleHelper) StartWorkflow(options client.StartWorkflowOptions, workflow interface{}, args ...interface{}) {
-	h.StartWorkflowWithCtx(context.Background(), options, workflow, args...)
+func (h *SampleHelper) StartWorkflow(
+	options client.StartWorkflowOptions,
+	workflow interface{},
+	args ...interface{},
+) *workflow.Execution {
+	return h.StartWorkflowWithCtx(context.Background(), options, workflow, args...)
 }
 
 // StartWorkflowWithCtx starts a workflow with the provided context
-func (h *SampleHelper) StartWorkflowWithCtx(ctx context.Context, options client.StartWorkflowOptions, workflow interface{}, args ...interface{}) {
+func (h *SampleHelper) StartWorkflowWithCtx(
+	ctx context.Context,
+	options client.StartWorkflowOptions,
+	workflow interface{},
+	args ...interface{},
+) *workflow.Execution {
 	workflowClient, err := h.Builder.BuildCadenceClient()
 	if err != nil {
 		h.Logger.Error("Failed to build cadence client.", zap.Error(err))
@@ -170,9 +180,9 @@ func (h *SampleHelper) StartWorkflowWithCtx(ctx context.Context, options client.
 	if err != nil {
 		h.Logger.Error("Failed to create workflow", zap.Error(err))
 		panic("Failed to create workflow.")
-
 	} else {
 		h.Logger.Info("Started Workflow", zap.String("WorkflowID", we.ID), zap.String("RunID", we.RunID))
+		return we
 	}
 }
 
@@ -249,6 +259,36 @@ func (h *SampleHelper) QueryWorkflow(workflowID, runID, queryType string, args .
 		h.Logger.Error("Failed to decode query result", zap.Error(err))
 	}
 	h.Logger.Info("Received query result", zap.Any("Result", result))
+}
+
+func (h *SampleHelper) ConsistentQueryWorkflow(
+	valuePtr interface{},
+	workflowID, runID, queryType string,
+	args ...interface{},
+) error {
+	workflowClient, err := h.Builder.BuildCadenceClient()
+	if err != nil {
+		h.Logger.Error("Failed to build cadence client.", zap.Error(err))
+		panic(err)
+	}
+
+	resp, err := workflowClient.QueryWorkflowWithOptions(context.Background(),
+		&client.QueryWorkflowWithOptionsRequest{
+			WorkflowID:            workflowID,
+			RunID:                 runID,
+			QueryType:             queryType,
+			QueryConsistencyLevel: shared.QueryConsistencyLevelStrong.Ptr(),
+			Args:                  args,
+		})
+	if err != nil {
+		h.Logger.Error("Failed to query workflow", zap.Error(err))
+		panic("Failed to query workflow.")
+	}
+	if err := resp.QueryResult.Get(&valuePtr); err != nil {
+		h.Logger.Error("Failed to decode query result", zap.Error(err))
+	}
+	h.Logger.Info("Received consistent query result.", zap.Any("Result", valuePtr))
+	return err
 }
 
 func (h *SampleHelper) SignalWorkflow(workflowID, signal string, data interface{}) {
