@@ -24,8 +24,36 @@
   color: white;
 }
 
+.App-content {
+  min-width: 600px;
+}
+
 .App-link {
   color: #61dafb;
+}
+
+.grid {
+  display: flex;
+}
+
+.col-6 {
+  width: 50%;
+}
+
+.col-3 {
+  width: 25%;
+}
+
+.col-4 {
+  width: 33.3%;
+}
+
+.dd {
+  margin-left: 0;
+}
+
+.border-right {
+  border-right: 3px solid white;
 }
 
 @keyframes App-logo-spin {
