@@ -6,6 +6,7 @@ import {
   selectModelProductDescription,
   selectProductName,
   selectProductStatus,
+  submitProduct,
   updateProductModel,
   updateProductDescription,
 } from '../state/productSlice';
@@ -60,7 +61,11 @@ const Product = () => {
           - Setup enable / disable
           - Setup loading spinner
           */}
-            <LinkButton label="Submit" to={`/products/${productId}/review`} />
+            {/* <LinkButton label="Submit" to={`/products/${productId}/review`} /> */}
+            <ProgressButton
+              label="Submit"
+              onClick={() => dispatch(submitProduct(productId))}
+            />
           </div>
           <div className="col-3">
             {/* TODO

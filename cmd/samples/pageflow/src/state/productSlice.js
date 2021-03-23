@@ -64,6 +64,60 @@ export const createProduct = createAsyncThunk(
   }
 );
 
+export const submitProduct = createAsyncThunk(
+  'products/submit',
+  async (productId, { dispatch, getState }) => {
+    const state = getState();
+    const product = selectProduct(state, productId);
+
+    // TODO - trigger API call here...
+
+    setTimeout(() => {
+      // TODO - API will set ID & status
+      const status = 'SUBMITTED';
+      const response = { ...product, status };
+
+      dispatch(updateProduct(response));
+    }, 1000);
+  }
+);
+
+export const rejectProduct = createAsyncThunk(
+  'products/reject',
+  async (productId, { dispatch, getState }) => {
+    const state = getState();
+    const product = selectProduct(state, productId);
+
+    // TODO - trigger API call here...
+
+    setTimeout(() => {
+      // TODO - API will set ID & status
+      const status = 'REJECTED';
+      const response = { ...product, status };
+
+      dispatch(updateProduct(response));
+    }, 1000);
+  }
+);
+
+export const approveProduct = createAsyncThunk(
+  'products/approve',
+  async (productId, { dispatch, getState }) => {
+    const state = getState();
+    const product = selectProduct(state, productId);
+
+    // TODO - trigger API call here...
+
+    setTimeout(() => {
+      // TODO - API will set ID & status
+      const status = 'APPROVED';
+      const response = { ...product, status };
+
+      dispatch(updateProduct(response));
+    }, 1000);
+  }
+);
+
 export const updateProductDescription = createAsyncThunk(
   'products/update-description',
   async (productId, { dispatch, getState }) => {

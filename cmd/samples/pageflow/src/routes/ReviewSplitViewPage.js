@@ -1,15 +1,34 @@
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import ProductPage from './ProductPage';
+import ProductSuccessPage from './ProductSuccessPage';
 import ReviewPage from './ReviewPage';
+import {
+  selectProductStatus,
+} from '../state/productSlice';
 
-const ReviewSplitView = () => (
-  <div className="grid">
-    <div className="col-6 border-right">
-      <ProductPage />
+const ReviewSplitView = () => {
+  const { productId } = useParams();
+  const productStatus = useSelector((state) => selectProductStatus(state, productId));
+
+  if (productStatus === 'APPROVED') {
+    return <ProductSuccessPage />;
+  }
+
+  if (productStatus === 'DRAFT' || productStatus === 'REJECTED' || productStatus === 'UNKNOWN') {
+    return <ProductPage />;
+  }
+
+  return (
+    <div className="grid">
+      <div className="col-6 border-right">
+        <ProductPage />
+      </div>
+      <div className="col-6">
+        <ReviewPage />
+      </div>
     </div>
-    <div className="col-6">
-      <ReviewPage />
-    </div>
-  </div>
-);
+  );
+}
 
 export default ReviewSplitView;

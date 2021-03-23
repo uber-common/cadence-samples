@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const ReviewPage = () => (
   <div className="App-content">
@@ -35,7 +35,7 @@ const ReviewPage = () => (
            - Setup enable / disable
            - Setup loading spinner
            */}
-          <Link to="/products/abc/success" className="App-link">
+          <Link to="/products/abc/approved" className="App-link">
             Approve
           </Link>
         </div>
