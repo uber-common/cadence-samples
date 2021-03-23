@@ -11,7 +11,7 @@ import {
   updateProductDescription,
   withdrawProduct,
 } from '../state/productSlice';
-import { Button, LinkButton, ProgressButton } from '../components';
+import { Button, ProgressButton } from '../components';
 
 const Product = () => {
   const { productId } = useParams();

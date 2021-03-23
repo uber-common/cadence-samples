@@ -34,22 +34,12 @@ const ReviewPage = () => {
 
         <div className="grid">
           <div className="col-6">
-            {/* TODO
-           - Setup onclick handler
-           - Setup enable / disable
-           - Setup loading spinner
-           */}
             <ProgressButton
               label="Reject"
               onClick={() => dispatch(rejectProduct(productId))}
             />
           </div>
           <div className="col-6">
-            {/* TODO
-           - Setup onclick handler
-           - Setup enable / disable
-           - Setup loading spinner
-           */}
             <ProgressButton
               label="Approve"
               onClick={() => dispatch(approveProduct(productId))}
