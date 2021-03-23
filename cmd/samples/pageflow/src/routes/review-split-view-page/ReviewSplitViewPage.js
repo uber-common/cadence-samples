@@ -1,5 +1,5 @@
-import ProductPage from './ProductPage';
-import ReviewPage from './ReviewPage';
+import ProductPage from '../product-page/ProductPage';
+import ReviewPage from '../review-page/ReviewPage';
 
 const ReviewSplitView = () => (
   <div class="grid">

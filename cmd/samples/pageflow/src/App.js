@@ -4,11 +4,11 @@ import {
   Switch,
 } from 'react-router-dom';
 import {
-  CreateProduct,
-  Home,
+  CreateProductPage,
+  HomePage,
   ProductPage,
-  ProductSuccess,
-  ReviewSplitView,
+  ProductSuccessPage,
+  ReviewSplitViewPage,
 } from './routes';
 import './App.css';
 
@@ -17,19 +17,19 @@ const App = () => (
     <div class="App-header">
       <Switch>
         <Route exact path="/product/abc/review">
-          <ReviewSplitView />
+          <ReviewSplitViewPage />
         </Route>
         <Route exact path="/product/abc/success">
-          <ProductSuccess />
+          <ProductSuccessPage />
         </Route>
         <Route exact path="/product/abc">
           <ProductPage />
         </Route>
         <Route exact path="/product">
-          <CreateProduct />
+          <CreateProductPage />
         </Route>
         <Route exact path="/">
-          <Home />
+          <HomePage />
         </Route>
         <Redirect to="/" />
       </Switch>
