@@ -91,4 +91,6 @@ export const selectProductName = (state, id) => selectProduct(state, id).name ||
 export const selectProductDescription = (state, id) => selectProduct(state, id).description || 'UNKNOWN';
 export const selectProductStatus = (state, id) => selectProduct(state, id).status || 'UNKNOWN';
 
+export const selectIsModelProductDescriptionEqual = (state, id) => Boolean(selectModelProductDescription(state) === selectProductDescription(state, id));
+
 export default productSlice.reducer;

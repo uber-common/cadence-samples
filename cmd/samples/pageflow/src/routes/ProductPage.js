@@ -2,13 +2,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   resetProductDescription,
+  selectIsModelProductDescriptionEqual,
   selectModelProductDescription,
   selectProductName,
   selectProductStatus,
   updateProductModel,
   updateProductDescription,
 } from '../state/productSlice';
-import { Button, LinkButton } from '../components';
+import { Button, LinkButton, ProgressButton } from '../components';
 
 const Product = () => {
   const { productId } = useParams();
@@ -17,6 +18,7 @@ const Product = () => {
   const productDescription = useSelector(selectModelProductDescription);
   const productName = useSelector((state) => selectProductName(state, productId));
   const productStatus = useSelector((state) => selectProductStatus(state, productId));
+  const isCancelSaveButtonsDisabled = useSelector((state) => selectIsModelProductDescriptionEqual(state, productId));
 
   return (
     <div className="App-content">
@@ -24,16 +26,13 @@ const Product = () => {
       <form onSubmit={(event) => event.preventDefault()}>
         <dl>
           <dt>Product name:</dt>
-          {/* TODO - hook up value */}
           <dd className="dd">{productName}</dd><br />
 
           <dt>Product Status:</dt>
-          {/* TODO - hook up value */}
           <dd className="dd">{productStatus}</dd>
         </dl>
 
         <label>Product description:</label><br />
-        {/* TODO - hook up value */}
         <textarea
           name="description"
           onChange={event => dispatch(updateProductModel(event))}
@@ -42,20 +41,17 @@ const Product = () => {
 
         <div className="grid">
           <div className="col-3">
-            {/* TODO
-           - Setup onclick handler
-           - Setup enable / disable
-           - Setup loading spinner
-           */}
             <Button
+              disabled={isCancelSaveButtonsDisabled}
               label="Cancel"
-              onClick={() => dispatch(resetProductDescription(productId))}
+              onClick={() => !isCancelSaveButtonsDisabled && dispatch(resetProductDescription(productId))}
             />
           </div>
           <div className="col-3">
-            <Button
+            <ProgressButton
+              disabled={isCancelSaveButtonsDisabled}
               label="Save"
-              onClick={() => dispatch(updateProductDescription(productId))}
+              onClick={() => !isCancelSaveButtonsDisabled && dispatch(updateProductDescription(productId))}
             />
           </div>
           <div className="col-3">

@@ -14,10 +14,14 @@
   transition: all 0.15s;
 }
 
-.button:hover, .button:focus {
+.button:not(:enabled) {
+  color: grey;
+}
+
+.button:enabled:hover, .button:enabled:focus {
   border: 2px solid rgba(112, 76, 182, 0.4);
 }
 
-.button:active {
+.button:enabled:active {
   background-color: rgba(112, 76, 182, 0.2);
 }

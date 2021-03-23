@@ -16,11 +16,15 @@
   margin-left: 8px;
 }
 
-.progressButton:hover, .button:focus {
+.progressButton:not(:enabled) {
+  color: grey;
+}
+
+.progressButton:enabled:hover, .button:enabled:focus {
   border: 2px solid rgba(112, 76, 182, 0.4);
 }
 
-.progressButton:active {
+.progressButton:enabled:active {
   background-color: rgba(112, 76, 182, 0.2);
 }
 
