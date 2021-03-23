@@ -6,7 +6,6 @@ import {
 import {
   CreateProductPage,
   HomePage,
-  ProductSuccessPage,
   ReviewSplitViewPage,
 } from './routes';
 import './App.css';
@@ -15,9 +14,6 @@ const App = () => (
   <div className="App">
     <div className="App-header">
       <Switch>
-        <Route exact path="/products/:productId/approved">
-          <ProductSuccessPage />
-        </Route>
         <Route exact path="/products/:productId">
           <ReviewSplitViewPage />
         </Route>

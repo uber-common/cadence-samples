@@ -9,6 +9,7 @@ import {
   submitProduct,
   updateProductModel,
   updateProductDescription,
+  withdrawProduct,
 } from '../state/productSlice';
 import { Button, LinkButton, ProgressButton } from '../components';
 
@@ -19,7 +20,14 @@ const Product = () => {
   const productDescription = useSelector(selectModelProductDescription);
   const productName = useSelector((state) => selectProductName(state, productId));
   const productStatus = useSelector((state) => selectProductStatus(state, productId));
-  const isCancelSaveButtonsDisabled = useSelector((state) => selectIsModelProductDescriptionEqual(state, productId));
+  const isDescriptionEqual = useSelector((state) => selectIsModelProductDescriptionEqual(state, productId));
+
+  const isFormDisabled = productStatus === 'SUBMITTED';
+
+  const isCancelDisabled = isFormDisabled || isDescriptionEqual;
+  const isSaveDisabled = isFormDisabled || isDescriptionEqual || productDescription === '';
+  const isSubmitDisabled = isFormDisabled || !isDescriptionEqual;
+  const isWithdrawDisabled = productStatus !== 'SUBMITTED';
 
   return (
     <div className="App-content">
@@ -35,6 +43,7 @@ const Product = () => {
 
         <label>Product description:</label><br />
         <textarea
+          disabled={isFormDisabled}
           name="description"
           onChange={event => dispatch(updateProductModel(event))}
           value={productDescription}
@@ -43,37 +52,31 @@ const Product = () => {
         <div className="grid">
           <div className="col-3">
             <Button
-              disabled={isCancelSaveButtonsDisabled}
+              disabled={isCancelDisabled}
               label="Cancel"
-              onClick={() => !isCancelSaveButtonsDisabled && dispatch(resetProductDescription(productId))}
+              onClick={() => !isCancelDisabled && dispatch(resetProductDescription(productId))}
             />
           </div>
           <div className="col-3">
             <ProgressButton
-              disabled={isCancelSaveButtonsDisabled}
+              disabled={isSaveDisabled}
               label="Save"
-              onClick={() => !isCancelSaveButtonsDisabled && dispatch(updateProductDescription(productId))}
+              onClick={() => !isSaveDisabled && dispatch(updateProductDescription(productId))}
             />
           </div>
           <div className="col-3">
-            {/* TODO
-          - Setup onclick handler
-          - Setup enable / disable
-          - Setup loading spinner
-          */}
-            {/* <LinkButton label="Submit" to={`/products/${productId}/review`} /> */}
             <ProgressButton
+              disabled={isSubmitDisabled}
               label="Submit"
-              onClick={() => dispatch(submitProduct(productId))}
+              onClick={() => !isSubmitDisabled && dispatch(submitProduct(productId))}
             />
           </div>
           <div className="col-3">
-            {/* TODO
-          - Setup onclick handler
-          - Setup enable / disable
-          - Setup loading spinner
-          */}
-            <LinkButton label="Withdraw" to={`/products/${productId}`} />
+            <ProgressButton
+              disabled={isWithdrawDisabled}
+              label="Withdraw"
+              onClick={() => !isWithdrawDisabled && dispatch(withdrawProduct(productId))}
+            />
           </div>
         </div>
       </form>

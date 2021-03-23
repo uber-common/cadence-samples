@@ -1,47 +1,64 @@
-import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import {
+  approveProduct,
+  selectProductDescription,
+  selectProductName,
+  selectProductStatus,
+  rejectProduct,
+} from '../state/productSlice';
+import { ProgressButton } from '../components';
 
-const ReviewPage = () => (
-  <div className="App-content">
-    <h1>Review product</h1>
-    <form>
-      <dl>
-        <dt>Product name:</dt>
-        {/* TODO - hook up value */}
-        <dd className="dd">PRODUCT_NAME</dd><br />
+const ReviewPage = () => {
+  const { productId } = useParams();
+  const dispatch = useDispatch();
 
-        <dt>Product Status:</dt>
-        {/* TODO - hook up value */}
-        <dd className="dd">PRODUCT_STATUS</dd><br />
+  const productDescription = useSelector((state) => selectProductDescription(state, productId));
+  const productName = useSelector((state) => selectProductName(state, productId));
+  const productStatus = useSelector((state) => selectProductStatus(state, productId));
 
-        <dt>Product Description:</dt>
-        {/* TODO - hook up value */}
-        <dd className="dd">PRODUCT_DESCRIPTION</dd>
-      </dl>
+  return (
+    <div className="App-content">
+      <h1>Review product</h1>
+      <form onSubmit={(event) => event.preventDefault()}>
+        <dl>
+          <dt>Product name:</dt>
+          <dd className="dd">{productName}</dd><br />
 
-      <div className="grid">
-        <div className="col-6">
-          {/* TODO
+          <dt>Product Status:</dt>
+          <dd className="dd">{productStatus}</dd><br />
+
+          <dt>Product Description:</dt>
+          <dd className="dd">{productDescription}</dd>
+        </dl>
+
+        <div className="grid">
+          <div className="col-6">
+            {/* TODO
            - Setup onclick handler
            - Setup enable / disable
            - Setup loading spinner
            */}
-          <Link to="/products/abc" className="App-link">
-            Reject
-          </Link>
-        </div>
-        <div className="col-6">
-          {/* TODO
+            <ProgressButton
+              label="Reject"
+              onClick={() => dispatch(rejectProduct(productId))}
+            />
+          </div>
+          <div className="col-6">
+            {/* TODO
            - Setup onclick handler
            - Setup enable / disable
            - Setup loading spinner
            */}
-          <Link to="/products/abc/approved" className="App-link">
-            Approve
-          </Link>
+            <ProgressButton
+              label="Approve"
+              onClick={() => dispatch(approveProduct(productId))}
+            />
+          </div>
         </div>
-      </div>
-    </form>
-  </div>
-);
+      </form>
+    </div>
+  );
+}
 
 export default ReviewPage;

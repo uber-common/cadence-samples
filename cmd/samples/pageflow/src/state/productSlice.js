@@ -7,8 +7,8 @@ const getInitialState = () => {
     isLoading: false,
 
     model: {
-      name: 'PRODUCT_NAME',
-      description: 'PRODUCT_DESCRIPTION',
+      name: '',
+      description: '',
     },
 
     data: {},
@@ -44,9 +44,7 @@ export const {
 
 export const createProduct = createAsyncThunk(
   'products/create',
-  async (event, { dispatch, getState }) => {
-    event.preventDefault();
-
+  async (_, { dispatch, getState }) => {
     const state = getState();
     const model = selectModelProduct(state);
 
@@ -111,6 +109,24 @@ export const approveProduct = createAsyncThunk(
     setTimeout(() => {
       // TODO - API will set ID & status
       const status = 'APPROVED';
+      const response = { ...product, status };
+
+      dispatch(updateProduct(response));
+    }, 1000);
+  }
+);
+
+export const withdrawProduct = createAsyncThunk(
+  'products/approve',
+  async (productId, { dispatch, getState }) => {
+    const state = getState();
+    const product = selectProduct(state, productId);
+
+    // TODO - trigger API call here...
+
+    setTimeout(() => {
+      // TODO - API will set ID & status
+      const status = 'WITHDRAWN';
       const response = { ...product, status };
 
       dispatch(updateProduct(response));

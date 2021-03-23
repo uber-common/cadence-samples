@@ -1,12 +1,20 @@
-import { Link } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import {
+  selectProductName,
+} from '../state/productSlice';
+import { LinkButton } from '../components';
 
-const ProductSuccess = () => (
-  <div className="App-content">
-    <h1>Product PRODUCT_NAME has been approved!</h1>
-    <Link to="/" className="App-link">
-      Return to home page
-    </Link>
-  </div>
-);
+const ProductSuccessPage = () => {
+  const { productId } = useParams();
+  const productName = useSelector((state) => selectProductName(state, productId));
 
-export default ProductSuccess;
+  return (
+    <div className="App-content">
+      <h1>Product "{productName}" has been approved!</h1>
+      <LinkButton label="Return to home page" to="/" />
+    </div>
+  );
+};
+
+export default ProductSuccessPage;
