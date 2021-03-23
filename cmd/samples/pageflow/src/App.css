@@ -22,8 +22,36 @@
   font-size: calc(10px + 2vmin);
 }
 
+.App-content {
+  min-width: 600px;
+}
+
 .App-link {
   color: rgb(112, 76, 182);
+}
+
+.grid {
+  display: flex;
+}
+
+.col-6 {
+  width: 50%;
+}
+
+.col-3 {
+  width: 25%;
+}
+
+.col-4 {
+  width: 33.3%;
+}
+
+.dd {
+  margin-left: 0;
+}
+
+.border-right {
+  border-right: 3px solid black;
 }
 
 @keyframes App-logo-float {

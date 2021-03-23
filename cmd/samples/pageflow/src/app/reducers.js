@@ -7,7 +7,7 @@ import history from './history';
 const createReducer = (injectedReducers = {}) => {
   const rootReducer = combineReducers({
     counter: counterReducer,
-    // router: connectRouter(history),
+    router: connectRouter(history),
     ...injectedReducers,
   });
 
