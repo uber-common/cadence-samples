@@ -4,7 +4,7 @@ import {
   selectModelProductName,
   selectModelProductDescription,
   updateModelField,
-} from '../../state/productSlice';
+} from '../state/productSlice';
 
 const Product = () => {
   const productName = useSelector(selectModelProductName);
