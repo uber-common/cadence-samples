@@ -18,6 +18,7 @@
 
 .progressButton:not(:enabled) {
   color: grey;
+  cursor: not-allowed;
 }
 
 .progressButton:enabled:hover, .button:enabled:focus {
