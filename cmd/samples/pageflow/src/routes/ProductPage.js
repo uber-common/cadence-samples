@@ -1,67 +1,63 @@
-import { Link } from "react-router-dom";
+import { Button, LinkButton } from '../components';
 
-const Product = () => (
-  <div className="App-content">
-    <h1>Product page</h1>
-    <form>
-      <dl>
-        <dt>Product name:</dt>
+const Product = () => {
+  const productId = 'abc';
+
+  return (
+    <div className="App-content">
+      <h1>Product page</h1>
+      <form onSubmit={(event) => event.preventDefault()}>
+        <dl>
+          <dt>Product name:</dt>
+          {/* TODO - hook up value */}
+          <dd className="dd">PRODUCT_NAME</dd><br />
+
+          <dt>Product Status:</dt>
+          {/* TODO - hook up value */}
+          <dd className="dd">PRODUCT_STATUS</dd>
+        </dl>
+
+        <label>Product description:</label><br />
         {/* TODO - hook up value */}
-        <dd className="dd">PRODUCT_NAME</dd><br />
+        <textarea value="PRODUCT_DESCRIPTION"></textarea><br /><br />
 
-        <dt>Product Status:</dt>
-        {/* TODO - hook up value */}
-        <dd className="dd">PRODUCT_STATUS</dd>
-      </dl>
-
-      <label>Product description:</label><br />
-      {/* TODO - hook up value */}
-      <textarea value="PRODUCT_DESCRIPTION"></textarea><br /><br />
-
-      <div className="grid">
-        <div className="col-3">
-          {/* TODO
+        <div className="grid">
+          <div className="col-3">
+            {/* TODO
            - Setup onclick handler
            - Setup enable / disable
            - Setup loading spinner
            */}
-          <Link className="App-link">
-            Cancel
-          </Link>
-        </div>
-        <div className="col-3">
-          {/* TODO
+            <Button label="Cancel" />
+          </div>
+          <div className="col-3">
+            {/* TODO
            - Setup onclick handler
            - Setup enable / disable
            - Setup loading spinner
            */}
-          <Link className="App-link">
-            Save
-          </Link>
-        </div>
-        <div className="col-3">
-          {/* TODO
+            <Button label="Save" />
+          </div>
+          <div className="col-3">
+            {/* TODO
           - Setup onclick handler
           - Setup enable / disable
           - Setup loading spinner
           */}
-          <Link to="/product/abc/review" className="App-link">
-            Submit
-          </Link>
-        </div>
-        <div className="col-3">
-          {/* TODO
+            <LinkButton label="Submit" to={`/products/${productId}/review`} />
+          </div>
+          <div className="col-3">
+            {/* TODO
           - Setup onclick handler
           - Setup enable / disable
           - Setup loading spinner
           */}
-          <Link to="/product/abc" className="App-link">
-            Withdraw
-          </Link>
+            <LinkButton label="Withdraw" to={`/products/${productId}`} />
+          </div>
         </div>
-      </div>
-    </form>
-  </div>
-);
+      </form>
+    </div>
+  );
+};
 
 export default Product;

@@ -1,23 +1,22 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import {
-  resetProductState,
-} from '../state/productSlice';
+import { resetProductState } from '../state/productSlice';
+import { LinkButton } from '../components';
 
 const Home = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(resetProductState());
-  });
+  }, [dispatch]);
 
   return (
     <div className="App-content">
       <h1>Home page</h1>
-      <Link to="/products" className="App-link">
-        Create a new product
-    </Link>
+      <LinkButton
+        label="Create a new product"
+        to="/products"
+      />
     </div>
   );
 }

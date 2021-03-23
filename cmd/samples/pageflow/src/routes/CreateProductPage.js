@@ -1,24 +1,21 @@
 import { useEffect } from 'react';
-import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import {
   createProduct,
   resetProductModel,
-  selectModelProductName,
-  selectModelProductDescription,
+  selectModelProduct,
   updateProductModel,
 } from '../state/productSlice';
-import { ProgressButton } from '../components';
+import { LinkButton, ProgressButton } from '../components';
 
 const Product = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(resetProductModel());
-  }, []);
+  }, [dispatch]);
 
-  const productName = useSelector(selectModelProductName);
-  const productDescription = useSelector(selectModelProductDescription);
+  const { name: productName , description: productDescription } = useSelector(selectModelProduct);
 
   return (
     <div className="App-content">
@@ -40,15 +37,12 @@ const Product = () => {
 
         <div className="grid">
           <div className="col-6">
-            <Link to="/" className="App-link">
-              Cancel
-            </Link>
+            <LinkButton
+              label="Cancel"
+              to="/"
+            />
           </div>
           <div className="col-6">
-            {/* TODO
-            - Setup onclick handler
-            - Setup loading spinner
-            */}
             <ProgressButton
               label="Create"
               type="submit"
