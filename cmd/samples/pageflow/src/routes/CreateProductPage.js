@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   createProduct,
   resetProductModel,
-  selectModelProduct,
+  selectModelProductName,
+  selectModelProductDescription,
   updateProductModel,
 } from '../state/productSlice';
 import { LinkButton, ProgressButton } from '../components';
@@ -15,7 +16,8 @@ const Product = () => {
     dispatch(resetProductModel());
   }, [dispatch]);
 
-  const { name: productName , description: productDescription } = useSelector(selectModelProduct);
+  const productName = useSelector(selectModelProductName);
+  const productDescription = useSelector(selectModelProductDescription);
 
   return (
     <div className="App-content">

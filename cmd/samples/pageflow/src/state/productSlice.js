@@ -10,7 +10,7 @@ const getInitialState = () => {
       description: 'PRODUCT_DESCRIPTION',
     },
 
-    data: null,
+    data: {},
   };
 };
 
@@ -22,15 +22,8 @@ export const productSlice = createSlice({
       const initialState = getInitialState();
       state.model = { ...initialState.model };
     },
-    resetProductState: state => {
-      const initialState = getInitialState();
-
-      state.isLoading = initialState.isLoading;
-      state.model = { ...initialState.model };
-      state.data = null;
-    },
-    setProduct: (state, action) => {
-      state.data = { ...action.payload };
+    updateProduct: (state, action) => {
+      state.data[action.payload.id] = action.payload;
     },
     updateProductModel: (state, { payload: { target: { name, value } } }) => {
       state.model[name] = value;
@@ -40,8 +33,7 @@ export const productSlice = createSlice({
 
 export const {
   resetProductModel,
-  resetProductState,
-  setProduct,
+  updateProduct,
   updateProductModel,
 } = productSlice.actions;
 
@@ -61,16 +53,19 @@ export const createProduct = createAsyncThunk(
       const status = 'DRAFT';
       const response = { ...model, id, status };
 
-      dispatch(setProduct(response));
+      dispatch(updateProduct(response));
       dispatch(push(`/products/${id}`));
     }, 1000);
   }
 );
 
 export const selectModelProduct = state => state.product.model;
+export const selectModelProductName = state => selectModelProduct(state).name;
+export const selectModelProductDescription = state => selectModelProduct(state).description;
 
-export const selectProduct = state => state.product.data;
-
-export const selectProductStatus = state => state.product.data && state.product.data.status;
+export const selectProduct = (state, id) => state.product.data[id] || {};
+export const selectProductName = (state, id) => selectProduct(state, id).name || 'UNKNOWN';
+export const selectProductDescription = (state, id) => selectProduct(state, id).description || 'UNKNOWN';
+export const selectProductStatus = (state, id) => selectProduct(state, id).status || 'UNKNOWN';
 
 export default productSlice.reducer;
