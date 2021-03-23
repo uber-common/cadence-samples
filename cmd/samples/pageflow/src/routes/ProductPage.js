@@ -1,10 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
+  resetProductDescription,
   selectModelProductDescription,
   selectProductName,
   selectProductStatus,
   updateProductModel,
+  updateProductDescription,
 } from '../state/productSlice';
 import { Button, LinkButton } from '../components';
 
@@ -45,15 +47,16 @@ const Product = () => {
            - Setup enable / disable
            - Setup loading spinner
            */}
-            <Button label="Cancel" />
+            <Button
+              label="Cancel"
+              onClick={() => dispatch(resetProductDescription(productId))}
+            />
           </div>
           <div className="col-3">
-            {/* TODO
-           - Setup onclick handler
-           - Setup enable / disable
-           - Setup loading spinner
-           */}
-            <Button label="Save" />
+            <Button
+              label="Save"
+              onClick={() => dispatch(updateProductDescription(productId))}
+            />
           </div>
           <div className="col-3">
             {/* TODO

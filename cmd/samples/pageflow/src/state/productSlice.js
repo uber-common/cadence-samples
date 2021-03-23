@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
+import get from 'lodash.get';
 
 const getInitialState = () => {
   return {
@@ -22,6 +23,9 @@ export const productSlice = createSlice({
       const initialState = getInitialState();
       state.model = { ...initialState.model };
     },
+    resetProductDescription: (state, action) => {
+      state.model.description = get(state, `data[${action.payload}].description`, 'UNKNOWN');
+    },
     updateProduct: (state, action) => {
       state.data[action.payload.id] = action.payload;
     },
@@ -33,12 +37,13 @@ export const productSlice = createSlice({
 
 export const {
   resetProductModel,
+  resetProductDescription,
   updateProduct,
   updateProductModel,
 } = productSlice.actions;
 
 export const createProduct = createAsyncThunk(
-  'product/create',
+  'products/create',
   async (event, { dispatch, getState }) => {
     event.preventDefault();
 
@@ -55,6 +60,24 @@ export const createProduct = createAsyncThunk(
 
       dispatch(updateProduct(response));
       dispatch(push(`/products/${id}`));
+    }, 1000);
+  }
+);
+
+export const updateProductDescription = createAsyncThunk(
+  'products/update-description',
+  async (productId, { dispatch, getState }) => {
+    const state = getState();
+    const description = selectModelProductDescription(state);
+    const product = selectProduct(state, productId);
+
+    // TODO - trigger API call here...
+
+    setTimeout(() => {
+      // TODO - API will set ID & status
+      const response = { ...product, description };
+
+      dispatch(updateProduct(response));
     }, 1000);
   }
 );
