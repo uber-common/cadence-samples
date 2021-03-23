@@ -13,8 +13,8 @@ import {
 import './App.css';
 
 const App = () => (
-  <div class="App">
-    <div class="App-header">
+  <div className="App">
+    <div className="App-header">
       <Switch>
         <Route exact path="/product/abc/review">
           <ReviewSplitViewPage />
