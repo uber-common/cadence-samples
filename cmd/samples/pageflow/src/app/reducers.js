@@ -6,7 +6,7 @@ import productReducer from '../state/productSlice';
 const createReducer = ({ history, ...injectedReducers } = {}) => {
   const rootReducer = combineReducers({
     counter: counterReducer,
-    product: productReducer,
+    products: productReducer,
     router: connectRouter(history),
     ...injectedReducers,
   });

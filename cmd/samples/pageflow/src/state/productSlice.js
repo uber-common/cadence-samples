@@ -15,7 +15,7 @@ const getInitialState = () => {
 };
 
 export const productSlice = createSlice({
-  name: 'product',
+  name: 'products',
   initialState: getInitialState(),
   reducers: {
     resetProductModel: state => {
@@ -59,11 +59,11 @@ export const createProduct = createAsyncThunk(
   }
 );
 
-export const selectModelProduct = state => state.product.model;
+export const selectModelProduct = state => state.products.model;
 export const selectModelProductName = state => selectModelProduct(state).name;
 export const selectModelProductDescription = state => selectModelProduct(state).description;
 
-export const selectProduct = (state, id) => state.product.data[id] || {};
+export const selectProduct = (state, id) => state.products.data[id] || {};
 export const selectProductName = (state, id) => selectProduct(state, id).name || 'UNKNOWN';
 export const selectProductDescription = (state, id) => selectProduct(state, id).description || 'UNKNOWN';
 export const selectProductStatus = (state, id) => selectProduct(state, id).status || 'UNKNOWN';
