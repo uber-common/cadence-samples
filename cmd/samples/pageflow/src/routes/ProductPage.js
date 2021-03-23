@@ -16,7 +16,7 @@ const Product = () => (
 
       <label>Product description:</label><br />
       {/* TODO - hook up value */}
-      <textarea>PRODUCT_DESCRIPTION</textarea><br /><br />
+      <textarea value="PRODUCT_DESCRIPTION"></textarea><br /><br />
 
       <div className="grid">
         <div className="col-3">

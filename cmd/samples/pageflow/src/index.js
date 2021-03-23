@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { ConnectedRouter } from 'connected-react-router';
 
-const store = configureAppStore();
+const store = configureAppStore({}, history);
 
 ReactDOM.render(
   <React.StrictMode>
