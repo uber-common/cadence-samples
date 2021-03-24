@@ -138,7 +138,7 @@ export const updateProductDescription = createAsyncThunk(
   'products/update-description',
   async (productId, { dispatch, getState }) => {
     const state = getState();
-    const description = selectModelProductDescription(state);
+    const { description } = selectModelProduct(state);
     const product = selectProduct(state, productId);
 
     // TODO - trigger API call here...
@@ -153,14 +153,12 @@ export const updateProductDescription = createAsyncThunk(
 );
 
 export const selectModelProduct = state => state.products.model;
-export const selectModelProductName = state => selectModelProduct(state).name;
-export const selectModelProductDescription = state => selectModelProduct(state).description;
 
-export const selectProduct = (state, id) => state.products.data[id] || {};
-export const selectProductName = (state, id) => selectProduct(state, id).name || 'UNKNOWN';
-export const selectProductDescription = (state, id) => selectProduct(state, id).description || 'UNKNOWN';
-export const selectProductStatus = (state, id) => selectProduct(state, id).status || 'UNKNOWN';
-
-export const selectIsModelProductDescriptionEqual = (state, id) => Boolean(selectModelProductDescription(state) === selectProductDescription(state, id));
+export const selectProduct = (state, id) => state.products.data[id] || {
+  id: null,
+  name: 'UNKNOWN',
+  description: 'UNKNOWN',
+  status: 'UNKNOWN',
+};
 
 export default productSlice.reducer;

@@ -3,10 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   resetProductDescription,
-  selectIsModelProductDescriptionEqual,
-  selectModelProductDescription,
-  selectProductName,
-  selectProductStatus,
+  selectModelProduct,
+  selectProduct,
   submitProduct,
   updateProductModel,
   updateProductDescription,
@@ -18,17 +16,21 @@ const Product = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
 
-  useEffect(() => dispatch(resetProductDescription(productId)), [dispatch]);
+  useEffect(() => dispatch(resetProductDescription(productId)), [dispatch, productId]);
 
-  const productDescription = useSelector(selectModelProductDescription);
-  const productName = useSelector((state) => selectProductName(state, productId));
-  const productStatus = useSelector((state) => selectProductStatus(state, productId));
-  const isDescriptionEqual = useSelector((state) => selectIsModelProductDescriptionEqual(state, productId));
+  const { description: productModelDescription } = useSelector(selectModelProduct);
+  const {
+    description: productDescription,
+    name: productName,
+    status: productStatus
+  } = useSelector((state) => selectProduct(state, productId));
+
+  const isDescriptionEqual = productModelDescription === productDescription;
 
   const isFormDisabled = productStatus === 'SUBMITTED';
 
   const isCancelDisabled = isFormDisabled || isDescriptionEqual;
-  const isSaveDisabled = isFormDisabled || isDescriptionEqual || productDescription === '';
+  const isSaveDisabled = isFormDisabled || isDescriptionEqual || productModelDescription === '';
   const isSubmitDisabled = isFormDisabled || !isDescriptionEqual;
   const isWithdrawDisabled = productStatus !== 'SUBMITTED';
 
@@ -49,7 +51,7 @@ const Product = () => {
           disabled={isFormDisabled}
           name="description"
           onChange={event => dispatch(updateProductModel(event))}
-          value={productDescription}
+          value={productModelDescription}
         /><br /><br />
 
         <div className="grid">

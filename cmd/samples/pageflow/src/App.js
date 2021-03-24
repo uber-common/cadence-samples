@@ -1,12 +1,13 @@
 import {
-  Redirect,
+  // Redirect,
   Route,
   Switch,
 } from 'react-router-dom';
 import {
   CreateProductPage,
+  ErrorPage,
   HomePage,
-  ReviewSplitViewPage,
+  ProductSplitViewPage,
 } from './routes';
 import './App.css';
 
@@ -15,7 +16,7 @@ const App = () => (
     <div className="App-header">
       <Switch>
         <Route exact path="/products/:productId">
-          <ReviewSplitViewPage />
+          <ProductSplitViewPage />
         </Route>
         <Route exact path="/products">
           <CreateProductPage />
@@ -23,7 +24,9 @@ const App = () => (
         <Route exact path="/">
           <HomePage />
         </Route>
-        <Redirect to="/" />
+        <Route>
+          <ErrorPage />
+        </Route>
       </Switch>
     </div>
   </div>

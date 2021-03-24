@@ -1,15 +1,20 @@
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import ErrorPage from './ErrorPage';
 import ProductPage from './ProductPage';
 import ProductSuccessPage from './ProductSuccessPage';
 import ReviewPage from './ReviewPage';
 import {
-  selectProductStatus,
+  selectProduct,
 } from '../state/productSlice';
 
-const ReviewSplitView = () => {
+const ProductSplitViewPage = () => {
   const { productId } = useParams();
-  const productStatus = useSelector((state) => selectProductStatus(state, productId));
+  const { status: productStatus } = useSelector((state) => selectProduct(state, productId));
+
+  if (productStatus === 'UNKNOWN') {
+    return <ErrorPage />;
+  }
 
   if (productStatus === 'APPROVED') {
     return <ProductSuccessPage />;
@@ -31,4 +36,4 @@ const ReviewSplitView = () => {
   return <ProductPage />;
 }
 
-export default ReviewSplitView;
+export default ProductSplitViewPage;

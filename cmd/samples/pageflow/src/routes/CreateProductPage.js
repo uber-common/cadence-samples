@@ -3,8 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   createProduct,
   resetProductModel,
-  selectModelProductName,
-  selectModelProductDescription,
+  selectModelProduct,
   updateProductModel,
 } from '../state/productSlice';
 import { LinkButton, ProgressButton } from '../components';
@@ -14,8 +13,7 @@ const Product = () => {
 
   useEffect(() => dispatch(resetProductModel()), [dispatch]);
 
-  const productName = useSelector(selectModelProductName);
-  const productDescription = useSelector(selectModelProductDescription);
+  const { name: productName, description: productDescription } = useSelector(selectModelProduct);
   const isCreateDisabled = productName === '' || productDescription === '';
 
   return (

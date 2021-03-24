@@ -2,9 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   approveProduct,
-  selectProductDescription,
-  selectProductName,
-  selectProductStatus,
+  selectProduct,
   rejectProduct,
 } from '../state/productSlice';
 import { ProgressButton } from '../components';
@@ -13,9 +11,11 @@ const ReviewPage = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
 
-  const productDescription = useSelector((state) => selectProductDescription(state, productId));
-  const productName = useSelector((state) => selectProductName(state, productId));
-  const productStatus = useSelector((state) => selectProductStatus(state, productId));
+  const {
+    description: productDescription,
+    name: productName,
+    status: productStatus
+  } = useSelector((state) => selectProduct(state, productId));
 
   return (
     <div className="App-content">
