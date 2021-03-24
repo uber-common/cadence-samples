@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
@@ -16,6 +17,8 @@ import { Button, ProgressButton } from '../components';
 const Product = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
+
+  useEffect(() => dispatch(resetProductDescription(productId)), [dispatch]);
 
   const productDescription = useSelector(selectModelProductDescription);
   const productName = useSelector((state) => selectProductName(state, productId));

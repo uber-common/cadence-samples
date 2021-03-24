@@ -12,9 +12,7 @@ import { LinkButton, ProgressButton } from '../components';
 const Product = () => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(resetProductModel());
-  }, [dispatch]);
+  useEffect(() => dispatch(resetProductModel()), [dispatch]);
 
   const productName = useSelector(selectModelProductName);
   const productDescription = useSelector(selectModelProductDescription);

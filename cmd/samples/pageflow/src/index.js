@@ -6,16 +6,19 @@ import configureAppStore from './app/store';
 import history from './app/history';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
+import { PersistGate } from 'redux-persist/integration/react'
 import { ConnectedRouter } from 'connected-react-router';
 
-const store = configureAppStore({}, history);
+const { store, persistor } = configureAppStore({}, history);
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <App />
-      </ConnectedRouter>
+      <PersistGate loading={null} persistor={persistor}>
+        <ConnectedRouter history={history}>
+          <App />
+        </ConnectedRouter>
+      </PersistGate>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
