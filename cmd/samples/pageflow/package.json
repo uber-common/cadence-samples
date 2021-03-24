@@ -23,7 +23,7 @@
     "npm": "6.4.1"
   },
   "scripts": {
-    "start": "npm run start-server && npm run start-ui",
+    "start": "npm run start-server & npm run start-ui",
     "start-ui": "react-scripts start",
     "start-server": "node src/server",
     "start-worker": "TODO",
