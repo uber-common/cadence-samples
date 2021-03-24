@@ -8,4 +8,5 @@ This will start the frontend website. Open [http://localhost:3000](http://localh
 ### `npm start-server`
 This will start the backend node server. The frontend website will directly communicate with the node server. All traffic will then query a local instance of cadence-server.
 
-### TODO - write steps to start pageflow worker locally
+### `npm start-worker`
+This will start the pageflow worker. This is needed to be running in order for the node server to trigger signals to this worker.
