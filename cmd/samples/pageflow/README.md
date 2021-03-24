@@ -1,6 +1,6 @@
 # Steps to run locally
 ### `npm install`
-Make sure you are running at least node v10 and install dependencies. May take a while for the first time installing these packages.
+Make sure you are running at least node v14 and install dependencies. May take a while for the first time installing these packages.
 
 ### `npm start`
 This command will start the complete stack. You will need cadence server running locally separately. Alternatively you can run the commands individually below (for debugging purposes).

@@ -8,6 +8,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "connected-react-router": "^6.9.1",
+    "fastify": "^3.14.0",
     "lodash.get": "^4.4.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -16,8 +17,16 @@
     "react-scripts": "4.0.3",
     "redux-persist": "^6.0.0"
   },
+  "type": "module",
+  "engines": {
+    "node": "14.0.0",
+    "npm": "6.4.1"
+  },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "npm run start-server && npm run start-ui",
+    "start-ui": "react-scripts start",
+    "start-server": "node src/server",
+    "start-worker": "TODO",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
