@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^7.2.1",
     "connected-react-router": "^6.9.1",
     "fastify": "^3.14.0",
+    "fastify-cors": "^5.2.0",
     "lodash.get": "^4.4.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -26,7 +27,7 @@
   "scripts": {
     "start": "npm run start-server & npm run start-ui",
     "start-ui": "react-scripts start",
-    "start-server": "node src/server",
+    "start-server": "node src/server/server",
     "start-worker": "TODO",
     "build": "react-scripts build",
     "test": "react-scripts test",

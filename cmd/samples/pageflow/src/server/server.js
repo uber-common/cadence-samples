@@ -1,7 +1,13 @@
 import fastify from 'fastify';
+import fastifyCors from 'fastify-cors';
 import { v4 as uuidv4 } from 'uuid';
+import config from './config.js';
 
 const server = fastify({ logger: true });
+
+const products = {};
+
+server.register(fastifyCors);
 
 server.route({
   method: 'POST',
@@ -98,7 +104,7 @@ server.put('/products/:productId/withdraw', async (request, reply) => {
 
 const start = async () => {
   try {
-    await server.listen(4000);
+    await server.listen(config.server.port);
   } catch (err) {
     server.log.error(err);
     process.exit(1);

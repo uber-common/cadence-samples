@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { push } from 'connected-react-router';
 import get from 'lodash.get';
+import { productService } from '../service';
 
 const getInitialState = () => {
   return {
@@ -48,17 +49,9 @@ export const createProduct = createAsyncThunk(
     const state = getState();
     const model = selectModelProduct(state);
 
-    // TODO - trigger API call here...
-
-    setTimeout(() => {
-      // TODO - API will set ID & status
-      const id = 'abc';
-      const status = 'DRAFT';
-      const response = { ...model, id, status };
-
-      dispatch(updateProduct(response));
-      dispatch(push(`/products/${id}`));
-    }, 1000);
+    const product = await productService.createProduct(model);
+    dispatch(updateProduct(product));
+    dispatch(push(`/products/${product.id}`));
   }
 );
 

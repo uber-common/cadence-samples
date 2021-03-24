@@ -13,3 +13,6 @@ This will start the backend node server. The frontend website will directly comm
 
 ### `npm start-worker`
 This will start the pageflow worker. This is needed to be running in order for the node server to trigger signals to this worker.
+
+## `src/server/config.js`
+This config contains node server details & cadence server connection details. This can be modified if running cadence in a different port number.
