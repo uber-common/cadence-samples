@@ -28,6 +28,7 @@ export const productSlice = createSlice({
       state.model.description = get(state, `data[${action.payload}].description`, 'UNKNOWN');
     },
     updateProduct: (state, action) => {
+      console.log('updateProduct:', action);
       state.data[action.payload.id] = action.payload;
     },
     updateProductModel: (state, { payload: { target: { name, value } } }) => {
@@ -60,6 +61,22 @@ export const createProduct = createAsyncThunk(
     const product = await productService.createProduct(model);
     dispatch(updateProduct(product));
     dispatch(push(`/products/${product.id}`));
+  }
+);
+
+export const fetchProduct = createAsyncThunk(
+  'products/create',
+  async (productId, { dispatch, getState }) => {
+    const state = getState();
+    const product = selectProduct(state, productId);
+    if (product) {
+      return product;
+    }
+
+    const productResponse = await productService.fetchProduct(productId);
+    dispatch(updateProduct(productResponse));
+    console.log('returning:', selectProduct(getState(), productId));
+    return selectProduct(getState(), productId);
   }
 );
 
@@ -102,11 +119,6 @@ export const withdrawProduct = createAsyncThunk(
 
 export const selectModelProduct = state => state.products.model;
 
-export const selectProduct = (state, id) => state.products.data[id] || {
-  id: null,
-  name: 'UNKNOWN',
-  description: 'UNKNOWN',
-  status: 'UNKNOWN',
-};
+export const selectProduct = (state, id) => state.products.data[id];
 
 export default productSlice.reducer;

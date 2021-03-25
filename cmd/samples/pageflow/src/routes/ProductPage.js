@@ -12,18 +12,20 @@ import {
 } from '../state/productSlice';
 import { Button, ProgressButton } from '../components';
 
-const Product = () => {
+const ProductPage = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
-
-  useEffect(() => dispatch(resetProductDescription(productId)), [dispatch, productId]);
 
   const { description: productModelDescription } = useSelector(selectModelProduct);
   const {
     description: productDescription,
     name: productName,
-    status: productStatus
+    status: productStatus,
   } = useSelector((state) => selectProduct(state, productId));
+
+  useEffect(() => {
+    dispatch(resetProductDescription(productId));
+  }, [dispatch, productId]);
 
   const isDescriptionEqual = productModelDescription === productDescription;
 
@@ -89,4 +91,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default ProductPage;

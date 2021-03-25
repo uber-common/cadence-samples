@@ -21,7 +21,7 @@ const ProductService = {
     return response.json();
   },
 
-  getProduct: async (productId) => {
+  fetchProduct: async (productId) => {
     const response = await fetch(`${baseApiUrl}/products/${productId}`, {
       method: 'GET',
     });

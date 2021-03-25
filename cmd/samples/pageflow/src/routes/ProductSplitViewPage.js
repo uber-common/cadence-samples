@@ -1,18 +1,32 @@
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ErrorPage from './ErrorPage';
+import LoadingPage from './LoadingPage';
 import ProductPage from './ProductPage';
 import ProductSuccessPage from './ProductSuccessPage';
 import ReviewPage from './ReviewPage';
 import {
+  fetchProduct,
   selectProduct,
 } from '../state/productSlice';
 
 const ProductSplitViewPage = () => {
   const { productId } = useParams();
-  const { status: productStatus } = useSelector((state) => selectProduct(state, productId));
+  const dispatch = useDispatch();
+  const product = useSelector((state) => selectProduct(state, productId));
 
-  if (productStatus === 'UNKNOWN') {
+  useEffect(() => {
+    dispatch(fetchProduct(productId));
+  }, [dispatch, productId]);
+
+  if (!product) {
+    return <LoadingPage />;
+  }
+
+  const { status: productStatus } = product;
+
+  if (productStatus === undefined) {
     return <ErrorPage />;
   }
 
