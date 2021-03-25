@@ -5,10 +5,8 @@ const config = {
     port: '4000'
   },
   cadence: {
-    protocol: 'http',
-    hostname: 'localhost',
-    port: '5000',
-  }
+    domain: 'samples-domain',
+  },
 };
 
 export default config;

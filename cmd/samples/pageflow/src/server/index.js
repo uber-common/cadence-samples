@@ -1,9 +1,12 @@
 import fastify from 'fastify';
 import fastifyCors from 'fastify-cors';
+import Long from 'long';
 import middie from 'middie';
-import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
 import config from './config.js';
 import cadenceMiddleware from './cadence/TChannelClient.js';
+
+const momentToLong = m => Long.fromValue(m.unix()).mul(1000000000);
 
 const server = fastify({ logger: true });
 server.register(fastifyCors);
@@ -47,19 +50,46 @@ class UnexpectedStatusError extends Error {
 
 // helpers
 
-const createProduct = ({ description, name }) => {
+const getCronWorkflowExecution = async (cadence) => {
+  const response = await cadence.openWorkflows({
+    domain: config.cadence.domain,
+    StartTimeFilter: {
+      earliestTime: momentToLong(moment().subtract(30, 'days')),
+      latestTime: momentToLong(moment()),
+    }
+  });
+
+  return response.executions[0].execution;
+};
+
+const createProduct = async ({ cadence, description, name }) => {
   // TODO - communicate with cadence-server to fetch product information from workflow.
+
+  console.log('cadence = ', cadence);
 
   const product = {
     description,
-    id: uuidv4(),
+    // id: uuidv4(),
     name,
-    status: 'DRAFT',
+    // status: 'DRAFT',
   };
 
-  products[product.id] = product;
+  const workflowExecution = await getCronWorkflowExecution(cadence);
+  console.log('workflowExecution = ', workflowExecution);
+  const response = await cadence.signalWorkflow({
+    domain: config.cadence.domain,
+    workflowExecution,
+    signalName: 'create',
+    input: Buffer.from(JSON.stringify(product), 'utf8'),
+  });
 
-  return product;
+  console.log('signalWorkflow = ', response);
+
+
+  // products[product.id] = product;
+
+  // return product;
+  return {};
 };
 
 const getProduct = (id) => {
@@ -137,11 +167,9 @@ server.route({
     },
   },
   handler: async (request, response) => {
-    // artificial delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
     try {
-      const product = createProduct({
+      const product = await createProduct({
+        cadence: request.raw.data.cadence,
         description: request.body.description,
         name: request.body.name,
       });
@@ -194,7 +222,7 @@ server.route({
     const { productId } = request.params;
 
     try {
-      const product = getProduct(productId);
+      const product = await getProduct(productId);
       return product;
     } catch (error) {
       return handleError({ error, response });
@@ -255,7 +283,7 @@ server.route({
     const { productId } = request.params;
 
     try {
-      const product = updateProductDescription({
+      const product = await updateProductDescription({
         description: request.body.description,
         id: productId,
       });
@@ -312,7 +340,7 @@ server.route({
     const { action, productId: id } = request.params;
 
     try {
-      const product = updateProductState({
+      const product = await updateProductState({
         id,
         action,
       });
@@ -327,6 +355,16 @@ const start = async () => {
   await server.register(middie);
 
   server.use(cadenceMiddleware);
+
+  server.addHook('onResponse', (request, reply, done) => {
+    if (
+      request.raw.data &&
+      request.raw.data.client &&
+      request.raw.data.client.close) {
+      request.raw.data.client.close();
+    }
+    done();
+  });
 
   try {
     await server.listen(config.server.port);
