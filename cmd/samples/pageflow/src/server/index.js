@@ -1,12 +1,16 @@
 import fastify from 'fastify';
 import fastifyCors from 'fastify-cors';
+import middie from 'middie';
 import { v4 as uuidv4 } from 'uuid';
 import config from './config.js';
+import cadenceMiddleware from './cadence/TChannelClient.js';
 
 const server = fastify({ logger: true });
 server.register(fastifyCors);
 
+// TODO - remove once integrated with cadence-server.
 const products = {};
+
 const ALLOWED_ACTION_ON_STATUS_MAP = {
   approve: ['SUBMITTED'],
   reject: ['SUBMITTED'],
@@ -320,6 +324,10 @@ server.route({
 });
 
 const start = async () => {
+  await server.register(middie);
+
+  server.use(cadenceMiddleware);
+
   try {
     await server.listen(config.server.port);
   } catch (err) {

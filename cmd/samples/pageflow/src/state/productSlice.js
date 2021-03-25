@@ -31,7 +31,6 @@ export const productSlice = createSlice({
       state.data[action.payload.id] = action.payload;
     },
     updateProductError: (state, action) => {
-      console.log('updateProductError:', action);
       state.error = action.payload && action.payload.message;
     },
     updateProductModel: (state, { payload: { target: { name, value } } }) => {
