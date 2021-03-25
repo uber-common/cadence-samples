@@ -70,7 +70,6 @@ const getProduct = (id) => {
 };
 
 const handleError = ({ error, response }) => {
-  console.log('error = ', JSON.stringify(error));
   return response.code(error.code || '500').send(JSON.stringify(error));
 };
 

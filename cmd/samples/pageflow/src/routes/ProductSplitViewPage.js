@@ -9,26 +9,28 @@ import ReviewPage from './ReviewPage';
 import {
   fetchProduct,
   selectProduct,
+  selectProductError,
 } from '../state/productSlice';
 
 const ProductSplitViewPage = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const product = useSelector((state) => selectProduct(state, productId));
+  const error = useSelector(selectProductError);
 
   useEffect(() => {
     dispatch(fetchProduct(productId));
   }, [dispatch, productId]);
+
+  if (error) {
+    return <ErrorPage />;
+  }
 
   if (!product) {
     return <LoadingPage />;
   }
 
   const { status: productStatus } = product;
-
-  if (productStatus === undefined) {
-    return <ErrorPage />;
-  }
 
   if (productStatus === 'APPROVED') {
     return <ProductSuccessPage />;

@@ -2,12 +2,20 @@ import config from '../server/config';
 
 const baseApiUrl = `${config.server.protocol}://${config.server.hostname}:${config.server.port}`;
 
+const handleResponse = async (response) => {
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data);
+  }
+  return data;
+};
+
 const ProductService = {
   approveProduct: async (productId) => {
     const response = await fetch(`${baseApiUrl}/products/${productId}/approve`, {
       method: 'PUT',
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   createProduct: async (product) => {
@@ -18,28 +26,28 @@ const ProductService = {
       },
       body: JSON.stringify(product),
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   fetchProduct: async (productId) => {
     const response = await fetch(`${baseApiUrl}/products/${productId}`, {
       method: 'GET',
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   rejectProduct: async (productId) => {
     const response = await fetch(`${baseApiUrl}/products/${productId}/reject`, {
       method: 'PUT',
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   submitProduct: async (productId) => {
     const response = await fetch(`${baseApiUrl}/products/${productId}/submit`, {
       method: 'PUT',
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   updateProductDescription: async ({ description, id }) => {
@@ -50,14 +58,14 @@ const ProductService = {
       },
       body: JSON.stringify({ description }),
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   withdrawProduct: async (productId) => {
     const response = await fetch(`${baseApiUrl}/products/${productId}/withdraw`, {
       method: 'PUT',
     });
-    return response.json();
+    return handleResponse(response);
   },
 };
 

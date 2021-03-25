@@ -5,14 +5,14 @@ import { productService } from '../service';
 
 const getInitialState = () => {
   return {
-    isLoading: false,
-
     model: {
       name: '',
       description: '',
     },
 
     data: {},
+
+    error: null,
   };
 };
 
@@ -28,8 +28,10 @@ export const productSlice = createSlice({
       state.model.description = get(state, `data[${action.payload}].description`, 'UNKNOWN');
     },
     updateProduct: (state, action) => {
-      console.log('updateProduct:', action);
       state.data[action.payload.id] = action.payload;
+    },
+    updateProductError: (state, action) => {
+      state.error = action.payload;
     },
     updateProductModel: (state, { payload: { target: { name, value } } }) => {
       state.model[name] = value;
@@ -41,6 +43,7 @@ export const {
   resetProductModel,
   resetProductDescription,
   updateProduct,
+  updateProductError,
   updateProductModel,
 } = productSlice.actions;
 
@@ -48,7 +51,13 @@ export const approveProduct = createAsyncThunk(
   'products/approve',
   async (productId, { dispatch }) => {
     const product = await productService.approveProduct(productId);
-    dispatch(updateProduct(product));
+
+    try {
+      dispatch(updateProductError(null));
+      dispatch(updateProduct(product));
+    } catch (error) {
+      dispatch(updateProductError(error));
+    }
   }
 );
 
@@ -58,9 +67,14 @@ export const createProduct = createAsyncThunk(
     const state = getState();
     const model = selectModelProduct(state);
 
-    const product = await productService.createProduct(model);
-    dispatch(updateProduct(product));
-    dispatch(push(`/products/${product.id}`));
+    try {
+      dispatch(updateProductError(null));
+      const product = await productService.createProduct(model);
+      dispatch(updateProduct(product));
+      dispatch(push(`/products/${product.id}`));
+    } catch (error) {
+      dispatch(updateProductError(error));
+    }
   }
 );
 
@@ -73,26 +87,39 @@ export const fetchProduct = createAsyncThunk(
       return product;
     }
 
-    const productResponse = await productService.fetchProduct(productId);
-    dispatch(updateProduct(productResponse));
-    console.log('returning:', selectProduct(getState(), productId));
-    return selectProduct(getState(), productId);
+    try {
+      dispatch(updateProductError(null));
+      const productResponse = await productService.fetchProduct(productId);
+      dispatch(updateProduct(productResponse));
+    } catch (error) {
+      dispatch(updateProductError(error));
+    }
   }
 );
 
 export const rejectProduct = createAsyncThunk(
   'products/reject',
   async (productId, { dispatch }) => {
-    const product = await productService.rejectProduct(productId);
-    dispatch(updateProduct(product));
+    try {
+      dispatch(updateProductError(null));
+      const product = await productService.rejectProduct(productId);
+      dispatch(updateProduct(product));
+    } catch (error) {
+      dispatch(updateProductError(error));
+    }
   }
 );
 
 export const submitProduct = createAsyncThunk(
   'products/submit',
   async (productId, { dispatch }) => {
-    const product = await productService.submitProduct(productId);
-    dispatch(updateProduct(product));
+    try {
+      dispatch(updateProductError(null));
+      const product = await productService.submitProduct(productId);
+      dispatch(updateProduct(product));
+    } catch (error) {
+      dispatch(updateProductError(error));
+    }
   }
 );
 
@@ -101,24 +128,37 @@ export const updateProductDescription = createAsyncThunk(
   async (productId, { dispatch, getState }) => {
     const state = getState();
     const { description } = selectModelProduct(state);
-    const product = await productService.updateProductDescription({
-      description: description,
-      id: productId,
-    });
-    dispatch(updateProduct(product));
+
+    try {
+      dispatch(updateProductError(null));
+      const product = await productService.updateProductDescription({
+        description: description,
+        id: productId,
+      });
+      dispatch(updateProduct(product));
+    } catch (error) {
+      dispatch(updateProductError(error));
+    }
   }
 );
 
 export const withdrawProduct = createAsyncThunk(
   'products/approve',
   async (productId, { dispatch }) => {
-    const product = await productService.withdrawProduct(productId);
-    dispatch(updateProduct(product));
+    try {
+      dispatch(updateProductError(null));
+      const product = await productService.withdrawProduct(productId);
+      dispatch(updateProduct(product));
+    } catch (error) {
+      dispatch(updateProductError(error));
+    }
   }
 );
 
 export const selectModelProduct = state => state.products.model;
 
 export const selectProduct = (state, id) => state.products.data[id];
+
+export const selectProductError = state => state.products.error;
 
 export default productSlice.reducer;
