@@ -5,7 +5,8 @@ const baseApiUrl = `${config.server.protocol}://${config.server.hostname}:${conf
 const handleResponse = async (response) => {
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data);
+    console.log('error = ', data.message);
+    throw new Error(data.message);
   }
   return data;
 };
