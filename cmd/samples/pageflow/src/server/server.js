@@ -4,23 +4,96 @@ import { v4 as uuidv4 } from 'uuid';
 import config from './config.js';
 
 const server = fastify({ logger: true });
+server.register(fastifyCors);
 
 const products = {};
+const ALLOWED_ACTION_ON_STATUS_MAP = {
+  approve: ['SUBMITTED'],
+  reject: ['SUBMITTED'],
+  submit: ['DRAFT', 'REJECTED', 'WITHDRAWN'],
+  withdraw: ['SUBMITTED'],
+};
 
-server.register(fastifyCors);
+const ACTION_TO_STATUS_MAP = {
+  approve: 'APPROVED',
+  reject: 'REJECTED',
+  submit: 'SUBMITTED',
+  withdraw: 'WITHDRAWN',
+};
+
+// errors
+
+class NotFoundError extends Error {
+  constructor(id) {
+    super();
+    this.code = '404';
+    this.message = `Could not find product with id '${id}'.`;
+    this.name = 'NotFoundError';
+  }
+}
+
+class UnexpectedStatusError extends Error {
+  constructor(status) {
+    super();
+    this.code = '400';
+    this.message = `Unexpected status '${status}'.`
+    this.name = 'UnexpectedStatusError';
+  }
+}
 
 // helpers
 
-const getProduct = (productId) => {
-  const product = products[productId];
+const createProduct = ({ description, name }) => {
+  // TODO - communicate with cadence-server to fetch product information from workflow.
+
+  const product = {
+    description,
+    id: uuidv4(),
+    name,
+    status: 'DRAFT',
+  };
+
+  products[product.id] = product;
+
+  return product;
+};
+
+const getProduct = (id) => {
+  // TODO - communicate with cadence-server to fetch product information from workflow.
+  const product = products[id];
 
   if (!product) {
-    throw new Error(`Could not find product with id "${productId}".`);
+    throw new NotFoundError(id);
   }
 
   return product;
 };
 
+const handleError = ({ error, response }) => {
+  console.log('error = ', JSON.stringify(error));
+  return response.code(error.code || '500').send(JSON.stringify(error));
+};
+
+const updateProductDescription = ({ description, id }) => {
+  // TODO - communicate with cadence-server to fetch product information from workflow.
+
+  const product = getProduct(id);
+  product.description = description;
+  return product;
+};
+
+const updateProductState = ({ action, id }) => {
+  // TODO - communicate with cadence-server to fetch product information from workflow.
+
+  const product = getProduct(id);
+
+  if (!ALLOWED_ACTION_ON_STATUS_MAP[action].includes(product.status)) {
+    throw new UnexpectedStatusError(product.status);
+  }
+
+  product.status = ACTION_TO_STATUS_MAP[action];
+  return product;
+};
 
 // routes
 
@@ -64,16 +137,15 @@ server.route({
     // artificial delay
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    const product = {
-      description: request.body.description,
-      id: uuidv4(),
-      name: request.body.name,
-      status: 'DRAFT',
-    };
-
-    products[product.id] = product;
-
-    return product;
+    try {
+      const product = createProduct({
+        description: request.body.description,
+        name: request.body.name,
+      });
+      return product;
+    } catch (error) {
+      return handleError({ error, response });
+    }
   }
 });
 
@@ -122,7 +194,7 @@ server.route({
       const product = getProduct(productId);
       return product;
     } catch (error) {
-      return response.code(400).send(error);
+      return handleError({ error, response });
     }
   }
 });
@@ -180,26 +252,31 @@ server.route({
     const { productId } = request.params;
 
     try {
-      const product = getProduct(productId);
-      product.description = request.body.description;
+      const product = updateProductDescription({
+        description: request.body.description,
+        id: productId,
+      });
       return product;
     } catch (error) {
-      return response.code(404).send(error);
+      return handleError({ error, response });
     }
   },
 });
 
-// only allow SUBMITTED status to move to APPROVED status
 server.route({
   method: 'PUT',
-  url: '/products/:productId/approve',
+  url: '/products/:productId/:action',
   schema: {
     params: {
       type: 'object',
       properties: {
+        action: {
+          type: 'string',
+          enum: ['approve', 'reject', 'submit', 'withdraw']
+        },
         productId: { type: 'string' },
       },
-      required: ['productId'],
+      required: ['action', 'productId'],
     },
     response: {
       200: {
@@ -229,195 +306,19 @@ server.route({
     // artificial delay
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    const { productId } = request.params;
+    const { action, productId: id } = request.params;
 
     try {
-      const product = getProduct(productId);
-
-      if (!['SUBMITTED'].includes(product.status)) {
-        return response.code(400).send(new Error(`Unexpected status "${product.status}".`));
-      }
-
-      product.status = 'APPROVED';
+      const product = updateProductState({
+        id,
+        action,
+      });
       return product;
     } catch (error) {
-      return response.code(404).send(error);
+      return handleError({ error, response });
     }
   },
 });
-
-// only allow SUBMITTED status to move to REJECTED status
-server.route({
-  method: 'PUT',
-  url: '/products/:productId/reject',
-  schema: {
-    params: {
-      type: 'object',
-      properties: {
-        productId: { type: 'string' },
-      },
-      required: ['productId'],
-    },
-    response: {
-      200: {
-        type: 'object',
-        properties: {
-          description: { type: 'string' },
-          id: { type: 'string' },
-          name: { type: 'string' },
-          status: { type: 'string' },
-        },
-      },
-      400: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-        },
-      },
-      404: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-        },
-      },
-    },
-  },
-  handler: async (request, response) => {
-    // artificial delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    const { productId } = request.params;
-
-    try {
-      const product = getProduct(productId);
-
-      if (!['SUBMITTED'].includes(product.status)) {
-        return response.code(400).send(new Error(`Unexpected status "${product.status}".`));
-      }
-
-      product.status = 'REJECTED';
-      return product;
-    } catch (error) {
-      return response.code(404).send(error);
-    }
-  },
-});
-
-// only allow DRAFT, REJECTED, WITHDRAWN status to move to SUBMITTED status
-server.route({
-  method: 'PUT',
-  url: '/products/:productId/submit',
-  schema: {
-    params: {
-      type: 'object',
-      properties: {
-        productId: { type: 'string' },
-      },
-      required: ['productId'],
-    },
-    response: {
-      200: {
-        type: 'object',
-        properties: {
-          description: { type: 'string' },
-          id: { type: 'string' },
-          name: { type: 'string' },
-          status: { type: 'string' },
-        },
-      },
-      400: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-        },
-      },
-      404: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-        },
-      },
-    },
-  },
-  handler: async (request, response) => {
-    // artificial delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    const { productId } = request.params;
-
-    try {
-      const product = getProduct(productId);
-
-      if (!['DRAFT', 'REJECTED', 'WITHDRAWN'].includes(product.status)) {
-        return response.code(400).send(new Error(`Unexpected status "${product.status}".`));
-      }
-
-      product.status = 'SUBMITTED';
-      return product;
-    } catch (error) {
-      return response.code(404).send(error);
-    }
-  },
-});
-
-// only allow SUBMITTED status to move to WITHDRAWN status
-server.route({
-  method: 'PUT',
-  url: '/products/:productId/withdraw',
-  schema: {
-    params: {
-      type: 'object',
-      properties: {
-        productId: { type: 'string' },
-      },
-      required: ['productId'],
-    },
-    response: {
-      200: {
-        type: 'object',
-        properties: {
-          description: { type: 'string' },
-          id: { type: 'string' },
-          name: { type: 'string' },
-          status: { type: 'string' },
-        },
-      },
-      400: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-        },
-      },
-      404: {
-        type: 'object',
-        properties: {
-          message: { type: 'string' },
-        },
-      },
-    },
-  },
-  handler: async (request, response) => {
-    // artificial delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    const { productId } = request.params;
-
-    try {
-      const product = getProduct(productId);
-
-      if (!['SUBMITTED'].includes(product.status)) {
-        return response.code(400).send(new Error(`Unexpected status "${product.status}".`));
-      }
-
-      product.status = 'WITHDRAWN';
-      return product;
-    } catch (error) {
-      return response.code(404).send(error);
-    }
-  },
-});
-
-
 
 const start = async () => {
   try {
