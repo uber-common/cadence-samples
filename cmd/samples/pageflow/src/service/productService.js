@@ -3,8 +3,11 @@ import config from '../server/config';
 const baseApiUrl = `${config.server.protocol}://${config.server.hostname}:${config.server.port}`;
 
 const ProductService = {
-  approveProduct: productId => {
-    // TODO
+  approveProduct: async (productId) => {
+    const response = await fetch(`${baseApiUrl}/products/${productId}/approve`, {
+      method: 'PUT',
+    });
+    return response.json();
   },
 
   createProduct: async (product) => {
@@ -18,24 +21,43 @@ const ProductService = {
     return response.json();
   },
 
-  getProduct: productId => {
-    // TODO
+  getProduct: async (productId) => {
+    const response = await fetch(`${baseApiUrl}/products/${productId}`, {
+      method: 'GET',
+    });
+    return response.json();
   },
 
-  rejectProduct: productId => {
-    // TODO
+  rejectProduct: async (productId) => {
+    const response = await fetch(`${baseApiUrl}/products/${productId}/reject`, {
+      method: 'PUT',
+    });
+    return response.json();
   },
 
-  submitProduct: productId => {
-    // TODO
+  submitProduct: async (productId) => {
+    const response = await fetch(`${baseApiUrl}/products/${productId}/submit`, {
+      method: 'PUT',
+    });
+    return response.json();
   },
 
-  updateProductDescription: ({ description, id }) => {
-    // TODO
+  updateProductDescription: async ({ description, id }) => {
+    const response = await fetch(`${baseApiUrl}/products/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ description }),
+    });
+    return response.json();
   },
 
-  withdrawProduct: productId => {
-    // TODO
+  withdrawProduct: async (productId) => {
+    const response = await fetch(`${baseApiUrl}/products/${productId}/withdraw`, {
+      method: 'PUT',
+    });
+    return response.json();
   },
 };
 
