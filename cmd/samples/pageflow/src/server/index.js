@@ -92,7 +92,7 @@ const getPageFlowWorkflowExecution = async (cadence) => {
 const signalPageWorkflow = ({ action, cadence, content, workflowExecution }) => {
   const input = {
     Action: action,
-    Content: content,
+    Content: '',
   };
 
   return cadence.signalWorkflow({
@@ -107,8 +107,12 @@ const queryPageWorkflow = async ({ cadence, workflowExecution }) => {
   console.log('here:', workflowExecution);
   return cadence.queryWorkflow({
     domain: config.cadence.domain,
-    workflowExecution,
-    query: 'state',
+    execution: workflowExecution,
+    query: {
+      queryType: 'state',
+      // queryType: '__cadence_web_state',
+      queryArgs: Buffer.from('true', 'utf8'),
+    },
   });
 };
 
@@ -126,7 +130,7 @@ const createProduct = async ({ cadence, description, name }) => {
   await signalPageWorkflow({
     action: 'create',
     cadence,
-    content: product,
+    content: '', //product,
     workflowExecution,
   });
 
