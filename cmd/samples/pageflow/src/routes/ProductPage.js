@@ -13,19 +13,18 @@ import {
 import { Button, ProgressButton } from '../components';
 
 const ProductPage = () => {
-  const { productId } = useParams();
+  const { productName } = useParams();
   const dispatch = useDispatch();
 
   const { description: productModelDescription } = useSelector(selectModelProduct);
   const {
     description: productDescription,
-    name: productName,
     status: productStatus,
-  } = useSelector((state) => selectProduct(state, productId));
+  } = useSelector((state) => selectProduct(state, productName));
 
   useEffect(() => {
-    dispatch(resetProductDescription(productId));
-  }, [dispatch, productId]);
+    dispatch(resetProductDescription(productName));
+  }, [dispatch, productName]);
 
   const isDescriptionEqual = productModelDescription === productDescription;
 
@@ -61,28 +60,28 @@ const ProductPage = () => {
             <Button
               disabled={isCancelDisabled}
               label="Cancel"
-              onClick={() => !isCancelDisabled && dispatch(resetProductDescription(productId))}
+              onClick={() => !isCancelDisabled && dispatch(resetProductDescription(productName))}
             />
           </div>
           <div className="col-3">
             <ProgressButton
               disabled={isSaveDisabled}
               label="Save"
-              onClick={() => !isSaveDisabled && dispatch(updateProductDescription(productId))}
+              onClick={() => !isSaveDisabled && dispatch(updateProductDescription(productName))}
             />
           </div>
           <div className="col-3">
             <ProgressButton
               disabled={isSubmitDisabled}
               label="Submit"
-              onClick={() => !isSubmitDisabled && dispatch(submitProduct(productId))}
+              onClick={() => !isSubmitDisabled && dispatch(submitProduct(productName))}
             />
           </div>
           <div className="col-3">
             <ProgressButton
               disabled={isWithdrawDisabled}
               label="Withdraw"
-              onClick={() => !isWithdrawDisabled && dispatch(withdrawProduct(productId))}
+              onClick={() => !isWithdrawDisabled && dispatch(withdrawProduct(productName))}
             />
           </div>
         </div>

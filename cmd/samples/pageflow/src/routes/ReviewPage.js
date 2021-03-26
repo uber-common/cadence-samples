@@ -8,14 +8,13 @@ import {
 import { ProgressButton } from '../components';
 
 const ReviewPage = () => {
-  const { productId } = useParams();
+  const { productName } = useParams();
   const dispatch = useDispatch();
 
   const {
     description: productDescription,
-    name: productName,
     status: productStatus
-  } = useSelector((state) => selectProduct(state, productId));
+  } = useSelector((state) => selectProduct(state, productName));
 
   return (
     <div className="App-content">
@@ -36,13 +35,13 @@ const ReviewPage = () => {
           <div className="col-6">
             <ProgressButton
               label="Reject"
-              onClick={() => dispatch(rejectProduct(productId))}
+              onClick={() => dispatch(rejectProduct(productName))}
             />
           </div>
           <div className="col-6">
             <ProgressButton
               label="Approve"
-              onClick={() => dispatch(approveProduct(productId))}
+              onClick={() => dispatch(approveProduct(productName))}
             />
           </div>
         </div>

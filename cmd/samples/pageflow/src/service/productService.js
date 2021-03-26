@@ -11,8 +11,8 @@ const handleResponse = async (response) => {
 };
 
 const ProductService = {
-  approveProduct: async (productId) => {
-    const response = await fetch(`${baseApiUrl}/products/${productId}/approve`, {
+  approveProduct: async (productName) => {
+    const response = await fetch(`${baseApiUrl}/products/${productName}/approve`, {
       method: 'PUT',
     });
     return handleResponse(response);
@@ -29,22 +29,22 @@ const ProductService = {
     return handleResponse(response);
   },
 
-  fetchProduct: async (productId) => {
-    const response = await fetch(`${baseApiUrl}/products/${productId}`, {
+  fetchProduct: async (productName) => {
+    const response = await fetch(`${baseApiUrl}/products/${productName}`, {
       method: 'GET',
     });
     return handleResponse(response);
   },
 
-  rejectProduct: async (productId) => {
-    const response = await fetch(`${baseApiUrl}/products/${productId}/reject`, {
+  rejectProduct: async (productName) => {
+    const response = await fetch(`${baseApiUrl}/products/${productName}/reject`, {
       method: 'PUT',
     });
     return handleResponse(response);
   },
 
-  submitProduct: async (productId) => {
-    const response = await fetch(`${baseApiUrl}/products/${productId}/submit`, {
+  submitProduct: async (productName) => {
+    const response = await fetch(`${baseApiUrl}/products/${productName}/submit`, {
       method: 'PUT',
     });
     return handleResponse(response);
@@ -61,8 +61,8 @@ const ProductService = {
     return handleResponse(response);
   },
 
-  withdrawProduct: async (productId) => {
-    const response = await fetch(`${baseApiUrl}/products/${productId}/withdraw`, {
+  withdrawProduct: async (productName) => {
+    const response = await fetch(`${baseApiUrl}/products/${productName}/withdraw`, {
       method: 'PUT',
     });
     return handleResponse(response);

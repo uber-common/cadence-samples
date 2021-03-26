@@ -1,5 +1,5 @@
 export { default as createProduct } from './createProduct.js';
-export { default as getPageFlowWorkflowExecution } from './getPageFlowWorkflowExecution.js';
+export { default as getPageFlowData } from './getPageFlowData.js';
 export { default as getProduct } from './getProduct.js';
 export { default as handleError } from './handleError.js';
 export { default as momentToLong } from './momentToLong.js';

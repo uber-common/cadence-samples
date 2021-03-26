@@ -13,14 +13,14 @@ import {
 } from '../state/productSlice';
 
 const ProductSplitViewPage = () => {
-  const { productId } = useParams();
+  const { productName } = useParams();
   const dispatch = useDispatch();
-  const product = useSelector((state) => selectProduct(state, productId));
+  const product = useSelector((state) => selectProduct(state, productName));
   const error = useSelector(selectProductError);
 
   useEffect(() => {
-    dispatch(fetchProduct(productId));
-  }, [dispatch, productId]);
+    dispatch(fetchProduct(productName));
+  }, [dispatch, productName]);
 
   if (error) {
     return <ErrorPage />;

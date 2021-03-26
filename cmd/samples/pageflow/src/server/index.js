@@ -11,19 +11,14 @@ server.register(fastifyCors);
 // TODO - remove once integrated with cadence-server.
 const products = {};
 
-console.log('here???');
-
 initRouter(server);
 
 const start = async () => {
-  console.log('start???');
-
   await server.register(middie);
 
   server.use(cadenceMiddleware);
 
   server.addHook('onResponse', (request, reply, done) => {
-    console.log('onResponse called?');
     if (
       request.raw.data &&
       request.raw.data.client &&

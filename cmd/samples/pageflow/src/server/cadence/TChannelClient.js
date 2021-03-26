@@ -146,9 +146,7 @@ async function makeChannel(client) {
 }
 
 export default async function (ctx, response, next) {
-  console.log('TChannelClient');
   const client = TChannel();
-  console.log('TChannelClient: makeChannel');
   const channel = await makeChannel(client, ctx);
   const { authTokenHeaders = {} } = ctx;
 
@@ -187,11 +185,7 @@ export default async function (ctx, response, next) {
                   } else if (res.ok) {
                     resolve((resTransform || uiTransform)(res.body));
                   } else {
-                    ctx.throw(
-                      res.typeName === 'entityNotExistError' ? 404 : 400,
-                      null,
-                      res.body || res
-                    );
+                    reject(res.body || res);
                   }
                 } catch (e) {
                   reject(e);

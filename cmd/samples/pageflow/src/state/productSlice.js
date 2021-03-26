@@ -28,10 +28,10 @@ export const productSlice = createSlice({
       state.model.description = get(state, `data[${action.payload}].description`, 'UNKNOWN');
     },
     updateProduct: (state, action) => {
-      state.data[action.payload.id] = action.payload;
+      state.data[action.payload.name] = action.payload;
     },
     updateProductError: (state, action) => {
-      state.error = action.payload && action.payload.message;
+      state.error = action.payload && (action.payload.message || 'unknown server error');
     },
     updateProductModel: (state, { payload: { target: { name, value } } }) => {
       state.model[name] = value;
@@ -49,8 +49,8 @@ export const {
 
 export const approveProduct = createAsyncThunk(
   'products/approve',
-  async (productId, { dispatch }) => {
-    const product = await productService.approveProduct(productId);
+  async (productName, { dispatch }) => {
+    const product = await productService.approveProduct(productName);
 
     try {
       dispatch(updateProductError(null));
@@ -71,7 +71,7 @@ export const createProduct = createAsyncThunk(
       dispatch(updateProductError(null));
       const product = await productService.createProduct(model);
       dispatch(updateProduct(product));
-      dispatch(push(`/products/${product.id}`));
+      dispatch(push(`/products/${product.name}`));
     } catch (error) {
       dispatch(updateProductError(error));
     }
@@ -80,16 +80,16 @@ export const createProduct = createAsyncThunk(
 
 export const fetchProduct = createAsyncThunk(
   'products/create',
-  async (productId, { dispatch, getState }) => {
+  async (productName, { dispatch, getState }) => {
     const state = getState();
-    const product = selectProduct(state, productId);
+    const product = selectProduct(state, productName);
     if (product) {
       return product;
     }
 
     try {
       dispatch(updateProductError(null));
-      const productResponse = await productService.fetchProduct(productId);
+      const productResponse = await productService.fetchProduct(productName);
       dispatch(updateProduct(productResponse));
     } catch (error) {
       dispatch(updateProductError(error));
@@ -99,10 +99,10 @@ export const fetchProduct = createAsyncThunk(
 
 export const rejectProduct = createAsyncThunk(
   'products/reject',
-  async (productId, { dispatch }) => {
+  async (productName, { dispatch }) => {
     try {
       dispatch(updateProductError(null));
-      const product = await productService.rejectProduct(productId);
+      const product = await productService.rejectProduct(productName);
       dispatch(updateProduct(product));
     } catch (error) {
       dispatch(updateProductError(error));
@@ -112,10 +112,10 @@ export const rejectProduct = createAsyncThunk(
 
 export const submitProduct = createAsyncThunk(
   'products/submit',
-  async (productId, { dispatch }) => {
+  async (productName, { dispatch }) => {
     try {
       dispatch(updateProductError(null));
-      const product = await productService.submitProduct(productId);
+      const product = await productService.submitProduct(productName);
       dispatch(updateProduct(product));
     } catch (error) {
       dispatch(updateProductError(error));
@@ -125,7 +125,7 @@ export const submitProduct = createAsyncThunk(
 
 export const updateProductDescription = createAsyncThunk(
   'products/update-description',
-  async (productId, { dispatch, getState }) => {
+  async (productName, { dispatch, getState }) => {
     const state = getState();
     const { description } = selectModelProduct(state);
 
@@ -133,7 +133,7 @@ export const updateProductDescription = createAsyncThunk(
       dispatch(updateProductError(null));
       const product = await productService.updateProductDescription({
         description: description,
-        id: productId,
+        name: productName,
       });
       dispatch(updateProduct(product));
     } catch (error) {
@@ -144,10 +144,10 @@ export const updateProductDescription = createAsyncThunk(
 
 export const withdrawProduct = createAsyncThunk(
   'products/approve',
-  async (productId, { dispatch }) => {
+  async (productName, { dispatch }) => {
     try {
       dispatch(updateProductError(null));
-      const product = await productService.withdrawProduct(productId);
+      const product = await productService.withdrawProduct(productName);
       dispatch(updateProduct(product));
     } catch (error) {
       dispatch(updateProductError(error));
@@ -157,7 +157,7 @@ export const withdrawProduct = createAsyncThunk(
 
 export const selectModelProduct = state => state.products.model;
 
-export const selectProduct = (state, id) => state.products.data[id];
+export const selectProduct = (state, name) => state.products.data[name];
 
 export const selectProductError = state => state.products.error;
 

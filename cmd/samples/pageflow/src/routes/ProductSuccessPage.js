@@ -1,13 +1,8 @@
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import {
-  selectProduct,
-} from '../state/productSlice';
 import { LinkButton } from '../components';
 
 const ProductSuccessPage = () => {
-  const { productId } = useParams();
-  const { name: productName } = useSelector((state) => selectProduct(state, productId));
+  const { productName } = useParams();
 
   return (
     <div className="App-content">

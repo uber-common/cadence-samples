@@ -16,23 +16,17 @@ const initRouter = (server) => {
       body: {
         type: 'object',
         properties: {
-          description: {
-            minLength: 1,
-            type: 'string',
-          },
           name: {
             minLength: 1,
             type: 'string',
           },
         },
-        required: ['description', 'name'],
+        required: ['name'],
       },
       response: {
         200: {
           type: 'object',
           properties: {
-            description: { type: 'string' },
-            id: { type: 'string' },
             name: { type: 'string' },
             status: { type: 'string' },
           },
@@ -47,7 +41,6 @@ const initRouter = (server) => {
     },
     handler: async (request, response) => {
       try {
-        console.log('router: create');
         const product = await createProduct({
           cadence: request.raw.data.cadence,
           description: request.body.description,
@@ -62,21 +55,20 @@ const initRouter = (server) => {
 
   server.route({
     method: 'GET',
-    url: '/products/:productId',
+    url: '/products/:productName',
     schema: {
       params: {
         type: 'object',
         properties: {
-          productId: { type: 'string' },
+          productName: { type: 'string' },
         },
-        required: ['productId'],
+        required: ['productName'],
       },
       response: {
         200: {
           type: 'object',
           properties: {
             description: { type: 'string' },
-            id: { type: 'string' },
             name: { type: 'string' },
             status: { type: 'string' },
           },
@@ -99,10 +91,10 @@ const initRouter = (server) => {
       // artificial delay
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const { productId } = request.params;
+      const { productName } = request.params;
 
       try {
-        const product = await getProduct(productId);
+        const product = await getProduct(productName);
         return product;
       } catch (error) {
         return handleError({ error, response });
@@ -113,7 +105,7 @@ const initRouter = (server) => {
   // only allow editing of description.
   server.route({
     method: 'PUT',
-    url: '/products/:productId',
+    url: '/products/:productName',
     schema: {
       body: {
         type: 'object',
@@ -128,16 +120,15 @@ const initRouter = (server) => {
       params: {
         type: 'object',
         properties: {
-          productId: { type: 'string' },
+          productName: { type: 'string' },
         },
-        required: ['productId'],
+        required: ['productName'],
       },
       response: {
         200: {
           type: 'object',
           properties: {
             description: { type: 'string' },
-            id: { type: 'string' },
             name: { type: 'string' },
             status: { type: 'string' },
           },
@@ -160,12 +151,12 @@ const initRouter = (server) => {
       // artificial delay
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const { productId } = request.params;
+      const { productName } = request.params;
 
       try {
         const product = await updateProductDescription({
           description: request.body.description,
-          id: productId,
+          name: productName,
         });
         return product;
       } catch (error) {
@@ -176,7 +167,7 @@ const initRouter = (server) => {
 
   server.route({
     method: 'PUT',
-    url: '/products/:productId/:action',
+    url: '/products/:productName/:action',
     schema: {
       params: {
         type: 'object',
@@ -185,16 +176,15 @@ const initRouter = (server) => {
             type: 'string',
             enum: ['approve', 'reject', 'submit', 'withdraw']
           },
-          productId: { type: 'string' },
+          productName: { type: 'string' },
         },
-        required: ['action', 'productId'],
+        required: ['action', 'productName'],
       },
       response: {
         200: {
           type: 'object',
           properties: {
             description: { type: 'string' },
-            id: { type: 'string' },
             name: { type: 'string' },
             status: { type: 'string' },
           },
@@ -217,11 +207,11 @@ const initRouter = (server) => {
       // artificial delay
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const { action, productId: id } = request.params;
+      const { action, productName: name } = request.params;
 
       try {
         const product = await updateProductState({
-          id,
+          name,
           action,
         });
         return product;

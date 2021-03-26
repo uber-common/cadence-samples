@@ -5,54 +5,55 @@ import signalPageWorkflow from './signalPageWorkflow.js';
 import startPageFlowWorkflow from './startPageFlowWorkflow.js';
 import waitTime from './waitTime.js';
 
-const createProduct = async ({ cadence, description, name }) => {
-  console.log('createProduct');
+const createProduct = async ({ cadence, name }) => {
+  await startPageFlowWorkflow({ cadence, name });
 
-  const workflowExecution = await startPageFlowWorkflow(cadence);
-  console.log('workflowExecution = ', workflowExecution);
 
-  await signalPageWorkflow({
-    action: 'create',
-    cadence,
-    content: '',
-    workflowExecution,
-  });
+  // await signalPageWorkflow({
+  //   action: 'create',
+  //   cadence,
+  //   content: '',
+  //   workflowExecution,
+  // });
 
-  await waitTime(1000);
+  // await waitTime(100);
 
-  const createQueryResponse = await queryPageWorkflow({ cadence, workflowExecution });
+  const product = await queryPageWorkflow({ cadence, name });
 
-  console.log('createQueryResponse = ', createQueryResponse);
+  console.log('product = ', product);
 
-  if (createQueryResponse.queryResult.State !== 'created') {
-    throw new UnexpectedStatusError(queryResponse.queryResult.State);
-  }
+  return product;
 
-  const product = {
-    description,
-    id: `${workflowExecution.workflowId}_${workflowExecution.runId}`,
-    name,
-  };
 
-  await signalPageWorkflow({
-    action: 'save',
-    cadence,
-    content: JSON.stringify(product),
-    workflowExecution,
-  });
 
-  await waitTime(1000);
+  // console.log('createQueryResponse = ', createQueryResponse);
 
-  const saveQueryResponse = await queryPageWorkflow({ cadence, workflowExecution });
+  // if (createQueryResponse.queryResult.State !== 'created') {
+  //   throw new UnexpectedStatusError(queryResponse.queryResult.State);
+  // }
 
-  console.log('saveQueryResponse = ', saveQueryResponse);
+  // const product = {
+  //   description,
+  //   name,
+  // };
 
-  const cadenceProduct = parseContent(saveQueryResponse.queryResult.Content);
-  cadenceProduct.status = saveQueryResponse.queryResult.State;
+  // await signalPageWorkflow({
+  //   action: 'save',
+  //   cadence,
+  //   content: JSON.stringify(product),
+  //   workflowExecution,
+  // });
 
-  console.log('cadenceProduct = ', cadenceProduct);
+  // // await waitTime(100);
 
-  return cadenceProduct;
+  // const saveQueryResponse = await queryPageWorkflow({ cadence, workflowExecution });
+
+  // // console.log('saveQueryResponse = ', saveQueryResponse);
+
+  // const cadenceProduct = parseContent(saveQueryResponse.queryResult.Content);
+  // cadenceProduct.status = saveQueryResponse.queryResult.State;
+
+  // return cadenceProduct;
 };
 
 export default createProduct;

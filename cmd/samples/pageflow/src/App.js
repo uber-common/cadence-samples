@@ -15,7 +15,7 @@ const App = () => (
   <div className="App">
     <div className="App-header">
       <Switch>
-        <Route exact path="/products/:productId">
+        <Route exact path="/products/:productName">
           <ProductSplitViewPage />
         </Route>
         <Route exact path="/products">

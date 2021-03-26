@@ -13,8 +13,8 @@ const Product = () => {
 
   useEffect(() => dispatch(resetProductModel()), [dispatch]);
 
-  const { name: productName, description: productDescription } = useSelector(selectModelProduct);
-  const isCreateDisabled = productName === '' || productDescription === '';
+  const { name: productName } = useSelector(selectModelProduct);
+  const isCreateDisabled = productName === '';
 
   return (
     <div className="App-content">
@@ -25,13 +25,6 @@ const Product = () => {
           name="name"
           onChange={event => dispatch(updateProductModel(event))}
           value={productName}
-        /><br /><br />
-
-        <label>Product description:</label><br />
-        <textarea
-          name="description"
-          onChange={event => dispatch(updateProductModel(event))}
-          value={productDescription}
         /><br /><br />
 
         <div className="grid">
