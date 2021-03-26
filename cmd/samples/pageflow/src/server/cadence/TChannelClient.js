@@ -271,11 +271,17 @@ export default async function (ctx, response, next) {
       listTaskListPartitions: req('ListTaskListPartitions'),
       listWorkflows: req('ListWorkflowExecutions', 'list', withDomainPaging),
       openWorkflows: req('ListOpenWorkflowExecutions', 'list', withDomainPaging),
-      queryWorkflow: req('QueryWorkflow', 'query', withWorkflowExecution),
+      queryWorkflow: req('QueryWorkflow', 'query',
+        // withWorkflowExecution
+      ),
       signalWorkflow: req(
         'SignalWorkflowExecution',
         'signal',
         // withVerboseWorkflowExecution
+      ),
+      startWorkflow: req(
+        'StartWorkflowExecution',
+        'start',
       ),
       terminateWorkflow: req(
         'TerminateWorkflowExecution',

@@ -3,6 +3,7 @@ import fastifyCors from 'fastify-cors';
 import Long from 'long';
 import middie from 'middie';
 import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 import config from './config.js';
 import cadenceMiddleware from './cadence/TChannelClient.js';
 
@@ -50,7 +51,31 @@ class UnexpectedStatusError extends Error {
 
 // helpers
 
-const getCronWorkflowExecution = async (cadence) => {
+const startPageFlowWorkflow = async (cadence) => {
+  const workflowId = `${config.cadence.taskList}_${uuidv4()}`;
+
+  const response = await cadence.startWorkflow({
+    domain: config.cadence.domain,
+    executionStartToCloseTimeoutSeconds: 60,
+    requestId: uuidv4(),
+    taskList: {
+      name: config.cadence.taskList,
+    },
+    taskStartToCloseTimeoutSeconds: 10,
+    workflowId: workflowId,
+    workflowType: {
+      name: config.cadence.workflowType,
+    },
+  });
+
+  const { runId } = response;
+  return {
+    workflowId,
+    runId,
+  };
+};
+
+const getPageFlowWorkflowExecution = async (cadence) => {
   const response = await cadence.openWorkflows({
     domain: config.cadence.domain,
     StartTimeFilter: {
@@ -59,36 +84,58 @@ const getCronWorkflowExecution = async (cadence) => {
     }
   });
 
+  // TODO - need a way to filter this list based on workflow type...
+
   return response.executions[0].execution;
 };
 
-const createProduct = async ({ cadence, description, name }) => {
-  // TODO - communicate with cadence-server to fetch product information from workflow.
+const signalPageWorkflow = ({ action, cadence, content, workflowExecution }) => {
+  const input = {
+    Action: action,
+    Content: content,
+  };
 
-  console.log('cadence = ', cadence);
+  return cadence.signalWorkflow({
+    domain: config.cadence.domain,
+    workflowExecution,
+    signalName: 'trigger-signal',
+    input: Buffer.from(JSON.stringify(input), 'utf8'),
+  });
+};
+
+const queryPageWorkflow = async ({ cadence, workflowExecution }) => {
+  console.log('here:', workflowExecution);
+  return cadence.queryWorkflow({
+    domain: config.cadence.domain,
+    workflowExecution,
+    query: 'state',
+  });
+};
+
+const createProduct = async ({ cadence, description, name }) => {
+
+
+  const workflowExecution = await startPageFlowWorkflow(cadence);
+  console.log('workflowExecution = ', workflowExecution);
 
   const product = {
     description,
-    // id: uuidv4(),
     name,
-    // status: 'DRAFT',
   };
 
-  const workflowExecution = await getCronWorkflowExecution(cadence);
-  console.log('workflowExecution = ', workflowExecution);
-  const response = await cadence.signalWorkflow({
-    domain: config.cadence.domain,
+  await signalPageWorkflow({
+    action: 'create',
+    cadence,
+    content: product,
     workflowExecution,
-    signalName: 'create',
-    input: Buffer.from(JSON.stringify(product), 'utf8'),
   });
 
-  console.log('signalWorkflow = ', response);
+  const queryResult = await queryPageWorkflow({ cadence, workflowExecution });
 
+  console.log('queryResult = ', queryResult);
 
-  // products[product.id] = product;
+  // TODO - need to query workflow here...
 
-  // return product;
   return {};
 };
 
