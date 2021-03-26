@@ -146,13 +146,16 @@ async function makeChannel(client) {
 }
 
 export default async function (ctx, response, next) {
+  console.log('TChannel');
   const client = TChannel();
+  console.log('makeChannel');
   const channel = await makeChannel(client, ctx);
   const { authTokenHeaders = {} } = ctx;
 
   function req(method, reqName, bodyTransform, resTransform) {
     return body =>
       new Promise(function (resolve, reject) {
+        console.log('hello??');
         console.log(method, reqName, bodyTransform, resTransform);
         console.log('body = ', body);
         try {
@@ -185,9 +188,11 @@ export default async function (ctx, response, next) {
                   } else if (res.ok) {
                     resolve((resTransform || uiTransform)(res.body));
                   } else {
+                    console.log('error = ', res.body || res);
                     reject(res.body || res);
                   }
                 } catch (e) {
+                  console.log('error = ', e);
                   reject(e);
                 }
               }
@@ -267,9 +272,12 @@ export default async function (ctx, response, next) {
       listTaskListPartitions: req('ListTaskListPartitions'),
       listWorkflows: req('ListWorkflowExecutions', 'list', withDomainPaging),
       openWorkflows: req('ListOpenWorkflowExecutions', 'list', withDomainPaging),
-      queryWorkflow: req('QueryWorkflow', 'query',
-        // withWorkflowExecution
-      ),
+      queryWorkflow: (...args) => {
+        console.log('queryWorkflow called???');
+        return req('QueryWorkflow', 'query',
+          // withWorkflowExecution
+        )(...args);
+      },
       signalWorkflow: req(
         'SignalWorkflowExecution',
         'signal',
@@ -290,6 +298,7 @@ export default async function (ctx, response, next) {
   try {
     await next();
   } catch (e) {
+    console.log('error:', e);
     client.close();
     throw e;
   }

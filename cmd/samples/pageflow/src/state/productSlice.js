@@ -79,7 +79,7 @@ export const createProduct = createAsyncThunk(
 );
 
 export const fetchProduct = createAsyncThunk(
-  'products/create',
+  'products/fetch',
   async (productName, { dispatch, getState }) => {
     const state = getState();
     const product = selectProduct(state, productName);
@@ -124,7 +124,7 @@ export const submitProduct = createAsyncThunk(
 );
 
 export const updateProductDescription = createAsyncThunk(
-  'products/update-description',
+  'products/save',
   async (productName, { dispatch, getState }) => {
     const state = getState();
     const { description } = selectModelProduct(state);

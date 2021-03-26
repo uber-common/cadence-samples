@@ -1,9 +1,5 @@
-import { UnexpectedStatusError } from '../errors/index.js';
-import parseContent from './parseContent.js';
-import queryPageWorkflow from './queryPageWorkflow.js';
-import signalPageWorkflow from './signalPageWorkflow.js';
+import getProduct from './getProduct.js';
 import startPageFlowWorkflow from './startPageFlowWorkflow.js';
-import waitTime from './waitTime.js';
 
 const createProduct = async ({ cadence, name }) => {
   await startPageFlowWorkflow({ cadence, name });
@@ -18,7 +14,7 @@ const createProduct = async ({ cadence, name }) => {
 
   // await waitTime(100);
 
-  const product = await queryPageWorkflow({ cadence, name });
+  const product = await getProduct({ cadence, name });
 
   console.log('product = ', product);
 

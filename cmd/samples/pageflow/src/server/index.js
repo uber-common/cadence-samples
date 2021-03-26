@@ -8,9 +8,6 @@ import cadenceMiddleware from './cadence/TChannelClient.js';
 const server = fastify({ logger: true });
 server.register(fastifyCors);
 
-// TODO - remove once integrated with cadence-server.
-const products = {};
-
 initRouter(server);
 
 const start = async () => {

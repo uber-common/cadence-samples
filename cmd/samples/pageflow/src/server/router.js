@@ -27,6 +27,7 @@ const initRouter = (server) => {
         200: {
           type: 'object',
           properties: {
+            description: { type: 'string' },
             name: { type: 'string' },
             status: { type: 'string' },
           },
@@ -88,15 +89,18 @@ const initRouter = (server) => {
       },
     },
     handler: async (request, response) => {
-      // artificial delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       const { productName } = request.params;
 
       try {
-        const product = await getProduct(productName);
+        console.log('getProduct caller');
+        const product = await getProduct({
+          cadence: request.raw.data.cadence,
+          name: productName,
+        });
+        console.log('product = ', product);
         return product;
       } catch (error) {
+        console.log('error = ', error);
         return handleError({ error, response });
       }
     }
@@ -148,13 +152,11 @@ const initRouter = (server) => {
       },
     },
     handler: async (request, response) => {
-      // artificial delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       const { productName } = request.params;
 
       try {
         const product = await updateProductDescription({
+          cadence: request.raw.data.cadence,
           description: request.body.description,
           name: productName,
         });
@@ -204,13 +206,11 @@ const initRouter = (server) => {
       },
     },
     handler: async (request, response) => {
-      // artificial delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       const { action, productName: name } = request.params;
 
       try {
         const product = await updateProductState({
+          cadence: request.raw.data.cadence,
           name,
           action,
         });

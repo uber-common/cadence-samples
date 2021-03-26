@@ -50,8 +50,8 @@ const ProductService = {
     return handleResponse(response);
   },
 
-  updateProductDescription: async ({ description, id }) => {
-    const response = await fetch(`${baseApiUrl}/products/${id}`, {
+  updateProductDescription: async ({ description, name }) => {
+    const response = await fetch(`${baseApiUrl}/products/${name}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
