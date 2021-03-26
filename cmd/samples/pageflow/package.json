@@ -32,7 +32,7 @@
     "npm": "6.4.1"
   },
   "scripts": {
-    "_install": "napa && rm -rf src/server/idl && cp -R node_modules/cadence-idl/thrift src/server/idl",
+    "install": "napa && rm -rf src/server/idl && cp -R node_modules/cadence-idl/thrift src/server/idl",
     "start": "npm run start-server & npm run start-ui",
     "start-ui": "react-scripts start",
     "start-server": "node src/server",
@@ -58,5 +58,8 @@
   },
   "napa": {
     "cadence-idl": "uber/cadence-idl#f21422c6183528f3e8c429595886020d60c58d72"
+  },
+  "napa-config": {
+    "cache": false
   }
 }

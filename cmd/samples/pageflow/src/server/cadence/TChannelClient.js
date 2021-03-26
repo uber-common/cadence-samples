@@ -146,7 +146,9 @@ async function makeChannel(client) {
 }
 
 export default async function (ctx, response, next) {
+  console.log('TChannelClient');
   const client = TChannel();
+  console.log('TChannelClient: makeChannel');
   const channel = await makeChannel(client, ctx);
   const { authTokenHeaders = {} } = ctx;
 
