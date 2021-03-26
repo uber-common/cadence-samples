@@ -17,10 +17,8 @@ const queryPageWorkflow = async ({ cadence, name }) => {
 
   console.log('response:', response);
 
-
-
   const product = {
-    name: workflowExecution.workflowId,
+    name,
     status: response.queryResult.State,
   };
 

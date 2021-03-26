@@ -25,7 +25,7 @@ export const productSlice = createSlice({
       state.model = { ...initialState.model };
     },
     resetProductDescription: (state, action) => {
-      state.model.description = get(state, `data[${action.payload}].description`, 'UNKNOWN');
+      state.model.description = get(state, `data[${action.payload}].description`, '');
     },
     updateProduct: (state, action) => {
       state.data[action.payload.name] = action.payload;

@@ -4,12 +4,14 @@ import {
   createProduct,
   resetProductModel,
   selectModelProduct,
+  selectProductError,
   updateProductModel,
 } from '../state/productSlice';
 import { LinkButton, ProgressButton } from '../components';
 
 const Product = () => {
   const dispatch = useDispatch();
+  const error = useSelector(selectProductError);
 
   useEffect(() => dispatch(resetProductModel()), [dispatch]);
 
@@ -25,7 +27,11 @@ const Product = () => {
           name="name"
           onChange={event => dispatch(updateProductModel(event))}
           value={productName}
-        /><br /><br />
+        /><br />
+        {error && (
+          <div>This name has already been registered</div>
+        )}
+        <br />
 
         <div className="grid">
           <div className="col-6">
