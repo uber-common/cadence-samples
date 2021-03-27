@@ -32,11 +32,11 @@ const ProductSplitViewPage = () => {
 
   const { status: productStatus } = product;
 
-  if (productStatus === 'APPROVED') {
+  if (productStatus === 'approved') {
     return <ProductSuccessPage />;
   }
 
-  if (productStatus === 'SUBMITTED') {
+  if (productStatus === 'submitted') {
     return (
       <div className="grid">
         <div className="col-6 border-right">

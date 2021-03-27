@@ -30,12 +30,12 @@ const ProductPage = () => {
   const isModelDescriptionEmpty = productModelDescription === '';
   const isDescriptionEmpty = productDescription === '';
 
-  const isFormDisabled = productStatus === 'SUBMITTED';
+  const isFormDisabled = productStatus === 'submitted';
 
   const isCancelDisabled = isFormDisabled || isDescriptionEqual;
   const isSaveDisabled = isFormDisabled || isDescriptionEqual || isModelDescriptionEmpty;
   const isSubmitDisabled = isFormDisabled || !isDescriptionEqual || isDescriptionEmpty;
-  const isWithdrawDisabled = productStatus !== 'SUBMITTED';
+  const isWithdrawDisabled = productStatus !== 'submitted';
 
   return (
     <div className="App-content">
