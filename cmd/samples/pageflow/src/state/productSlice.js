@@ -20,6 +20,9 @@ export const productSlice = createSlice({
   name: 'products',
   initialState: getInitialState(),
   reducers: {
+    resetProductError: state => {
+      state.error = null;
+    },
     resetProductModel: state => {
       const initialState = getInitialState();
       state.model = { ...initialState.model };
@@ -40,6 +43,7 @@ export const productSlice = createSlice({
 });
 
 export const {
+  resetProductError,
   resetProductModel,
   resetProductDescription,
   updateProduct,
@@ -53,7 +57,7 @@ export const approveProduct = createAsyncThunk(
     const product = await productService.approveProduct(productName);
 
     try {
-      dispatch(updateProductError(null));
+      dispatch(resetProductError());
       dispatch(updateProduct(product));
     } catch (error) {
       dispatch(updateProductError(error));
@@ -68,7 +72,7 @@ export const createProduct = createAsyncThunk(
     const model = selectModelProduct(state);
 
     try {
-      dispatch(updateProductError(null));
+      dispatch(resetProductError());
       const product = await productService.createProduct(model);
       dispatch(updateProduct(product));
       dispatch(push(`/products/${product.name}`));
@@ -88,7 +92,7 @@ export const fetchProduct = createAsyncThunk(
     }
 
     try {
-      dispatch(updateProductError(null));
+      dispatch(resetProductError());
       const productResponse = await productService.fetchProduct(productName);
       dispatch(updateProduct(productResponse));
     } catch (error) {
@@ -101,7 +105,7 @@ export const rejectProduct = createAsyncThunk(
   'products/reject',
   async (productName, { dispatch }) => {
     try {
-      dispatch(updateProductError(null));
+      dispatch(resetProductError());
       const product = await productService.rejectProduct(productName);
       dispatch(updateProduct(product));
     } catch (error) {
@@ -114,7 +118,7 @@ export const submitProduct = createAsyncThunk(
   'products/submit',
   async (productName, { dispatch }) => {
     try {
-      dispatch(updateProductError(null));
+      dispatch(resetProductError());
       const product = await productService.submitProduct(productName);
       dispatch(updateProduct(product));
     } catch (error) {
@@ -130,7 +134,7 @@ export const updateProductDescription = createAsyncThunk(
     const { description } = selectModelProduct(state);
 
     try {
-      dispatch(updateProductError(null));
+      dispatch(resetProductError());
       const product = await productService.updateProductDescription({
         description: description,
         name: productName,
@@ -146,7 +150,7 @@ export const withdrawProduct = createAsyncThunk(
   'products/approve',
   async (productName, { dispatch }) => {
     try {
-      dispatch(updateProductError(null));
+      dispatch(resetProductError());
       const product = await productService.withdrawProduct(productName);
       dispatch(updateProduct(product));
     } catch (error) {

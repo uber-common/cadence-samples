@@ -2,8 +2,6 @@ import config from '../config.js';
 import parseContent from './parseContent.js';
 
 const getProduct = async ({ cadence, name }) => {
-  console.log('getProduct:', name, JSON.stringify(cadence.queryWorkflow));
-
   const response = await cadence.queryWorkflow({
     domain: config.cadence.domain,
     execution: {
@@ -15,8 +13,6 @@ const getProduct = async ({ cadence, name }) => {
     },
     queryConsistencyLevel: 'STRONG',
   });
-
-  console.log('response:', response);
 
   const product = {
     description: '',

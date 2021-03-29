@@ -7,7 +7,7 @@ import {
 } from '../state/productSlice';
 import { ProgressButton } from '../components';
 
-const ReviewPage = () => {
+const ProductReviewPage = () => {
   const { productName } = useParams();
   const dispatch = useDispatch();
 
@@ -50,4 +50,4 @@ const ReviewPage = () => {
   );
 }
 
-export default ReviewPage;
+export default ProductReviewPage;

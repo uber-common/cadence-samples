@@ -4,8 +4,9 @@ import { useParams } from 'react-router-dom';
 import ErrorPage from './ErrorPage';
 import LoadingPage from './LoadingPage';
 import ProductPage from './ProductPage';
+import ProductReviewPage from './ProductReviewPage';
 import ProductSuccessPage from './ProductSuccessPage';
-import ReviewPage from './ReviewPage';
+import ProductWithdrawnPage from './ProductWithdrawnPage';
 import {
   fetchProduct,
   selectProduct,
@@ -32,6 +33,10 @@ const ProductSplitViewPage = () => {
 
   const { status: productStatus } = product;
 
+  if (productStatus === 'withdrawn') {
+    return <ProductWithdrawnPage />;
+  }
+
   if (productStatus === 'approved') {
     return <ProductSuccessPage />;
   }
@@ -43,7 +48,7 @@ const ProductSplitViewPage = () => {
           <ProductPage />
         </div>
         <div className="col-6">
-          <ReviewPage />
+          <ProductReviewPage />
         </div>
       </div>
     );

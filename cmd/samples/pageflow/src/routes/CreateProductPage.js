@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   createProduct,
+  resetProductError,
   resetProductModel,
   selectModelProduct,
   selectProductError,
@@ -13,7 +14,10 @@ const Product = () => {
   const dispatch = useDispatch();
   const error = useSelector(selectProductError);
 
-  useEffect(() => dispatch(resetProductModel()), [dispatch]);
+  useEffect(() => {
+    dispatch(resetProductModel());
+    dispatch(resetProductError());
+  }, [dispatch]);
 
   const { name: productName } = useSelector(selectModelProduct);
   const isCreateDisabled = productName === '';

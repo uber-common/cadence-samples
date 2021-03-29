@@ -92,15 +92,13 @@ const initRouter = (server) => {
       const { productName } = request.params;
 
       try {
-        console.log('getProduct caller');
         const product = await getProduct({
           cadence: request.raw.data.cadence,
           name: productName,
         });
-        console.log('product = ', product);
         return product;
       } catch (error) {
-        console.log('error = ', error);
+        // console.log('error = ', error);
         return handleError({ error, response });
       }
     }

@@ -3,5 +3,7 @@ export { default as ErrorPage } from './ErrorPage';
 export { default as HomePage } from './HomePage';
 export { default as LoadingPage } from './LoadingPage';
 export { default as ProductPage } from './ProductPage';
-export { default as ProductSuccessPage } from './ProductSuccessPage';
+export { default as ProductReviewPage } from './ProductReviewPage';
 export { default as ProductSplitViewPage } from './ProductSplitViewPage';
+export { default as ProductSuccessPage } from './ProductSuccessPage';
+export { default as ProductWithdrawnPage } from './ProductWithdrawnPage';
