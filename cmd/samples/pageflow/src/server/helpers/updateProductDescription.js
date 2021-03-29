@@ -7,20 +7,20 @@ const updateProductDescription = async ({ cadence, description, name }) => {
 
   if (product.status === 'initialized') {
     await signalPageWorkflow({
-      action: 'create',
       cadence,
       content: '',
       name,
+      state: 'create',
     });
 
     await waitTime(100);
   }
 
   await signalPageWorkflow({
-    action: 'save',
     cadence,
     content: JSON.stringify({ description }),
     name,
+    state: 'save',
   });
 
   return getProduct({ cadence, name });

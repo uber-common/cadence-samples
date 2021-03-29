@@ -1,22 +1,22 @@
 import {
-  ALLOWED_ACTION_ON_STATUS_MAP,
+  ALLOWED_STATE_ON_STATUS_MAP,
 } from '../constants.js';
 import getProduct from './getProduct.js';
 import signalPageWorkflow from './signalPageWorkflow.js';
 import waitTime from './waitTime.js';
 
-const updateProductState = async ({ action, cadence, name }) => {
+const updateProductState = async ({ cadence, name, state }) => {
   const product = await getProduct({ cadence, name });
 
-  if (!ALLOWED_ACTION_ON_STATUS_MAP[action].includes(product.status)) {
+  if (!ALLOWED_STATE_ON_STATUS_MAP[state].includes(product.status)) {
     throw new UnexpectedStatusError(product.status);
   }
 
   await signalPageWorkflow({
-    action,
     cadence,
     content: '',
     name,
+    state,
   });
 
   await waitTime(100);

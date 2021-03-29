@@ -1,8 +1,8 @@
 import config from '../config.js';
 
-const signalPageWorkflow = ({ action, cadence, content, name }) => {
+const signalPageWorkflow = ({ cadence, content, name, state }) => {
   const input = {
-    Action: action,
+    Action: state,
     Content: JSON.stringify(content),
   };
 

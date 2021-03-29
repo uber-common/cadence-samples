@@ -1,4 +1,4 @@
-export const ALLOWED_ACTION_ON_STATUS_MAP = {
+export const ALLOWED_STATE_ON_STATUS_MAP = {
   approve: ['submitted'],
   reject: ['submitted'],
   submit: ['created', 'withdrawn'],

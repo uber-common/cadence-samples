@@ -167,18 +167,18 @@ const initRouter = (server) => {
 
   server.route({
     method: 'PUT',
-    url: '/products/:productName/:action',
+    url: '/products/:productName/:state',
     schema: {
       params: {
         type: 'object',
         properties: {
-          action: {
+          state: {
             type: 'string',
             enum: ['approve', 'reject', 'submit', 'withdraw']
           },
           productName: { type: 'string' },
         },
-        required: ['action', 'productName'],
+        required: ['productName', 'state'],
       },
       response: {
         200: {
@@ -204,13 +204,13 @@ const initRouter = (server) => {
       },
     },
     handler: async (request, response) => {
-      const { action, productName: name } = request.params;
+      const { productName: name, state } = request.params;
 
       try {
         const product = await updateProductState({
           cadence: request.raw.data.cadence,
           name,
-          action,
+          state,
         });
         return product;
       } catch (error) {
