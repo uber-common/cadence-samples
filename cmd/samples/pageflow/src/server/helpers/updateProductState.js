@@ -16,13 +16,11 @@ const getProductOrRetry = async ({
   retry = 0,
   status = ''
 }) => {
-  console.log('getProductOrRetry: ', expectedStatus, name, retry, status);
   if (retry === retryMax) {
     throw new UnexpectedStatusError(status);
   }
 
   const product = await getProduct({ cadence, name });
-  console.log('getProduct = ', product);
 
   if (product.status !== expectedStatus) {
     await waitTime(retryDelay);
