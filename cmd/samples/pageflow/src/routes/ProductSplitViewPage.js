@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import ErrorPage from './ErrorPage';
-import LoadingPage from './LoadingPage';
 import ProductPage from './ProductPage';
 import ProductReviewPage from './ProductReviewPage';
 import {
@@ -10,7 +8,10 @@ import {
   selectProduct,
   selectProductError,
 } from '../state/productSlice';
-import { EndStatePage } from '../components';
+import {
+  SimpleNavigationPage,
+  LoadingPage,
+} from '../components';
 
 const ProductSplitViewPage = () => {
   const { productName } = useParams();
@@ -23,7 +24,11 @@ const ProductSplitViewPage = () => {
   }, [dispatch, productName]);
 
   if (error) {
-    return <ErrorPage />;
+    return (
+      <SimpleNavigationPage
+        title="Oops, something went wrong!"
+      />
+    );
   }
 
   if (!product) {
@@ -35,13 +40,13 @@ const ProductSplitViewPage = () => {
   } = product;
 
   if (productStatus === 'withdrawn') {
-    return <EndStatePage
+    return <SimpleNavigationPage
       title={`Product "${productName}" has been withdrawn.`}
     />;
   }
 
   if (productStatus === 'approved') {
-    return <EndStatePage
+    return <SimpleNavigationPage
       title={`Product "${productName}" has been approved!`}
     />;
   }

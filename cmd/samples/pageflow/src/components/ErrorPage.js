@@ -1,15 +1,15 @@
 import { LinkButton } from '../components';
 
-const Home = () => {
+const ErrorPage = () => {
   return (
     <div className="App-content">
-      <h1>Product home page</h1>
+      <h1>Oops, something went wrong!</h1>
       <LinkButton
-        label="Create a new product"
-        to="/products"
+        label=""
+        to="/"
       />
     </div>
   );
 }
 
-export default Home;
+export default ErrorPage;
