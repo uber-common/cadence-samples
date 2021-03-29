@@ -1,3 +1,4 @@
+import get from 'lodash.get';
 import fastify from 'fastify';
 import fastifyCors from 'fastify-cors';
 import middie from 'middie';
@@ -16,11 +17,9 @@ const start = async () => {
   server.use(cadenceMiddleware);
 
   server.addHook('onResponse', (request, reply, done) => {
-    if (
-      request.raw.data &&
-      request.raw.data.client &&
-      request.raw.data.client.close) {
-      request.raw.data.client.close();
+    const close = get(request, 'raw.data.client.close');
+    if (close) {
+      close();
     }
     done();
   });
