@@ -1,4 +1,4 @@
-import { LinkButton } from '../components';
+import { Button } from '../components';
 
 const SimpleNavigationPage = ({
   linkText = 'Return to home page',
@@ -7,8 +7,9 @@ const SimpleNavigationPage = ({
 }) => (
   <div className="App-content">
     <h1>{title}</h1>
-      <LinkButton
+      <Button
         label={linkText}
+        tag="link"
         to={linkTo}
       />
   </div>

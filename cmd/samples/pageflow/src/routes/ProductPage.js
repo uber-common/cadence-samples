@@ -9,7 +9,7 @@ import {
   updateProductDescription,
   updateProductState,
 } from '../state/productSlice';
-import { Button, ProgressButton } from '../components';
+import { Button } from '../components';
 
 const ProductPage = () => {
   const { productName } = useParams();
@@ -65,21 +65,24 @@ const ProductPage = () => {
             />
           </div>
           <div className="col-3">
-            <ProgressButton
+            <Button
+              className="progressButton"
               disabled={isSaveDisabled}
               label="Save"
               onClick={() => !isSaveDisabled && dispatch(updateProductDescription(productName))}
             />
           </div>
           <div className="col-3">
-            <ProgressButton
+            <Button
+              className="progressButton"
               disabled={isSubmitDisabled}
               label="Submit"
               onClick={() => !isSubmitDisabled && dispatch(updateProductState({ name: productName, state: 'submit' }))}
             />
           </div>
           <div className="col-3">
-            <ProgressButton
+            <Button
+              className="progressButton"
               disabled={isWithdrawDisabled}
               label="Withdraw"
               onClick={() => !isWithdrawDisabled && dispatch(updateProductState({ name: productName, state: 'withdraw' }))}

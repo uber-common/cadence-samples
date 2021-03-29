@@ -4,7 +4,7 @@ import {
   selectProduct,
   updateProductState,
 } from '../state/productSlice';
-import { ProgressButton } from '../components';
+import { Button } from '../components';
 
 const ProductReviewPage = () => {
   const { productName } = useParams();
@@ -32,13 +32,15 @@ const ProductReviewPage = () => {
 
         <div className="grid">
           <div className="col-6">
-            <ProgressButton
+            <Button
+              className="progressButton"
               label="Reject"
               onClick={() => dispatch(updateProductState({ name: productName, state: 'reject' }))}
             />
           </div>
           <div className="col-6">
-            <ProgressButton
+            <Button
+              className="progressButton"
               label="Approve"
               onClick={() => dispatch(updateProductState({ name: productName, state: 'approve' }))}
             />

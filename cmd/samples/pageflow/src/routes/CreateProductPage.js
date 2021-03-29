@@ -8,7 +8,7 @@ import {
   selectProductError,
   updateProductModel,
 } from '../state/productSlice';
-import { LinkButton, ProgressButton } from '../components';
+import { Button } from '../components';
 
 const Product = () => {
   const dispatch = useDispatch();
@@ -39,13 +39,15 @@ const Product = () => {
 
         <div className="grid">
           <div className="col-6">
-            <LinkButton
+            <Button
               label="Cancel"
+              tag="link"
               to="/"
             />
           </div>
           <div className="col-6">
-            <ProgressButton
+            <Button
+              className="progressButton"
               disabled={isCreateDisabled}
               label="Create"
               type="submit"
