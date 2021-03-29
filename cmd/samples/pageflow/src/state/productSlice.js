@@ -51,20 +51,6 @@ export const {
   updateProductModel,
 } = productSlice.actions;
 
-export const approveProduct = createAsyncThunk(
-  'products/approve',
-  async (productName, { dispatch }) => {
-    const product = await productService.approveProduct(productName);
-
-    try {
-      dispatch(resetProductError());
-      dispatch(updateProduct(product));
-    } catch (error) {
-      dispatch(updateProductError(error));
-    }
-  }
-);
-
 export const createProduct = createAsyncThunk(
   'products/create',
   async (_, { dispatch, getState }) => {
@@ -101,32 +87,6 @@ export const fetchProduct = createAsyncThunk(
   }
 );
 
-export const rejectProduct = createAsyncThunk(
-  'products/reject',
-  async (productName, { dispatch }) => {
-    try {
-      dispatch(resetProductError());
-      const product = await productService.rejectProduct(productName);
-      dispatch(updateProduct(product));
-    } catch (error) {
-      dispatch(updateProductError(error));
-    }
-  }
-);
-
-export const submitProduct = createAsyncThunk(
-  'products/submit',
-  async (productName, { dispatch }) => {
-    try {
-      dispatch(resetProductError());
-      const product = await productService.submitProduct(productName);
-      dispatch(updateProduct(product));
-    } catch (error) {
-      dispatch(updateProductError(error));
-    }
-  }
-);
-
 export const updateProductDescription = createAsyncThunk(
   'products/save',
   async (productName, { dispatch, getState }) => {
@@ -146,12 +106,12 @@ export const updateProductDescription = createAsyncThunk(
   }
 );
 
-export const withdrawProduct = createAsyncThunk(
-  'products/approve',
-  async (productName, { dispatch }) => {
+export const updateProductState = createAsyncThunk(
+  'products/state',
+  async({ name, state }, { dispatch }) => {
     try {
       dispatch(resetProductError());
-      const product = await productService.withdrawProduct(productName);
+      const product = await productService.updateProductState({ name, state });
       dispatch(updateProduct(product));
     } catch (error) {
       dispatch(updateProductError(error));

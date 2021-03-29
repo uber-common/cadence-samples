@@ -1,9 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
-  approveProduct,
   selectProduct,
-  rejectProduct,
+  updateProductState,
 } from '../state/productSlice';
 import { ProgressButton } from '../components';
 
@@ -35,13 +34,13 @@ const ProductReviewPage = () => {
           <div className="col-6">
             <ProgressButton
               label="Reject"
-              onClick={() => dispatch(rejectProduct(productName))}
+              onClick={() => dispatch(updateProductState({ name: productName, state: 'reject' }))}
             />
           </div>
           <div className="col-6">
             <ProgressButton
               label="Approve"
-              onClick={() => dispatch(approveProduct(productName))}
+              onClick={() => dispatch(updateProductState({ name: productName, state: 'approve' }))}
             />
           </div>
         </div>

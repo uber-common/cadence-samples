@@ -5,10 +5,9 @@ import {
   resetProductDescription,
   selectModelProduct,
   selectProduct,
-  submitProduct,
   updateProductModel,
   updateProductDescription,
-  withdrawProduct,
+  updateProductState,
 } from '../state/productSlice';
 import { Button, ProgressButton } from '../components';
 
@@ -76,14 +75,14 @@ const ProductPage = () => {
             <ProgressButton
               disabled={isSubmitDisabled}
               label="Submit"
-              onClick={() => !isSubmitDisabled && dispatch(submitProduct(productName))}
+              onClick={() => !isSubmitDisabled && dispatch(updateProductState({ name: productName, state: 'submit' }))}
             />
           </div>
           <div className="col-3">
             <ProgressButton
               disabled={isWithdrawDisabled}
               label="Withdraw"
-              onClick={() => !isWithdrawDisabled && dispatch(withdrawProduct(productName))}
+              onClick={() => !isWithdrawDisabled && dispatch(updateProductState({ name: productName, state: 'withdraw' }))}
             />
           </div>
         </div>
