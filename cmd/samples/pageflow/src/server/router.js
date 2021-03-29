@@ -98,13 +98,12 @@ const initRouter = (server) => {
         });
         return product;
       } catch (error) {
-        // console.log('error = ', error);
         return handleError({ error, response });
       }
     }
   });
 
-  // only allow editing of description.
+  // only allows editing of description.
   server.route({
     method: 'PUT',
     url: '/products/:productName',

@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import config from '../config.js';
+import { NameExistsError } from '../errors/index.js';
 
 const startPageFlowWorkflow = async ({ cadence, name }) => {
   try {

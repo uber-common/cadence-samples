@@ -153,8 +153,6 @@ export default async function (ctx, response, next) {
   function req(method, reqName, bodyTransform, resTransform) {
     return body =>
       new Promise(function (resolve, reject) {
-        // console.log(method, reqName, bodyTransform, resTransform);
-        // console.log('body = ', body);
         try {
           channel
             .request({
@@ -176,26 +174,20 @@ export default async function (ctx, response, next) {
                     : body,
               },
               function (err, res) {
-                // console.log('err:', err);
-                // console.log('res:', res);
-
                 try {
                   if (err) {
                     reject(err);
                   } else if (res.ok) {
                     resolve((resTransform || uiTransform)(res.body));
                   } else {
-                    // console.log('error = ', res.body || res);
                     reject(res.body || res);
                   }
                 } catch (e) {
-                  // console.log('error = ', e);
                   reject(e);
                 }
               }
             );
         } catch (e) {
-          // console.log('error = ', e);
           reject(e);
         }
       });
@@ -292,7 +284,6 @@ export default async function (ctx, response, next) {
   try {
     await next();
   } catch (e) {
-    // console.log('error:', e);
     client.close();
     throw e;
   }
