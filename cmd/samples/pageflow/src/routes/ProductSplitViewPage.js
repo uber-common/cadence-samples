@@ -5,13 +5,12 @@ import ErrorPage from './ErrorPage';
 import LoadingPage from './LoadingPage';
 import ProductPage from './ProductPage';
 import ProductReviewPage from './ProductReviewPage';
-import ProductSuccessPage from './ProductSuccessPage';
-import ProductWithdrawnPage from './ProductWithdrawnPage';
 import {
   fetchProduct,
   selectProduct,
   selectProductError,
 } from '../state/productSlice';
+import { EndStatePage } from '../components';
 
 const ProductSplitViewPage = () => {
   const { productName } = useParams();
@@ -31,14 +30,20 @@ const ProductSplitViewPage = () => {
     return <LoadingPage />;
   }
 
-  const { status: productStatus } = product;
+  const {
+    status: productStatus,
+  } = product;
 
   if (productStatus === 'withdrawn') {
-    return <ProductWithdrawnPage />;
+    return <EndStatePage
+      title={`Product "${productName}" has been withdrawn.`}
+    />;
   }
 
   if (productStatus === 'approved') {
-    return <ProductSuccessPage />;
+    return <EndStatePage
+      title={`Product "${productName}" has been approved!`}
+    />;
   }
 
   if (productStatus === 'submitted') {
