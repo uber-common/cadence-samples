@@ -6,6 +6,8 @@ const config = {
   },
   cadence: {
     domain: 'samples-domain',
+    retryDelay: 100,
+    retryMax: 5,
     taskList: 'pageflow',
     workflowType: 'main.pageWorkflow',
   },
