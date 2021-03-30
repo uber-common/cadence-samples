@@ -10,21 +10,12 @@
     "@testing-library/user-event": "^7.2.1",
     "cadence-web": "^3.23.2",
     "connected-react-router": "^6.9.1",
-    "fastify": "^3.14.0",
-    "fastify-cors": "^5.2.0",
-    "is-ipv4-node": "^1.0.6",
     "lodash.get": "^4.4.2",
-    "long": "^4.0.0",
-    "lossless-json": "^1.0.4",
-    "middie": "^5.2.0",
-    "moment": "^2.29.1",
-    "napa": "^3.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "tchannel": "^4.0.1",
     "uuid": "^8.3.2"
   },
   "type": "module",
@@ -33,7 +24,6 @@
     "npm": "6.4.1"
   },
   "scripts": {
-    "install": "napa && rm -rf src/server/idl && cp -R node_modules/cadence-idl/thrift src/server/idl",
     "start": "npm run start-server & npm run start-ui",
     "start-ui": "react-scripts start",
     "start-server": "node src/server",
@@ -56,11 +46,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "napa": {
-    "cadence-idl": "uber/cadence-idl#f21422c6183528f3e8c429595886020d60c58d72"
-  },
-  "napa-config": {
-    "cache": false
   }
 }
