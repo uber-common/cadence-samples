@@ -8,7 +8,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "cadence-web": "^3.23.2",
+    "cadence-web": "^3.24.0",
     "connected-react-router": "^6.9.1",
     "lodash.get": "^4.4.2",
     "react": "^17.0.2",
