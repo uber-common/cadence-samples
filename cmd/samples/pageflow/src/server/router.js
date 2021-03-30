@@ -6,216 +6,70 @@ import {
   updateProductState,
 } from './helpers/index.js';
 
-const initRouter = (server) => {
-  // TODO - integrate with cadence-web router instead.
+const initRouter = (router) => {
+  router.post('/api/products', async (ctx) => {
+    const { cadence, request, response } = ctx;
+    const { description, name } = request.body;
 
-  server.route({
-    method: 'POST',
-    url: '/products',
-    schema: {
-      body: {
-        type: 'object',
-        properties: {
-          name: {
-            minLength: 1,
-            type: 'string',
-          },
-        },
-        required: ['name'],
-      },
-      response: {
-        200: {
-          type: 'object',
-          properties: {
-            description: { type: 'string' },
-            name: { type: 'string' },
-            status: { type: 'string' },
-          },
-        },
-        400: {
-          type: 'object',
-          properties: {
-            message: { type: 'string' },
-          },
-        },
-      },
-    },
-    handler: async (request, response) => {
-      try {
-        const product = await createProduct({
-          cadence: request.raw.data.cadence,
-          description: request.body.description,
-          name: request.body.name,
-        });
-        return product;
-      } catch (error) {
-        return handleError({ error, response });
-      }
-    }
+    // try {
+      const product = await createProduct({
+        cadence,
+        description,
+        name,
+      });
+      return product;
+    // } catch (error) {
+      // return handleError({ error, response });
+    // }
   });
 
-  server.route({
-    method: 'GET',
-    url: '/products/:productName',
-    schema: {
-      params: {
-        type: 'object',
-        properties: {
-          productName: { type: 'string' },
-        },
-        required: ['productName'],
-      },
-      response: {
-        200: {
-          type: 'object',
-          properties: {
-            description: { type: 'string' },
-            name: { type: 'string' },
-            status: { type: 'string' },
-          },
-        },
-        400: {
-          type: 'object',
-          properties: {
-            message: { type: 'string' },
-          },
-        },
-        404: {
-          type: 'object',
-          properties: {
-            message: { type: 'string' },
-          },
-        },
-      },
-    },
-    handler: async (request, response) => {
-      const { productName } = request.params;
+  router.get('/api/products/:name', async (ctx) => {
+    const { cadence, request, response } = ctx;
+    const { name } = request.params;
 
-      try {
-        const product = await getProduct({
-          cadence: request.raw.data.cadence,
-          name: productName,
-        });
-        return product;
-      } catch (error) {
-        return handleError({ error, response });
-      }
+    try {
+      const product = await getProduct({
+        cadence,
+        name,
+      });
+      return product;
+    } catch (error) {
+      return handleError({ error, response });
     }
   });
 
   // only allows editing of description.
-  server.route({
-    method: 'PUT',
-    url: '/products/:productName',
-    schema: {
-      body: {
-        type: 'object',
-        properties: {
-          description: {
-            minLength: 1,
-            type: 'string',
-          },
-        },
-        required: ['description'],
-      },
-      params: {
-        type: 'object',
-        properties: {
-          productName: { type: 'string' },
-        },
-        required: ['productName'],
-      },
-      response: {
-        200: {
-          type: 'object',
-          properties: {
-            description: { type: 'string' },
-            name: { type: 'string' },
-            status: { type: 'string' },
-          },
-        },
-        400: {
-          type: 'object',
-          properties: {
-            message: { type: 'string' },
-          },
-        },
-        404: {
-          type: 'object',
-          properties: {
-            message: { type: 'string' },
-          },
-        },
-      },
-    },
-    handler: async (request, response) => {
-      const { productName } = request.params;
+  router.put('/api/products/:name', async (ctx) => {
+    const { cadence, request, response } = ctx;
+    const { description } = request.body;
+    const { name } = request.params;
 
-      try {
-        const product = await updateProductDescription({
-          cadence: request.raw.data.cadence,
-          description: request.body.description,
-          name: productName,
-        });
-        return product;
-      } catch (error) {
-        return handleError({ error, response });
-      }
-    },
+    try {
+      const product = await updateProductDescription({
+        cadence,
+        description,
+        name,
+      });
+      return product;
+    } catch (error) {
+      return handleError({ error, response });
+    }
   });
 
-  server.route({
-    method: 'PUT',
-    url: '/products/:productName/:state',
-    schema: {
-      params: {
-        type: 'object',
-        properties: {
-          state: {
-            type: 'string',
-            enum: ['approve', 'reject', 'submit', 'withdraw']
-          },
-          productName: { type: 'string' },
-        },
-        required: ['productName', 'state'],
-      },
-      response: {
-        200: {
-          type: 'object',
-          properties: {
-            description: { type: 'string' },
-            name: { type: 'string' },
-            status: { type: 'string' },
-          },
-        },
-        400: {
-          type: 'object',
-          properties: {
-            message: { type: 'string' },
-          },
-        },
-        404: {
-          type: 'object',
-          properties: {
-            message: { type: 'string' },
-          },
-        },
-      },
-    },
-    handler: async (request, response) => {
-      const { productName: name, state } = request.params;
+  router.put('/api/products/:name/:state', async (ctx) => {
+    const { cadence, request, response } = ctx;
+    const { name, state } = request.params;
 
-      try {
-        const product = await updateProductState({
-          cadence: request.raw.data.cadence,
-          name,
-          state,
-        });
-        return product;
-      } catch (error) {
-        return handleError({ error, response });
-      }
-    },
+    try {
+      const product = await updateProductState({
+        cadence,
+        name,
+        state,
+      });
+      return product;
+    } catch (error) {
+      return handleError({ error, response });
+    }
   });
 
 };

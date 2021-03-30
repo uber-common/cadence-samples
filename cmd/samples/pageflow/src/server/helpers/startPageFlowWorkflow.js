@@ -12,6 +12,7 @@ const {
 
 const startPageFlowWorkflow = async ({ cadence, name }) => {
   try {
+    console.log('startWorkflow = ', cadence.startWorkflow);
     return cadence.startWorkflow({
       domain,
       executionStartToCloseTimeoutSeconds,
@@ -26,6 +27,7 @@ const startPageFlowWorkflow = async ({ cadence, name }) => {
       },
     });
   } catch (e) {
+    console.log('error:', e);
     throw new NameExistsError(name);
   }
 };

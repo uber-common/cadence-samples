@@ -1,27 +1,16 @@
-import get from 'lodash.get';
-import fastify from 'fastify';
-import fastifyCors from 'fastify-cors';
-import middie from 'middie';
-import config from './config.js';
+import app from 'cadence-web/server/index.js';
+import router from 'cadence-web/server/routes.js';
+import initMiddleware from './middleware.js';
 import initRouter from './router.js';
-import cadenceMiddleware from './cadence/TChannelClient.js';
+import config from './config.js';
 
-const server = fastify({ logger: true });
-server.register(fastifyCors);
+const { port } = config.server;
 
-initRouter(server);
+const run = async () => {
+  initRouter(router);
+  initMiddleware(app);
+  app.init({ useWebpack: false }).listen(port);
+  console.log('node server up and listening on port ' + port);
+};
 
-const start = async () => {
-  await server.register(middie);
-
-  server.use(cadenceMiddleware);
-
-  try {
-    await server.listen(config.server.port);
-  } catch (err) {
-    server.log.error(err);
-    process.exit(1);
-  }
-}
-
-start();
+run();
