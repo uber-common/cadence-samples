@@ -14,19 +14,21 @@ const getProduct = async ({ cadence, name }) => {
     queryConsistencyLevel: 'STRONG',
   });
 
+  const { Content, State } = response.queryResult;
+
   const product = {
     description: '',
     name,
-    status: response.queryResult.State,
+    status: State,
   };
 
-  if (!response.queryResult.Content) {
+  if (!Content) {
     return product;
   }
 
   return {
     ...product,
-    ...parseContent(response.queryResult.Content),
+    ...parseContent(Content),
   };
 };
 

@@ -16,14 +16,6 @@ const start = async () => {
 
   server.use(cadenceMiddleware);
 
-  server.addHook('onResponse', (request, reply, done) => {
-    const close = get(request, 'raw.data.client.close');
-    if (close) {
-      close();
-    }
-    done();
-  });
-
   try {
     await server.listen(config.server.port);
   } catch (err) {
