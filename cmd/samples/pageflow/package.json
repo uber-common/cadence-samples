@@ -24,10 +24,12 @@
     "npm": "6.4.1"
   },
   "scripts": {
-    "start": "npm run start-server & npm run start-ui",
+    "start": "npm run start-server & npm run start-ui & npm run start-worker",
     "start-ui": "react-scripts start",
     "start-server": "node src/server",
-    "start-worker": "TODO",
+    "start-worker": "cd ../../../ && bin/pageflow -m \"worker\"",
+    "prestart-worker": "npm run build-worker",
+    "build-worker": "cd ../../../ && make pageflow",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
