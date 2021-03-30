@@ -1,5 +1,8 @@
-const handleError = ({ error, response }) => {
-  return response.code(error.code || '500').send(JSON.stringify(error));
+const handleError = ({ ctx, error }) => {
+  ctx.status = error.statusCode || error.status || 500;
+  ctx.body = {
+    message: error.message,
+  };
 };
 
 export default handleError;

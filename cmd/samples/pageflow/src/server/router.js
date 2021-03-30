@@ -11,16 +11,16 @@ const initRouter = (router) => {
     const { cadence, request, response } = ctx;
     const { description, name } = request.body;
 
-    // try {
+    try {
       const product = await createProduct({
         cadence,
         description,
         name,
       });
       return product;
-    // } catch (error) {
-      // return handleError({ error, response });
-    // }
+    } catch (error) {
+      return handleError({ ctx, error });
+    }
   });
 
   router.get('/api/products/:name', async (ctx) => {
@@ -34,7 +34,7 @@ const initRouter = (router) => {
       });
       return product;
     } catch (error) {
-      return handleError({ error, response });
+      return handleError({ ctx, error });
     }
   });
 
@@ -52,7 +52,7 @@ const initRouter = (router) => {
       });
       return product;
     } catch (error) {
-      return handleError({ error, response });
+      return handleError({ ctx, error });
     }
   });
 
@@ -68,7 +68,7 @@ const initRouter = (router) => {
       });
       return product;
     } catch (error) {
-      return handleError({ error, response });
+      return handleError({ ctx, error });
     }
   });
 
