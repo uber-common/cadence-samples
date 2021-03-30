@@ -1,29 +1,24 @@
 import getProduct from './getProduct.js';
-import signalPageWorkflow from './signalPageWorkflow.js';
-import waitTime from './waitTime.js';
+import signalAndGetProduct from './signalAndGetProduct.js';
 
 const updateProductDescription = async ({ cadence, description, name }) => {
   const product = await getProduct({ cadence, name });
 
   if (product.status === 'initialized') {
-    await signalPageWorkflow({
+    const temp = await signalAndGetProduct({
       cadence,
       content: '',
       name,
       state: 'create',
     });
-
-    await waitTime(100);
   }
 
-  await signalPageWorkflow({
+  return signalAndGetProduct({
     cadence,
     content: JSON.stringify({ description }),
     name,
     state: 'save',
   });
-
-  return getProduct({ cadence, name });
 };
 
 export default updateProductDescription;

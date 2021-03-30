@@ -7,7 +7,9 @@ export const ALLOWED_STATE_ON_STATUS_MAP = {
 
 export const EXPECTED_STATUS_FROM_STATE = {
   approve: 'approved',
+  create: 'created',
   reject: 'created',
+  save: 'created',
   submit: 'submitted',
   withdraw: 'withdrawn',
 };
