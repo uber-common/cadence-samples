@@ -5,7 +5,7 @@ const updateProductDescription = async ({ cadence, description, name }) => {
   const product = await getProduct({ cadence, name });
 
   if (product.status === 'initialized') {
-    const temp = await signalAndGetProduct({
+    await signalAndGetProduct({
       cadence,
       content: '',
       name,

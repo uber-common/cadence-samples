@@ -10,7 +10,7 @@ const signalAndGetProduct = async ({ cadence, content, name, state }) => {
     Content: JSON.stringify(content),
   };
 
-  const temp = await cadence.signalWorkflow({
+  await cadence.signalWorkflow({
     domain: config.cadence.domain,
     workflowExecution: {
       workflowId: name,

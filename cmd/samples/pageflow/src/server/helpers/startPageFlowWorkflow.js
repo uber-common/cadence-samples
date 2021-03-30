@@ -2,19 +2,27 @@ import { v4 as uuidv4 } from 'uuid';
 import config from '../config.js';
 import { NameExistsError } from '../errors/index.js';
 
+const {
+  domain,
+  executionStartToCloseTimeoutSeconds,
+  taskList,
+  taskStartToCloseTimeoutSeconds,
+  workflowType,
+} = config.cadence;
+
 const startPageFlowWorkflow = async ({ cadence, name }) => {
   try {
     return cadence.startWorkflow({
-      domain: config.cadence.domain,
-      executionStartToCloseTimeoutSeconds: 10 * 60, // workflow open for 10 minutes
+      domain,
+      executionStartToCloseTimeoutSeconds,
       requestId: uuidv4(),
       taskList: {
-        name: config.cadence.taskList,
+        name: taskList,
       },
-      taskStartToCloseTimeoutSeconds: 10,
+      taskStartToCloseTimeoutSeconds,
       workflowId: name,
       workflowType: {
-        name: config.cadence.workflowType,
+        name: workflowType,
       },
     });
   } catch (e) {
