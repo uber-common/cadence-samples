@@ -25,7 +25,7 @@ const startPageFlowWorkflow = async ({ cadence, name }) => {
         name: workflowType,
       },
     });
-  } catch (e) {
+  } catch (error) {
     throw new NameExistsError(name);
   }
 };

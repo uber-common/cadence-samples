@@ -8,7 +8,7 @@ import {
 
 const initRouter = (router) => {
   router.post('/api/products', async (ctx) => {
-    const { cadence, request, response } = ctx;
+    const { cadence, request } = ctx;
     const { description, name } = request.body;
 
     try {
@@ -17,22 +17,22 @@ const initRouter = (router) => {
         description,
         name,
       });
-      return product;
+      ctx.body = product;
     } catch (error) {
       return handleError({ ctx, error });
     }
   });
 
   router.get('/api/products/:name', async (ctx) => {
-    const { cadence, request, response } = ctx;
-    const { name } = request.params;
+    const { cadence, params } = ctx;
+    const { name } = params;
 
     try {
       const product = await getProduct({
         cadence,
         name,
       });
-      return product;
+      ctx.body = product;
     } catch (error) {
       return handleError({ ctx, error });
     }
@@ -40,9 +40,9 @@ const initRouter = (router) => {
 
   // only allows editing of description.
   router.put('/api/products/:name', async (ctx) => {
-    const { cadence, request, response } = ctx;
+    const { cadence, params, request } = ctx;
     const { description } = request.body;
-    const { name } = request.params;
+    const { name } = params;
 
     try {
       const product = await updateProductDescription({
@@ -50,15 +50,15 @@ const initRouter = (router) => {
         description,
         name,
       });
-      return product;
+      ctx.body = product;
     } catch (error) {
       return handleError({ ctx, error });
     }
   });
 
   router.put('/api/products/:name/:state', async (ctx) => {
-    const { cadence, request, response } = ctx;
-    const { name, state } = request.params;
+    const { cadence, params } = ctx;
+    const { name, state } = params;
 
     try {
       const product = await updateProductState({
@@ -66,7 +66,7 @@ const initRouter = (router) => {
         name,
         state,
       });
-      return product;
+      ctx.body = product;
     } catch (error) {
       return handleError({ ctx, error });
     }
