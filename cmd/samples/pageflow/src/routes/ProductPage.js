@@ -48,9 +48,10 @@ const ProductPage = () => {
           <dd className="dd">{productStatus}</dd>
         </dl>
 
-        <label>Product description:</label><br />
+        <label for="description">Product description:</label><br />
         <textarea
           disabled={isFormDisabled}
+          id="description"
           name="description"
           onChange={event => dispatch(updateProductModel(event))}
           value={productModelDescription}

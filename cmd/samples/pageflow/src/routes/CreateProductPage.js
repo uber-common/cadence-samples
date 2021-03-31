@@ -26,8 +26,9 @@ const CreateProductPage = () => {
     <div className="App-content">
       <h1>Create a product</h1>
       <form onSubmit={(event) => event.preventDefault()}>
-        <label>Product name:</label><br />
+        <label for="name">Product name:</label><br />
         <input
+          id="name"
           name="name"
           onChange={event => dispatch(updateProductModel(event))}
           value={productName}
