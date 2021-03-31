@@ -1,6 +1,8 @@
 import config from '../server/config';
 
-const baseApiUrl = `${config.server.protocol}://${config.server.hostname}:${config.server.port}/api`;
+const { hostname, port, protocol } = config.server;
+
+const baseApiUrl = `${protocol}://${hostname}:${port}/api`;
 
 const handleResponse = async (response) => {
   const data = await response.json();

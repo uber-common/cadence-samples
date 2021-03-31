@@ -1,9 +1,11 @@
 import config from '../config.js';
 import parseContent from './parseContent.js';
 
+const { domain } = config.cadence;
+
 const getProduct = async ({ cadence, name }) => {
   const response = await cadence.queryWorkflow({
-    domain: config.cadence.domain,
+    domain,
     execution: {
       workflowId: name,
     },

@@ -5,6 +5,8 @@ import config from '../config.js';
 import encodeContent from './encodeContent.js';
 import getProductOrRetry from './getProductOrRetry.js';
 
+const { domain } = config.cadence;
+
 const signalAndGetProduct = async ({ cadence, content, name, state }) => {
   const input = {
     Action: state,
@@ -12,7 +14,7 @@ const signalAndGetProduct = async ({ cadence, content, name, state }) => {
   };
 
   await cadence.signalWorkflow({
-    domain: config.cadence.domain,
+    domain,
     workflowExecution: {
       workflowId: name,
     },
