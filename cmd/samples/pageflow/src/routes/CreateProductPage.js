@@ -10,7 +10,7 @@ import {
 } from '../state/productSlice';
 import { Button } from '../components';
 
-const Product = () => {
+const CreateProductPage = () => {
   const dispatch = useDispatch();
   const error = useSelector(selectProductError);
 
@@ -60,4 +60,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default CreateProductPage;
