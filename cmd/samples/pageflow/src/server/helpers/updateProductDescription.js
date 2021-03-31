@@ -1,5 +1,6 @@
 import getProduct from './getProduct.js';
 import signalAndGetProduct from './signalAndGetProduct.js';
+import { STATE_CREATE, STATE_SAVE } from '../constants.js';
 
 const updateProductDescription = async ({ cadence, description, name }) => {
   const product = await getProduct({ cadence, name });
@@ -8,7 +9,7 @@ const updateProductDescription = async ({ cadence, description, name }) => {
     await signalAndGetProduct({
       cadence,
       name,
-      state: 'create',
+      state: STATE_CREATE,
     });
   }
 
@@ -16,7 +17,7 @@ const updateProductDescription = async ({ cadence, description, name }) => {
     cadence,
     content: { description },
     name,
-    state: 'save',
+    state: STATE_SAVE,
   });
 };
 
