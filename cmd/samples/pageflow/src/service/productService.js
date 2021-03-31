@@ -17,7 +17,7 @@ const ProductService = {
     const response = await fetch(`${baseApiUrl}/products`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(product),
     });
@@ -35,7 +35,7 @@ const ProductService = {
     const response = await fetch(`${baseApiUrl}/products/${name}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ description }),
     });
