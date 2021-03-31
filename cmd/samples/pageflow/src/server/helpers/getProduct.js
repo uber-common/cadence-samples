@@ -1,5 +1,10 @@
 import config from '../config.js';
 import parseContent from './parseContent.js';
+import {
+  STATE_QUERY_TYPE,
+  STATE_QUERY_ARGS,
+  STRONG_QUERY_CONSISTANCY,
+} from '../constants.js';
 
 const { domain } = config.cadence;
 
@@ -10,10 +15,10 @@ const getProduct = async ({ cadence, name }) => {
       workflowId: name,
     },
     query: {
-      queryType: 'state',
-      queryArgs: Buffer.from('true', 'utf8'),
+      queryType: STATE_QUERY_TYPE,
+      queryArgs: STATE_QUERY_ARGS,
     },
-    queryConsistencyLevel: 'STRONG',
+    queryConsistencyLevel: STRONG_QUERY_CONSISTANCY,
   });
 
   const { Content, State } = response.queryResult;

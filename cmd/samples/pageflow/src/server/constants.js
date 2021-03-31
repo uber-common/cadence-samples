@@ -13,3 +13,9 @@ export const EXPECTED_STATUS_FROM_STATE = {
   submit: 'submitted',
   withdraw: 'withdrawn',
 };
+
+export const STATE_QUERY_TYPE = 'state';
+
+export const STATE_QUERY_ARGS = Buffer.from('true', 'utf8');
+
+export const STRONG_QUERY_CONSISTANCY = 'STRONG';
