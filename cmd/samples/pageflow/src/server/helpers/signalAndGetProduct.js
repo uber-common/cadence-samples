@@ -1,5 +1,6 @@
 import {
   EXPECTED_STATUS_FROM_STATE,
+  TRIGGER_SIGNAL,
 } from '../constants.js';
 import config from '../config.js';
 import encodeContent from './encodeContent.js';
@@ -18,7 +19,7 @@ const signalAndGetProduct = async ({ cadence, content, name, state }) => {
     workflowExecution: {
       workflowId: name,
     },
-    signalName: 'trigger-signal',
+    signalName: TRIGGER_SIGNAL,
     input: Buffer.from(JSON.stringify(input), 'utf8'),
   });
 

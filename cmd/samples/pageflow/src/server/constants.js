@@ -19,3 +19,5 @@ export const STATE_QUERY_TYPE = 'state';
 export const STATE_QUERY_ARGS = Buffer.from('true', 'utf8');
 
 export const STRONG_QUERY_CONSISTANCY = 'STRONG';
+
+export const TRIGGER_SIGNAL = 'trigger-signal';
