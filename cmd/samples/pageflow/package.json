@@ -1,0 +1,23 @@
+{
+  "name": "pageflow",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "cadence-web": "^3.24.0",
+    "lodash.get": "^4.4.2",
+    "uuid": "^8.3.2"
+  },
+  "type": "module",
+  "engines": {
+    "node": "14.0.0",
+    "npm": "6.4.1"
+  },
+  "scripts": {
+    "start": "npm run start-server & npm run start-worker",
+    "start-server": "node src/server",
+    "start-worker": "cd ../../../ && bin/pageflow -m \"worker\"",
+    "prestart-worker": "npm run build-worker",
+    "build-worker": "cd ../../../ && make pageflow"
+  }
+}
