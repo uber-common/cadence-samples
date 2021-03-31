@@ -2,12 +2,13 @@ import {
   EXPECTED_STATUS_FROM_STATE,
 } from '../constants.js';
 import config from '../config.js';
+import encodeContent from './encodeContent.js';
 import getProductOrRetry from './getProductOrRetry.js';
 
 const signalAndGetProduct = async ({ cadence, content, name, state }) => {
   const input = {
     Action: state,
-    Content: JSON.stringify(content),
+    Content: encodeContent(content),
   };
 
   await cadence.signalWorkflow({

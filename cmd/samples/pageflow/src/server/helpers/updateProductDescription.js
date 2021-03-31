@@ -7,7 +7,6 @@ const updateProductDescription = async ({ cadence, description, name }) => {
   if (product.status === 'initialized') {
     await signalAndGetProduct({
       cadence,
-      content: '',
       name,
       state: 'create',
     });
@@ -15,7 +14,7 @@ const updateProductDescription = async ({ cadence, description, name }) => {
 
   return signalAndGetProduct({
     cadence,
-    content: JSON.stringify({ description }),
+    content: { description },
     name,
     state: 'save',
   });

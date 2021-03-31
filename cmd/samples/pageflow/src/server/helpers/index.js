@@ -1,4 +1,5 @@
 export { default as createProduct } from './createProduct.js';
+export { default as encodeContent } from './encodeContent.js';
 export { default as getProduct } from './getProduct.js';
 export { default as getProductOrRetry } from './getProductOrRetry.js';
 export { default as handleError } from './handleError.js';

@@ -13,7 +13,6 @@ const updateProductState = async ({ cadence, name, state }) => {
 
   return signalAndGetProduct({
     cadence,
-    content: '',
     name,
     state,
   });
