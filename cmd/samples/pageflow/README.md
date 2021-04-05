@@ -4,7 +4,11 @@ The artificial use case started by creating a product proposal workflow (workflo
 
 User interactions are implemented through workflow signals, and the latest workflow state can be fetched through workflow query.
 
+You should be able to inspect workflow run through Cadence UI (http://localhost:8088/ if you use the standard Cadence docker image).
+
 # Steps to run locally
+Make sure you start cadence server first and create the "samples-domain" domain.
+
 ### `npm install`
 Make sure you are running at least node v14 and install dependencies. May take a while for the first time installing these packages.
 
