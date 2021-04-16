@@ -26,7 +26,7 @@ func startShadower(h *common.SampleHelper) {
 		MetricsScope:       h.WorkerMetricScope,
 		Logger:             h.Logger,
 		EnableShadowWorker: true,
-		ShadowOptions: &worker.ShadowOptions{
+		ShadowOptions: worker.ShadowOptions{
 			WorkflowTypes:  []string{helloWorldWorkflowName},
 			WorkflowStatus: []string{"Completed"},
 			ExitCondition: worker.ShadowExitCondition{
