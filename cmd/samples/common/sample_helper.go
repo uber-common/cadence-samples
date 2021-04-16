@@ -3,9 +3,10 @@ package common
 import (
 	"context"
 	"fmt"
-	"go.uber.org/cadence/.gen/go/shared"
 	"io/ioutil"
 	"time"
+
+	"go.uber.org/cadence/.gen/go/shared"
 
 	prom "github.com/m3db/prometheus_client_golang/prometheus"
 	"github.com/uber-go/tally"
@@ -21,7 +22,7 @@ import (
 )
 
 const (
-	configFile = "config/development.yaml"
+	defaultConfigFile = "config/development.yaml"
 )
 
 type (
@@ -37,6 +38,8 @@ type (
 		CtxPropagators     []workflow.ContextPropagator
 		workflowRegistries []registryOption
 		activityRegistries []registryOption
+
+		configFile string
 	}
 
 	// Configuration for running samples.
@@ -73,16 +76,24 @@ var (
 	}
 )
 
+// SetConfigFile sets the config file path
+func (h *SampleHelper) SetConfigFile(configFile string) {
+	h.configFile = configFile
+}
+
 // SetupServiceConfig setup the config for the sample code run
 func (h *SampleHelper) SetupServiceConfig() {
 	if h.Service != nil {
 		return
 	}
 
+	if h.configFile == "" {
+		h.configFile = defaultConfigFile
+	}
 	// Initialize developer config for running samples
-	configData, err := ioutil.ReadFile(configFile)
+	configData, err := ioutil.ReadFile(h.configFile)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to log config file: %v, Error: %v", configFile, err))
+		panic(fmt.Sprintf("Failed to log config file: %v, Error: %v", defaultConfigFile, err))
 	}
 
 	if err := yaml.Unmarshal(configData, &h.Config); err != nil {
@@ -121,7 +132,7 @@ func (h *SampleHelper) SetupServiceConfig() {
 			SanitizeOptions: &sanitizeOptions,
 		}, 1*time.Second)
 
-		// NOTE: this must be a different scope with different prefix, otherwise the metric will conflict 
+		// NOTE: this must be a different scope with different prefix, otherwise the metric will conflict
 		h.ServiceMetricScope, _ = tally.NewRootScope(tally.ScopeOptions{
 			Prefix:          "Service_",
 			Tags:            map[string]string{},

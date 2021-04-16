@@ -23,6 +23,10 @@ make
 ```
 ./bin/helloworld -m trigger
 ```
+* Start workflow shadower for helloworld workflow
+```
+./bin/helloworld -m shadower
+```
 
 ### Commands to run other samples
 

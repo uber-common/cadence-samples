@@ -16,6 +16,8 @@ import (
 // ApplicationName is the task list for this sample
 const ApplicationName = "helloWorldGroup"
 
+const helloWorldWorkflowName = "helloWorldWorkflow"
+
 // helloWorkflow workflow decider
 func helloWorldWorkflow(ctx workflow.Context, name string) error {
 	ao := workflow.ActivityOptions{
