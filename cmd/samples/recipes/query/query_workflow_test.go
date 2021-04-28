@@ -1,15 +1,17 @@
 package main
 
 import (
-	"github.com/stretchr/testify/require"
-	"go.uber.org/cadence/testsuite"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
+	"go.uber.org/cadence/testsuite"
 )
 
 func Test_QueryWorkflow(t *testing.T) {
 	ts := &testsuite.WorkflowTestSuite{}
 	env := ts.NewTestWorkflowEnvironment()
+	env.RegisterWorkflow(queryWorkflow)
 
 	w := false
 	env.RegisterDelayedCallback(func() {

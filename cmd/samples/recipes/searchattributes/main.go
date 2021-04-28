@@ -5,11 +5,10 @@ import (
 	"flag"
 	"time"
 
-	"go.uber.org/zap"
-
 	"github.com/pborman/uuid"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
+	"go.uber.org/zap"
 
 	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )

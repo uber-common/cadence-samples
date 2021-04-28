@@ -20,6 +20,7 @@ const (
 
 // sampleBranchWorkflow workflow decider
 func sampleBranchWorkflow(ctx workflow.Context) error {
+	fmt.Println("executed workflow!!!")
 	var futures []workflow.Future
 	// starts activities in parallel
 	ao := workflow.ActivityOptions{
@@ -37,7 +38,9 @@ func sampleBranchWorkflow(ctx workflow.Context) error {
 
 	// wait until all futures are done
 	for _, future := range futures {
-		future.Get(ctx, nil)
+		if err := future.Get(ctx, nil); err != nil {
+			return err
+		}
 	}
 
 	workflow.GetLogger(ctx).Info("Workflow completed.")

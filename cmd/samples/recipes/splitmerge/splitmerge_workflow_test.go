@@ -10,22 +10,33 @@ import (
 type UnitTestSuite struct {
 	suite.Suite
 	testsuite.WorkflowTestSuite
+
+	env *testsuite.TestWorkflowEnvironment
 }
 
 func TestUnitTestSuite(t *testing.T) {
 	suite.Run(t, new(UnitTestSuite))
 }
 
-func (s *UnitTestSuite) Test_Workflow() {
-	env := s.NewTestWorkflowEnvironment()
-	workerCount := 5
-	env.ExecuteWorkflow(sampleSplitMergeWorkflow, workerCount)
+func (s *UnitTestSuite) SetupTest() {
+	s.env = s.NewTestWorkflowEnvironment()
+	s.env.RegisterWorkflow(sampleSplitMergeWorkflow)
+	s.env.RegisterActivity(chunkProcessingActivity)
+}
 
-	s.True(env.IsWorkflowCompleted())
-	s.NoError(env.GetWorkflowError())
+func (s *UnitTestSuite) TearDownTest() {
+	s.env.AssertExpectations(s.T())
+}
+
+func (s *UnitTestSuite) Test_Workflow() {
+	workerCount := 5
+
+	s.env.ExecuteWorkflow(sampleSplitMergeWorkflow, workerCount)
+	s.True(s.env.IsWorkflowCompleted())
+	s.NoError(s.env.GetWorkflowError())
 
 	var result ChunkResult
-	env.GetWorkflowResult(&result)
+	s.env.GetWorkflowResult(&result)
 
 	totalItem, totalSum := 0, 0
 	for i := 1; i <= workerCount; i++ {

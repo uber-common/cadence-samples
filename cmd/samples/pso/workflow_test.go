@@ -4,19 +4,25 @@ import (
 	"context"
 	"testing"
 
-	"go.uber.org/cadence/workflow"
-
 	"github.com/stretchr/testify/require"
-
 	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/encoded"
 	"go.uber.org/cadence/testsuite"
 	"go.uber.org/cadence/worker"
+	"go.uber.org/cadence/workflow"
 )
 
 func Test_Workflow(t *testing.T) {
 	testSuite := &testsuite.WorkflowTestSuite{}
 	env := testSuite.NewTestWorkflowEnvironment()
+	env.RegisterWorkflow(samplePSOWorkflow)
+	env.RegisterWorkflow(samplePSOChildWorkflow)
+	env.RegisterActivityWithOptions(initParticleActivity, activity.RegisterOptions{
+		Name: initParticleActivityName,
+	})
+	env.RegisterActivityWithOptions(updateParticleActivity, activity.RegisterOptions{
+		Name: updateParticleActivityName,
+	})
 
 	var activityCalled []string
 
