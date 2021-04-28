@@ -7,7 +7,6 @@ import (
 
 	"github.com/pborman/uuid"
 	"go.uber.org/cadence"
-
 	"go.uber.org/cadence/workflow"
 )
 

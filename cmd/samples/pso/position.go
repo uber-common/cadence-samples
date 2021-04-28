@@ -1,8 +1,8 @@
 package main
 
-import "math/rand"
-
-//import "go.uber.org/cadence/workflow"
+import (
+	"math/rand"
+)
 
 type Vector []float64
 

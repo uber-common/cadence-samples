@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"strings"
+	"time"
+
 	"go.uber.org/cadence"
 	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
-	"strings"
-	"time"
 )
 
 /**

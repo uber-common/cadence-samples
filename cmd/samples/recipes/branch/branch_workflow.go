@@ -20,7 +20,6 @@ const (
 
 // sampleBranchWorkflow workflow decider
 func sampleBranchWorkflow(ctx workflow.Context) error {
-	fmt.Println("executed workflow!!!")
 	var futures []workflow.Future
 	// starts activities in parallel
 	ao := workflow.ActivityOptions{

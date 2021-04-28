@@ -8,9 +8,10 @@ import (
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/testsuite"
 	"go.uber.org/cadence/worker"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 type UnitTestSuite struct {
