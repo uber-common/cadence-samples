@@ -2,13 +2,15 @@ package main
 
 import (
 	"context"
+	"time"
+
 	"github.com/google/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
-	"time"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 const ApplicationName = "HelloSideEffect"

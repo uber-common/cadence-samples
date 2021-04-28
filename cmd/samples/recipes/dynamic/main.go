@@ -43,9 +43,9 @@ func main() {
 	switch mode {
 	case "worker":
 		h.RegisterWorkflow(sampleGreetingsWorkflow)
-		h.RegisterActivity(getGreetingActivity)
-		h.RegisterActivity(getNameActivity)
-		h.RegisterActivity(sayGreetingActivity)
+		h.RegisterActivityWithAlias(getGreetingActivity, getGreetingActivityName)
+		h.RegisterActivityWithAlias(getNameActivity, getNameActivityName)
+		h.RegisterActivityWithAlias(sayGreetingActivity, sayGreetingActivityName)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

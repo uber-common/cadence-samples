@@ -6,8 +6,9 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 /**
@@ -38,7 +39,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 
 	fmt.Println("Starting dummy server...")
 	http.HandleFunc("/", listHandler)

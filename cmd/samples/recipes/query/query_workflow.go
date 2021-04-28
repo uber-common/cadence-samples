@@ -1,8 +1,9 @@
 package main
 
 import (
-	"go.uber.org/cadence/workflow"
 	"time"
+
+	"go.uber.org/cadence/workflow"
 )
 
 // ApplicationName is the task list for this sample

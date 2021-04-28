@@ -13,17 +13,30 @@ import (
 type UnitTestSuite struct {
 	suite.Suite
 	testsuite.WorkflowTestSuite
+
+	env *testsuite.TestWorkflowEnvironment
 }
 
 func TestUnitTestSuite(t *testing.T) {
 	suite.Run(t, new(UnitTestSuite))
 }
 
+func (s *UnitTestSuite) SetupTest() {
+	s.env = s.NewTestWorkflowEnvironment()
+	s.env.RegisterWorkflow(sampleGreetingsWorkflow)
+	s.env.RegisterActivity(getGreetingActivity)
+	s.env.RegisterActivity(getNameActivity)
+	s.env.RegisterActivity(sayGreetingActivity)
+}
+
+func (s *UnitTestSuite) TearDownTest() {
+	s.env.AssertExpectations(s.T())
+}
+
 func (s *UnitTestSuite) Test_SampleGreetingsWorkflow() {
 	sayGreetingActivityName := "github.com/uber-common/cadence-samples/cmd/samples/recipes/greetings.sayGreetingActivity"
-	env := s.NewTestWorkflowEnvironment()
 	var startCalled, endCalled bool
-	env.SetOnActivityStartedListener(func(activityInfo *activity.Info, ctx context.Context, args encoded.Values) {
+	s.env.SetOnActivityStartedListener(func(activityInfo *activity.Info, ctx context.Context, args encoded.Values) {
 		if sayGreetingActivityName == activityInfo.ActivityType.Name {
 			var greeting, name string
 			args.Get(&greeting, &name)
@@ -32,7 +45,7 @@ func (s *UnitTestSuite) Test_SampleGreetingsWorkflow() {
 			startCalled = true
 		}
 	})
-	env.SetOnActivityCompletedListener(func(activityInfo *activity.Info, result encoded.Value, err error) {
+	s.env.SetOnActivityCompletedListener(func(activityInfo *activity.Info, result encoded.Value, err error) {
 		if sayGreetingActivityName == activityInfo.ActivityType.Name {
 			var sayResult string
 			result.Get(&sayResult)
@@ -41,10 +54,10 @@ func (s *UnitTestSuite) Test_SampleGreetingsWorkflow() {
 		}
 	})
 
-	env.ExecuteWorkflow(sampleGreetingsWorkflow)
+	s.env.ExecuteWorkflow(sampleGreetingsWorkflow)
 
-	s.True(env.IsWorkflowCompleted())
-	s.NoError(env.GetWorkflowError())
+	s.True(s.env.IsWorkflowCompleted())
+	s.NoError(s.env.GetWorkflowError())
 	s.True(startCalled)
 	s.True(endCalled)
 }

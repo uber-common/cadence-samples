@@ -16,7 +16,8 @@ import (
 type UnitTestSuite struct {
 	suite.Suite
 	testsuite.WorkflowTestSuite
-	env *testsuite.TestWorkflowEnvironment
+
+	env    *testsuite.TestWorkflowEnvironment
 	header *shared.Header
 }
 
@@ -38,6 +39,8 @@ func (s *UnitTestSuite) SetupTest() {
 	}
 
 	s.env = s.NewTestWorkflowEnvironment()
+	s.env.RegisterWorkflow(sampleCtxPropWorkflow)
+	s.env.RegisterActivityWithOptions(sampleActivity, activity.RegisterOptions{Name: "sampleActivity"})
 	s.env.SetWorkerOptions(workerOptions)
 }
 
@@ -65,7 +68,6 @@ func (s *UnitTestSuite) Test_CtxPropWorkflow() {
 			panic("there was a problem propagating Values, the value field doesn't match")
 		}
 	})
-	s.env.RegisterActivityWithOptions(sampleActivity, activity.RegisterOptions{Name: "sampleActivity"})
 	s.env.ExecuteWorkflow(sampleCtxPropWorkflow)
 
 	s.True(s.env.IsWorkflowCompleted())

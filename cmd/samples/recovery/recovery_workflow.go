@@ -3,16 +3,18 @@ package main
 import (
 	"context"
 	"errors"
+	"time"
+
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
-	"github.com/uber-common/cadence-samples/cmd/samples/recovery/cache"
 	"go.uber.org/cadence"
 	"go.uber.org/cadence/.gen/go/shared"
 	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
-	"time"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
+	"github.com/uber-common/cadence-samples/cmd/samples/recovery/cache"
 )
 
 type (

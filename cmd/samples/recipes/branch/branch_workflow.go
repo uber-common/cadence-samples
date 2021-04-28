@@ -37,7 +37,9 @@ func sampleBranchWorkflow(ctx workflow.Context) error {
 
 	// wait until all futures are done
 	for _, future := range futures {
-		future.Get(ctx, nil)
+		if err := future.Get(ctx, nil); err != nil {
+			return err
+		}
 	}
 
 	workflow.GetLogger(ctx).Info("Workflow completed.")

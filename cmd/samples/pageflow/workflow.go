@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"time"
+
 	"github.com/pborman/uuid"
 	"go.uber.org/cadence"
 	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
-	"time"
 )
 
 /**
@@ -17,32 +18,32 @@ import (
 const (
 	// ApplicationName is the task list for this sample
 	ApplicationName = "pageflow"
-	SignalName = "trigger-signal"
-	QueryName = "state"
+	SignalName      = "trigger-signal"
+	QueryName       = "state"
 )
 
 type State string
 
 const (
-	Initialized State = "initialized"
-	Received = "received"
-	Created = "created"
-	SubmissionReceived = "submission-received"
-	Submitted = "submitted"
-	Approved = "approved"
-	Rejected = "rejected"
-	Withdrawn = "withdrawn"
+	Initialized        State = "initialized"
+	Received                 = "received"
+	Created                  = "created"
+	SubmissionReceived       = "submission-received"
+	Submitted                = "submitted"
+	Approved                 = "approved"
+	Rejected                 = "rejected"
+	Withdrawn                = "withdrawn"
 )
 
 type Action string
 
 const (
-	Create Action = "create"
-	Save = "save"
-	Submit = "submit"
-	Approve = "approve"
-	Reject = "reject"
-	Withdraw = "withdraw"
+	Create   Action = "create"
+	Save            = "save"
+	Submit          = "submit"
+	Approve         = "approve"
+	Reject          = "reject"
+	Withdraw        = "withdraw"
 )
 
 type signalPayload struct {
@@ -61,7 +62,7 @@ func pageWorkflow(ctx workflow.Context) (State, error) {
 
 	ao := workflow.ActivityOptions{
 		ScheduleToStartTimeout: time.Second,
-		StartToCloseTimeout:    10*time.Second,
+		StartToCloseTimeout:    10 * time.Second,
 	}
 	ctx = workflow.WithActivityOptions(ctx, ao)
 

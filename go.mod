@@ -19,7 +19,7 @@ require (
 	github.com/stretchr/testify v1.3.0
 	github.com/uber-go/tally v3.3.11+incompatible
 	go.uber.org/atomic v1.5.1 // indirect
-	go.uber.org/cadence v0.16.1-0.20210416225532-c903538952dc
+	go.uber.org/cadence v0.17.0
 	go.uber.org/net/metrics v1.1.0 // indirect
 	go.uber.org/thriftrw v1.20.2 // indirect
 	go.uber.org/tools v0.0.0-20190618225709-2cfd321de3ee // indirect

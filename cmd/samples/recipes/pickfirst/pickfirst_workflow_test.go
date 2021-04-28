@@ -13,15 +13,26 @@ import (
 type UnitTestSuite struct {
 	suite.Suite
 	testsuite.WorkflowTestSuite
+
+	env *testsuite.TestWorkflowEnvironment
 }
 
 func TestUnitTestSuite(t *testing.T) {
 	suite.Run(t, new(UnitTestSuite))
 }
 
+func (s *UnitTestSuite) SetupTest() {
+	s.env = s.NewTestWorkflowEnvironment()
+	s.env.RegisterWorkflow(samplePickFirstWorkflow)
+	s.env.RegisterActivity(sampleActivity)
+}
+
+func (s *UnitTestSuite) TearDownTest() {
+	s.env.AssertExpectations(s.T())
+}
+
 func (s *UnitTestSuite) Test_Workflow() {
-	env := s.NewTestWorkflowEnvironment()
-	env.OnActivity(sampleActivity, mock.Anything, mock.Anything, mock.Anything).
+	s.env.OnActivity(sampleActivity, mock.Anything, mock.Anything, mock.Anything).
 		Return(func(ctx context.Context, currentBranchID int, totalDuration time.Duration) (string, error) {
 			// make branch 0 super fast so we don't have to wait sleep time in unit test
 			if currentBranchID == 0 {
@@ -29,9 +40,8 @@ func (s *UnitTestSuite) Test_Workflow() {
 			}
 			return sampleActivity(ctx, currentBranchID, totalDuration)
 		}).Once()
-	env.ExecuteWorkflow(samplePickFirstWorkflow)
 
-	s.True(env.IsWorkflowCompleted())
-	s.NoError(env.GetWorkflowError())
-	env.AssertExpectations(s.T())
+	s.env.ExecuteWorkflow(samplePickFirstWorkflow)
+	s.True(s.env.IsWorkflowCompleted())
+	s.NoError(s.env.GetWorkflowError())
 }
