@@ -140,8 +140,8 @@ github.com/uber/tchannel-go v1.14.0/go.mod h1:Rrgz1eL8kMjW/nEzZos0t+Heq0O4LhnUJV
 go.uber.org/atomic v1.4.0/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
 go.uber.org/atomic v1.5.1 h1:rsqfU5vBkVknbhUGbAUwQKR2H4ItV8tjJ+6kJX4cxHM=
 go.uber.org/atomic v1.5.1/go.mod h1:sABNBOSYdrvTF6hTgEIbc7YasKWGhgEQZyfxyTvoXHQ=
-go.uber.org/cadence v0.16.1-0.20210416225532-c903538952dc h1:3V9iAvr+ejycoy7HM6mtVisnYhhju7GRqyZ/qYt8YOg=
-go.uber.org/cadence v0.16.1-0.20210416225532-c903538952dc/go.mod h1:R5+LnxVidKynzPYF5bEEW7lYflBuWZZRyt11rvXEETQ=
+go.uber.org/cadence v0.17.0 h1:9cIrCklPRSI5POsr5RKu48/AQVtkiIshbcd7aZ0btIk=
+go.uber.org/cadence v0.17.0/go.mod h1:R5+LnxVidKynzPYF5bEEW7lYflBuWZZRyt11rvXEETQ=
 go.uber.org/dig v1.7.0 h1:E5/L92iQTNJTjfgJF2KgU+/JpMaiuvK2DHLBj0+kSZk=
 go.uber.org/dig v1.7.0/go.mod h1:z+dSd2TP9Usi48jL8M3v63iSBVkiwtVyMKxMZYYauPg=
 go.uber.org/fx v1.9.0 h1:7OAz8ucp35AU8eydejpYG7QrbE8rLKzGhHbZlJi5LYY=
