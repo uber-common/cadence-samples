@@ -21,10 +21,6 @@ func sampleActivity(ctx context.Context) error {
 func Test_Activity_Noop_Logger(t *testing.T) {
 	testSuite := &testsuite.WorkflowTestSuite{}
 	env := testSuite.NewTestActivityEnvironment()
-	logger := zap.NewNop()
-	env.SetWorkerOptions(worker.Options{
-		Logger: logger,
-	})
 	env.RegisterActivity(sampleActivity)
 	val, err := env.ExecuteActivity(sampleActivity)
 	require.Nil(t, err)
