@@ -2,14 +2,13 @@ package main
 
 import (
 	"context"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/testsuite"
 	"go.uber.org/cadence/worker"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"testing"
-
-	"github.com/stretchr/testify/require"
-	"go.uber.org/cadence/activity"
 )
 
 func sampleActivity(ctx context.Context) error {
