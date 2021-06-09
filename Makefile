@@ -135,6 +135,7 @@ pageflow:
 
 bins: helloworld \
 	branch \
+	cancelactivity \
 	childworkflow \
 	choice \
 	dynamic \
