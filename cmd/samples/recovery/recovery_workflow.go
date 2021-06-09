@@ -69,14 +69,6 @@ var (
 	ErrExecutionCacheNotFound = errors.New("failed to retrieve cache from context")
 )
 
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.RegisterWithOptions(recoverWorkflow, workflow.RegisterOptions{Name: "recoverWorkflow"})
-	activity.Register(listOpenExecutions)
-	activity.Register(recoverExecutions)
-}
-
 // recoverWorkflow is the workflow implementation to recover TripWorkflow executions
 func recoverWorkflow(ctx workflow.Context, params Params) error {
 	logger := workflow.GetLogger(ctx)
