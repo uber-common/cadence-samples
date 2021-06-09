@@ -28,6 +28,7 @@ PROGS = helloworld \
 	ctxpropagation \
 	pso \
 	pageflow \
+	sideeffect \
 
 TEST_ARG ?= -race -v -timeout 5m
 BUILD := ./build
@@ -106,6 +107,9 @@ localactivity:
 query:
 	go build -i -o bin/query cmd/samples/recipes/query/*.go
 
+sideeffect:
+	go build -i -o bin/sideeffect cmd/samples/recipes/sideeffect/*.go
+
 ctxpropagation:
 	go build -i -o bin/ctxpropagation cmd/samples/recipes/ctxpropagation/*.go
 
@@ -133,6 +137,7 @@ pso:
 pageflow:
 	go build -i -o bin/pageflow cmd/samples/pageflow/*.go
 
+
 bins: helloworld \
 	branch \
 	cancelactivity \
@@ -154,6 +159,7 @@ bins: helloworld \
 	localactivity \
 	query \
 	recovery \
+	sideeffect \
 	ctxpropagation \
 	pso \
 	pageflow \
