@@ -18,6 +18,9 @@ func startWorkers(h *common.SampleHelper) {
 	workerOptions := worker.Options{
 		MetricsScope: h.WorkerMetricScope,
 		Logger:       h.Logger,
+		FeatureFlags: client.FeatureFlags{
+			WorkflowExecutionAlreadyCompletedErrorEnabled: true,
+		},
 	}
 	h.StartWorkers(h.Config.DomainName, ApplicationName, workerOptions)
 }

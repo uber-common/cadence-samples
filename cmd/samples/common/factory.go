@@ -6,8 +6,8 @@ import (
 	"github.com/uber-go/tally"
 	"go.uber.org/cadence/.gen/go/cadence/workflowserviceclient"
 	"go.uber.org/cadence/client"
-	"go.uber.org/cadence/workflow"
 	"go.uber.org/cadence/encoded"
+	"go.uber.org/cadence/workflow"
 	"go.uber.org/yarpc"
 	"go.uber.org/yarpc/transport/tchannel"
 	"go.uber.org/zap"
@@ -70,8 +70,9 @@ func (b *WorkflowClientBuilder) SetDispatcher(dispatcher *yarpc.Dispatcher) *Wor
 // SetContextPropagators sets the context propagators for the builder
 func (b *WorkflowClientBuilder) SetContextPropagators(ctxProps []workflow.ContextPropagator) *WorkflowClientBuilder {
 	b.ctxProps = ctxProps
-  return b
+	return b
 }
+
 // SetDataConverter sets the data converter for the builder
 func (b *WorkflowClientBuilder) SetDataConverter(dataConverter encoded.DataConverter) *WorkflowClientBuilder {
 	b.dataConverter = dataConverter
@@ -86,7 +87,17 @@ func (b *WorkflowClientBuilder) BuildCadenceClient() (client.Client, error) {
 	}
 
 	return client.NewClient(
-		service, b.domain, &client.Options{Identity: b.clientIdentity, MetricsScope: b.metricsScope, DataConverter: b.dataConverter, ContextPropagators: b.ctxProps}), nil
+		service,
+		b.domain,
+		&client.Options{
+			Identity:           b.clientIdentity,
+			MetricsScope:       b.metricsScope,
+			DataConverter:      b.dataConverter,
+			ContextPropagators: b.ctxProps,
+			FeatureFlags: client.FeatureFlags{
+				WorkflowExecutionAlreadyCompletedErrorEnabled: true,
+			},
+		}), nil
 }
 
 // BuildCadenceDomainClient builds a domain client to cadence service
@@ -97,7 +108,16 @@ func (b *WorkflowClientBuilder) BuildCadenceDomainClient() (client.DomainClient,
 	}
 
 	return client.NewDomainClient(
-		service, &client.Options{Identity: b.clientIdentity, MetricsScope: b.metricsScope, ContextPropagators: b.ctxProps}), nil
+		service,
+		&client.Options{
+			Identity:           b.clientIdentity,
+			MetricsScope:       b.metricsScope,
+			ContextPropagators: b.ctxProps,
+			FeatureFlags: client.FeatureFlags{
+				WorkflowExecutionAlreadyCompletedErrorEnabled: true,
+			},
+		},
+	), nil
 }
 
 // BuildServiceClient builds a rpc service client to cadence service
