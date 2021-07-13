@@ -24,21 +24,13 @@ const (
 func startWorkers(h *common.SampleHelper) {
 	// Configure worker options.
 	workerOptions := worker.Options{
-		MetricsScope: h.WorkerMetricScope,
-		Logger:       h.Logger,
+		MetricsScope:              h.WorkerMetricScope,
+		Logger:                    h.Logger,
 		BackgroundActivityContext: context.WithValue(context.Background(), _sampleHelperContextKey, h),
 	}
 
 	// Start Worker.
-	worker := worker.New(
-		h.Service,
-		h.Config.DomainName,
-		ApplicationName,
-		workerOptions)
-	err := worker.Start()
-	if err != nil {
-		panic("Failed to start workers")
-	}
+	h.StartWorkers(h.Config.DomainName, ApplicationName, workerOptions)
 }
 
 // startTwoWorkflows starts two workflows that operate on the same recourceID
