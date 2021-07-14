@@ -19,31 +19,20 @@ const maxSignalsPerExecution = 10
 func sampleSignalCounterWorkflow(ctx workflow.Context, counter int) error {
 		s := workflow.NewSelector(ctx)
 		signalsPerExecution := 0
+		finished := false
 		s.AddReceive(workflow.GetSignalChannel(ctx, "channelA"), func(c workflow.Channel, ok bool) {
 			if ok{
 				var i int
 				c.Receive(ctx, &i)
 				counter += i
 				signalsPerExecution += 1
+				if signalsPerExecution >= maxSignalsPerExecution{
+					finished = true
+				}
 			}
 		})
-		s.AddReceive(workflow.GetSignalChannel(ctx, "channelB"), func(c workflow.Channel, ok bool) {
-			if ok{
-				var i int
-				c.Receive(ctx, &i)
-				counter += i
-				signalsPerExecution += 1
-			}
-		})
-
-		var drainedAllSignalsInDecisionTask bool
-		s.AddDefault(func() {
-			// this indicate that we have drained all signals within the decision task, and it's safe to do a continueAsNew
-			drainedAllSignalsInDecisionTask = true
-		})
-
 		for {
-			if signalsPerExecution >= maxSignalsPerExecution && drainedAllSignalsInDecisionTask{
+			if finished {
 				return workflow.NewContinueAsNewError(ctx, sampleSignalCounterWorkflow, counter)
 			}
 			s.Select(ctx)
