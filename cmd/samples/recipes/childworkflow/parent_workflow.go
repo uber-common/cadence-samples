@@ -21,9 +21,13 @@ func sampleParentWorkflow(ctx workflow.Context) error {
 	logger := workflow.GetLogger(ctx)
 	execution := workflow.GetInfo(ctx).WorkflowExecution
 	// Parent workflow can choose to specify it's own ID for child execution.  Make sure they are unique for each execution.
-	childID := fmt.Sprintf("child_workflow:%v", execution.RunID)
+	var childID string 
+        workflow.SideEffect(ctx, func(ctx workflow.Context) interface{} {
+		return uuid.New().String()
+	}).Get(&childID)
+	
 	cwo := workflow.ChildWorkflowOptions{
-		// Do not specify WorkflowID if you want cadence to generate a unique ID for child execution
+		// If WorkflowID is not specified, cadence will generate a random unique ID for child execution. However, this will cause issue for reset. See https://github.com/uber-go/cadence-client/issues/1045
 		WorkflowID:                   childID,
 		ExecutionStartToCloseTimeout: time.Minute,
 	}
