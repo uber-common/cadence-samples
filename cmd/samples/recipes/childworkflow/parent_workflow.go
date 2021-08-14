@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
 )
