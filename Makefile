@@ -141,6 +141,7 @@ bins: helloworld \
 	greetings \
 	pickfirst \
 	mutex \
+	cancelactivity \
 	retryactivity \
 	splitmerge \
 	searchattributes \
