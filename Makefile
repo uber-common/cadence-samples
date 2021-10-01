@@ -18,6 +18,7 @@ PROGS = helloworld \
 	timer \
 	localactivity \
 	query \
+	consistentquery \
 	cron \
 	dsl \
 	fileprocessing \
@@ -55,6 +56,7 @@ TEST_DIRS=./cmd/samples/cron \
 	./cmd/samples/recipes/timer \
 	./cmd/samples/recipes/localactivity \
 	./cmd/samples/recipes/query \
+	./cmd/samples/recipes/consistentquery \
 	./cmd/samples/recipes/ctxpropagation \
 	./cmd/samples/recipes/searchattributes \
 	./cmd/samples/recovery \
@@ -106,6 +108,9 @@ localactivity:
 query:
 	go build -i -o bin/query cmd/samples/recipes/query/*.go
 
+consistentquery:
+	go build -i -o bin/consistentquery cmd/samples/recipes/consistentquery/*.go
+
 ctxpropagation:
 	go build -i -o bin/ctxpropagation cmd/samples/recipes/ctxpropagation/*.go
 
@@ -153,6 +158,7 @@ bins: helloworld \
 	expense \
 	localactivity \
 	query \
+	consistentquery \
 	recovery \
 	ctxpropagation \
 	pso \
