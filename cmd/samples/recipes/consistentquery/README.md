@@ -13,11 +13,5 @@ Steps to run this sample:
 ```
 ./bin/query -m trigger
 ```
-4) Run "./bin/query -m query -w my_workflow_id -r my_run_id -t state" replace my_workflow_id and my_run_id with the workflowID and runID that you see in step 3. You should see current workflow state print on screen.
-```
-./bin/query -m query -w <workflow_id from step 3> -r <run_id from step 3> -t state
-```
-5) You could also replace the query type "state" to "__stack_trace" (replace -t state to -t __stack_trace) to dump the call stack for the workflow.
-```
-./bin/query -m query -w <workflow_id from step 3> -r <run_id from step 3> -t __stack_trace
-```
+
+It will start a workflow and then using signal+consistent query to operate the workflow. 
