@@ -5,11 +5,13 @@ import (
 
 	"github.com/uber-go/tally"
 	"go.uber.org/cadence/.gen/go/cadence/workflowserviceclient"
+	apiv1 "go.uber.org/cadence/.gen/proto/api/v1"
 	"go.uber.org/cadence/client"
+	"go.uber.org/cadence/compatibility"
 	"go.uber.org/cadence/encoded"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/yarpc"
-	"go.uber.org/yarpc/transport/tchannel"
+	"go.uber.org/yarpc/transport/grpc"
 	"go.uber.org/zap"
 )
 
@@ -130,7 +132,13 @@ func (b *WorkflowClientBuilder) BuildServiceClient() (workflowserviceclient.Inte
 		b.Logger.Fatal("No RPC dispatcher provided to create a connection to Cadence Service")
 	}
 
-	return workflowserviceclient.New(b.dispatcher.ClientConfig(_cadenceFrontendService)), nil
+	clientConfig := b.dispatcher.ClientConfig(_cadenceFrontendService)
+	return compatibility.NewThrift2ProtoAdapter(
+		apiv1.NewDomainAPIYARPCClient(clientConfig),
+		apiv1.NewWorkflowAPIYARPCClient(clientConfig),
+		apiv1.NewWorkerAPIYARPCClient(clientConfig),
+		apiv1.NewVisibilityAPIYARPCClient(clientConfig),
+	), nil
 }
 
 func (b *WorkflowClientBuilder) build() error {
@@ -142,12 +150,6 @@ func (b *WorkflowClientBuilder) build() error {
 		return errors.New("HostPort is empty")
 	}
 
-	ch, err := tchannel.NewChannelTransport(
-		tchannel.ServiceName(_cadenceClientName))
-	if err != nil {
-		b.Logger.Fatal("Failed to create transport channel", zap.Error(err))
-	}
-
 	b.Logger.Debug("Creating RPC dispatcher outbound",
 		zap.String("ServiceName", _cadenceFrontendService),
 		zap.String("HostPort", b.hostPort))
@@ -155,7 +157,7 @@ func (b *WorkflowClientBuilder) build() error {
 	b.dispatcher = yarpc.NewDispatcher(yarpc.Config{
 		Name: _cadenceClientName,
 		Outbounds: yarpc.Outbounds{
-			_cadenceFrontendService: {Unary: ch.NewSingleOutbound(b.hostPort)},
+			_cadenceFrontendService: {Unary: grpc.NewTransport().NewSingleOutbound(b.hostPort)},
 		},
 	})
 
