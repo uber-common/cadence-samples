@@ -12,7 +12,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.4.0
 	github.com/uber-go/tally v3.3.15+incompatible
-	go.uber.org/cadence v0.17.1-0.20210708064625-c4a7e032cc13
+	go.uber.org/cadence v0.18.3
 	go.uber.org/yarpc v1.55.0
 	go.uber.org/zap v1.13.0
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4 // indirect
