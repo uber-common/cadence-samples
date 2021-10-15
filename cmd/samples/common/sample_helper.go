@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/cadence/.gen/go/shared"
 
 	prom "github.com/m3db/prometheus_client_golang/prometheus"
@@ -38,6 +39,7 @@ type (
 		CtxPropagators     []workflow.ContextPropagator
 		workflowRegistries []registryOption
 		activityRegistries []registryOption
+		Tracer             opentracing.Tracer
 
 		configFile string
 	}

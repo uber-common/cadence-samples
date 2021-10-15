@@ -19,6 +19,7 @@ PROGS = helloworld \
 	localactivity \
 	query \
 	cron \
+	tracing \
 	dsl \
 	fileprocessing \
 	dummy \
@@ -109,6 +110,9 @@ query:
 ctxpropagation:
 	go build -i -o bin/ctxpropagation cmd/samples/recipes/ctxpropagation/*.go
 
+tracing:
+	go build -i -o bin/tracing cmd/samples/recipes/tracing/*.go
+
 cron:
 	go build -i -o bin/cron cmd/samples/cron/*.go
 
@@ -147,6 +151,7 @@ bins: helloworld \
 	searchattributes \
 	timer \
 	cron \
+	tracing \
 	dsl \
 	fileprocessing \
 	dummy \
