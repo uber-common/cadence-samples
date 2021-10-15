@@ -51,7 +51,7 @@ func registerWorkflowAndActivity(
 func main() {
 	tracer, closer := initJaeger("cadence-tracing-sample")
 	defer closer.Close()
-
+	
 	var mode string
 	flag.StringVar(&mode, "m", "trigger", "Mode is worker, trigger or shadower.")
 	flag.Parse()
@@ -71,10 +71,6 @@ func main() {
 	case "trigger":
 		startWorkflow(&h)
 	}
-	
-	// span := tracer.StartSpan("say-hello")
-	// println("abcdefb")
-	// span.Finish()
 }
 
 // initJaeger returns an instance of Jaeger Tracer that samples 100% of traces and logs all spans to stdout.

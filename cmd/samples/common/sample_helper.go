@@ -148,6 +148,7 @@ func (h *SampleHelper) SetupServiceConfig() {
 		SetDomain(h.Config.DomainName).
 		SetMetricsScope(h.ServiceMetricScope).
 		SetDataConverter(h.DataConverter).
+		SetTracer(h.Tracer).
 		SetContextPropagators(h.CtxPropagators)
 	service, err := h.Builder.BuildServiceClient()
 	if err != nil {
