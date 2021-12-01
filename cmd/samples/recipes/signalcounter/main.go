@@ -56,5 +56,6 @@ func main() {
 		startWorkflow(&h)
 	case "signal":
 		h.SignalWorkflow(workflowID, "channelA", signalValue)
+		h.SignalWorkflow(workflowID, "channelA", signalValue)
 	}
 }
