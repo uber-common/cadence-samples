@@ -3,6 +3,7 @@ package common
 import (
 	"errors"
 
+	"github.com/opentracing/opentracing-go"
 	"github.com/uber-go/tally"
 	"go.uber.org/cadence/.gen/go/cadence/workflowserviceclient"
 	apiv1 "go.uber.org/cadence/.gen/proto/api/v1"
@@ -30,6 +31,7 @@ type WorkflowClientBuilder struct {
 	Logger         *zap.Logger
 	ctxProps       []workflow.ContextPropagator
 	dataConverter  encoded.DataConverter
+	tracer         opentracing.Tracer
 }
 
 // NewBuilder creates a new WorkflowClientBuilder
@@ -81,6 +83,12 @@ func (b *WorkflowClientBuilder) SetDataConverter(dataConverter encoded.DataConve
 	return b
 }
 
+// SetTracer sets the tracer for the builder
+func (b *WorkflowClientBuilder) SetTracer(tracer opentracing.Tracer) *WorkflowClientBuilder {
+	b.tracer = tracer
+	return b
+}
+
 // BuildCadenceClient builds a client to cadence service
 func (b *WorkflowClientBuilder) BuildCadenceClient() (client.Client, error) {
 	service, err := b.BuildServiceClient()
@@ -96,6 +104,7 @@ func (b *WorkflowClientBuilder) BuildCadenceClient() (client.Client, error) {
 			MetricsScope:       b.metricsScope,
 			DataConverter:      b.dataConverter,
 			ContextPropagators: b.ctxProps,
+			Tracer:             b.tracer,
 			FeatureFlags: client.FeatureFlags{
 				WorkflowExecutionAlreadyCompletedErrorEnabled: true,
 			},
