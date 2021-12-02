@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"go.uber.org/cadence/workflow"
 )
 
@@ -45,7 +43,6 @@ func sampleSignalCounterWorkflow(ctx workflow.Context, counter int) error {
 
 		if signalsPerExecution >= maxSignalsPerExecution {
 			s.AddDefault(func() {
-				fmt.Println("in default")
 				// this indicate that we have drained all signals within the decision task, and it's safe to do a continueAsNew
 				drainedAllSignals = true
 			})
@@ -53,8 +50,7 @@ func sampleSignalCounterWorkflow(ctx workflow.Context, counter int) error {
 
 		s.Select(ctx)
 
-		if signalsPerExecution >= maxSignalsPerExecution && drainedAllSignals {
-			fmt.Println("total signal processed:", signalsPerExecution)
+		if drainedAllSignals {
 			return workflow.NewContinueAsNewError(ctx, sampleSignalCounterWorkflow, counter)
 		}
 	}
