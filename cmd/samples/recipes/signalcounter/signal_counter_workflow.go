@@ -20,10 +20,10 @@ const maxSignalsPerExecution = 7
 func sampleSignalCounterWorkflow(ctx workflow.Context, counter int) error {
 
 	var drainedAllSignals bool
+	signalsPerExecution := 0
 
 	for {
 		s := workflow.NewSelector(ctx)
-		signalsPerExecution := 0
 		s.AddReceive(workflow.GetSignalChannel(ctx, "channelA"), func(c workflow.Channel, ok bool) {
 			if ok {
 				var i int
