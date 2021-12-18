@@ -1,0 +1,3 @@
+domain: "target-samples-domain0"
+service: "cadence-frontend"
+host: "127.0.0.1:8933"

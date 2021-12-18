@@ -28,6 +28,7 @@ PROGS = helloworld \
 	ctxpropagation \
 	pso \
 	pageflow \
+	crossdomain \
 
 TEST_ARG ?= -race -v -timeout 5m
 BUILD := ./build
@@ -57,6 +58,7 @@ TEST_DIRS=./cmd/samples/cron \
 	./cmd/samples/recipes/query \
 	./cmd/samples/recipes/ctxpropagation \
 	./cmd/samples/recipes/searchattributes \
+	./cmd/sample/recipes/crossdomain \
 	./cmd/samples/recovery \
 	./cmd/samples/pso \
 
@@ -133,6 +135,9 @@ pso:
 pageflow:
 	go build -i -o bin/pageflow cmd/samples/pageflow/*.go
 
+crossdomain:
+	go build -i -o bin/crossdomain cmd/samples/recipes/crossdomain/*.go
+
 bins: helloworld \
 	branch \
 	childworkflow \
@@ -157,6 +162,7 @@ bins: helloworld \
 	ctxpropagation \
 	pso \
 	pageflow \
+	crossdomain \ 
 
 test: bins
 	@rm -f test

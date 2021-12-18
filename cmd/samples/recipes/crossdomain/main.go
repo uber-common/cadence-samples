@@ -25,45 +25,32 @@ func startWorkers(h *common.SampleHelper) {
 	h.StartWorkers(h.Config.DomainName, ApplicationName, workerOptions)
 }
 
-func startShadower(h *common.SampleHelper) {
-	workerOptions := worker.Options{
-		MetricsScope:       h.WorkerMetricScope,
-		Logger:             h.Logger,
-		EnableShadowWorker: true,
-		ShadowOptions: worker.ShadowOptions{
-			WorkflowTypes:  []string{helloWorldWorkflowName},
-			WorkflowStatus: []string{"Completed"},
-			ExitCondition: worker.ShadowExitCondition{
-				ShadowCount: 10,
-			},
-		},
-	}
-	h.StartWorkers(h.Config.DomainName, ApplicationName, workerOptions)
-}
-
 func startWorkflow(h *common.SampleHelper) {
 	workflowOptions := client.StartWorkflowOptions{
-		ID:                              "helloworld_" + uuid.New(),
+		ID:                              "crossdomain_" + uuid.New(),
 		TaskList:                        ApplicationName,
-		ExecutionStartToCloseTimeout:    time.Minute * 10,
-		DecisionTaskStartToCloseTimeout: time.Second * 3,
+		ExecutionStartToCloseTimeout:    time.Second * 10,
+		DecisionTaskStartToCloseTimeout: time.Minute,
 	}
-	h.StartWorkflow(workflowOptions, helloWorldWorkflowName, "Cadence")
+	h.StartWorkflow(workflowOptions, crossDomainParentWorkflow, "Cadence")
 }
 
 func registerWorkflowAndActivity(
 	h *common.SampleHelper,
 ) {
-	h.RegisterWorkflowWithAlias(helloWorldWorkflow, helloWorldWorkflowName)
-	h.RegisterActivity(helloWorldActivity)
+	h.RegisterWorkflowWithAlias(crossDomainParentWorkflow, crossDomainParentName)
+	h.RegisterWorkflowWithAlias(crossDomainChildWorkflow, crossDomainChildName)
 }
 
 func main() {
 	var mode string
-	flag.StringVar(&mode, "m", "trigger", "Mode is worker, trigger or shadower.")
+	var configFile string
+	flag.StringVar(&mode, "m", "trigger", "Mode is worker, trigger.")
+	flag.StringVar(&configFile, "cf", "", "config file path")
 	flag.Parse()
 
 	var h common.SampleHelper
+	h.SetConfigFile(configFile)
 	h.SetupServiceConfig()
 
 	switch mode {
@@ -73,11 +60,6 @@ func main() {
 
 		// The workers are supposed to be long running process that should not exit.
 		// Use select{} to block indefinitely for samples, you can quit by CMD+C.
-		select {}
-	case "shadower":
-		registerWorkflowAndActivity(&h)
-		startShadower(&h)
-
 		select {}
 	case "trigger":
 		startWorkflow(&h)

@@ -52,6 +52,10 @@ func helloWorldWorkflow(ctx workflow.Context, name string) error {
 	// 	return err
 	// }
 
+	logger.Info("Workflow sleep.")
+
+	// time.Sleep(time.Second * 20)
+
 	logger.Info("Workflow completed.", zap.String("Result", helloworldResult))
 
 	return nil
