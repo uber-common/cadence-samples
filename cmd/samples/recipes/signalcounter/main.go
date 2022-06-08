@@ -38,7 +38,7 @@ func main() {
 	var signalValue int
 	flag.StringVar(&mode, "m", "trigger", "Mode is worker, trigger(start a new workflow), or signal.")
 	flag.StringVar(&workflowID, "w", "", "the workflowID to send signal")
-	flag.IntVar(&signalValue, "sig", 10, "the value that is sent to the counter workflow")
+	flag.IntVar(&signalValue, "sig", 1, "the value that is sent to the counter workflow")
 	flag.Parse()
 
 	var h common.SampleHelper
@@ -56,6 +56,6 @@ func main() {
 		startWorkflow(&h)
 	case "signal":
 		h.SignalWorkflow(workflowID, "channelA", signalValue)
-		h.SignalWorkflow(workflowID, "channelA", signalValue)
+		h.SignalWorkflow(workflowID, "channelB", signalValue)
 	}
 }
