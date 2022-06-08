@@ -33,6 +33,7 @@ func SideEffectWorkflow(ctx workflow.Context) error {
 	workflow.SideEffect(ctx, func(ctx workflow.Context) interface{} {
 		return uuid.New().String()
 	}).Get(&value)
+	logger.Info("SideEffect value: " + value)
 
 	logger.Info("SideEffectWorkflow completed")
 	return nil

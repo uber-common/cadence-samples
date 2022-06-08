@@ -24,7 +24,7 @@ PROGS = helloworld \
 	tracing \
 	dsl \
 	fileprocessing \
-	dummy \
+	expense_dummy \
 	expense \
 	recovery \
 	cancelactivity \
@@ -32,6 +32,7 @@ PROGS = helloworld \
 	pso \
 	pageflow \
 	signalcounter \
+	sideeffect \
 
 TEST_ARG ?= -race -v -timeout 5m
 BUILD := ./build
@@ -62,6 +63,7 @@ TEST_DIRS=./cmd/samples/cron \
 	./cmd/samples/recipes/consistentquery \
 	./cmd/samples/recipes/ctxpropagation \
 	./cmd/samples/recipes/searchattributes \
+	./cmd/samples/recipes/sideeffect \
 	./cmd/samples/recipes/signalcounter \
 	./cmd/samples/recovery \
 	./cmd/samples/pso \
@@ -130,8 +132,8 @@ dsl:
 fileprocessing:
 	go build -i -o bin/fileprocessing cmd/samples/fileprocessing/*.go
 
-dummy:
-	go build -i -o bin/dummy cmd/samples/expense/server/*.go
+expense_dummy:
+	go build -i -o bin/expense_dummy cmd/samples/expense/server/*.go
 
 expense:
 	go build -i -o bin/expense cmd/samples/expense/*.go
@@ -156,6 +158,9 @@ crossdomain-setup:
 	cadence -ad 127.0.0.1:7933 --env development --do domain1 domain register --ac cluster0 --gd true
 	cadence -ad 127.0.0.1:7933 --env development --do domain2 domain register --ac cluster0 --gd true
 
+sideeffect:
+	go build -i -o bin/sideeffect cmd/samples/recipes/sideeffect/*.go
+
 bins: helloworld \
 	branch \
 	crossdomain \
@@ -174,7 +179,7 @@ bins: helloworld \
 	tracing \
 	dsl \
 	fileprocessing \
-	dummy \
+	expense_dummy \
 	expense \
 	localactivity \
 	query \
@@ -184,6 +189,7 @@ bins: helloworld \
 	pso \
 	pageflow \
 	signalcounter \
+	sideeffect \
 
 test: bins
 	@rm -f test

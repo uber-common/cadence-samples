@@ -21,15 +21,7 @@ func startWorkers(h *common.SampleHelper) {
 	}
 
 	// Start Worker.
-	worker := worker.New(
-		h.Service,
-		h.Config.DomainName,
-		ApplicationName,
-		workerOptions)
-	err := worker.Start()
-	if err != nil {
-		panic("Failed to start workers")
-	}
+	h.StartWorkers(h.Config.DomainName, ApplicationName, workerOptions)
 }
 
 func startWorkflow(h *common.SampleHelper) {
