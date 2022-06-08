@@ -9,6 +9,7 @@ default: test
 PROGS = helloworld \
 	branch \
 	childworkflow \
+	crossdomain \
 	choice \
 	dynamic \
 	greetings \
@@ -149,11 +150,20 @@ pageflow:
 signalcounter:
 	go build -i -o bin/signalcounter cmd/samples/recipes/signalcounter/*.go
 
+crossdomain:
+	go build -o bin/crossdomain cmd/samples/recipes/crossdomain/*.go
+
+crossdomain-setup:
+	cadence --ad 127.0.0.1:7933 --env development --do domain0 domain register --ac cluster0 --gd true # global domain required
+	cadence -ad 127.0.0.1:7933 --env development --do domain1 domain register --ac cluster0 --gd true
+	cadence -ad 127.0.0.1:7933 --env development --do domain2 domain register --ac cluster0 --gd true
+
 sideeffect:
 	go build -i -o bin/sideeffect cmd/samples/recipes/sideeffect/*.go
 
 bins: helloworld \
 	branch \
+	crossdomain \
 	childworkflow \
 	choice \
 	dynamic \
