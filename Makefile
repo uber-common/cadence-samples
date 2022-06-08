@@ -31,6 +31,7 @@ PROGS = helloworld \
 	pso \
 	pageflow \
 	signalcounter \
+	sideeffect \
 
 TEST_ARG ?= -race -v -timeout 5m
 BUILD := ./build
@@ -61,6 +62,7 @@ TEST_DIRS=./cmd/samples/cron \
 	./cmd/samples/recipes/consistentquery \
 	./cmd/samples/recipes/ctxpropagation \
 	./cmd/samples/recipes/searchattributes \
+	./cmd/samples/recipes/sideeffect \
 	./cmd/samples/recipes/signalcounter \
 	./cmd/samples/recovery \
 	./cmd/samples/pso \
@@ -147,6 +149,9 @@ pageflow:
 signalcounter:
 	go build -i -o bin/signalcounter cmd/samples/recipes/signalcounter/*.go
 
+sideeffect:
+	go build -i -o bin/sideeffect cmd/samples/recipes/sideeffect/*.go
+
 bins: helloworld \
 	branch \
 	childworkflow \
@@ -174,6 +179,7 @@ bins: helloworld \
 	pso \
 	pageflow \
 	signalcounter \
+	sideeffect \
 
 test: bins
 	@rm -f test
