@@ -23,7 +23,7 @@ PROGS = helloworld \
 	tracing \
 	dsl \
 	fileprocessing \
-	dummy \
+	expense_dummy \
 	expense \
 	recovery \
 	cancelactivity \
@@ -131,8 +131,8 @@ dsl:
 fileprocessing:
 	go build -i -o bin/fileprocessing cmd/samples/fileprocessing/*.go
 
-dummy:
-	go build -i -o bin/dummy cmd/samples/expense/server/*.go
+expense_dummy:
+	go build -i -o bin/expense_dummy cmd/samples/expense/server/*.go
 
 expense:
 	go build -i -o bin/expense cmd/samples/expense/*.go
@@ -169,7 +169,7 @@ bins: helloworld \
 	tracing \
 	dsl \
 	fileprocessing \
-	dummy \
+	expense_dummy \
 	expense \
 	localactivity \
 	query \
