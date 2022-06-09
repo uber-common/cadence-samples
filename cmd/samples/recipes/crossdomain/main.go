@@ -16,11 +16,15 @@ import (
 )
 
 const (
-	tasklist     = "cross-domain-tl"
+	tasklist0    = "cross-domain-tl0"
+	tasklist1    = "cross-domain-tl1"
+	tasklist2    = "cross-domain-tl2"
 	domain0      = "domain0"
 	domain1      = "domain1"
+	domain2      = "domain2"
 	portCluster0 = "127.0.0.1:7833"
 	portCluster1 = "127.0.0.1:8833"
+	portCluster2 = "127.0.0.1:9833"
 )
 
 func main() {
@@ -34,22 +38,28 @@ func main() {
 
 	switch mode {
 	case "worker0":
-		setupWorker(domain0, tasklist, portCluster0, []interface{}{wf0}, []interface{}{activity0})
-		setupWorker(domain1, tasklist, portCluster1, []interface{}{wf1}, []interface{}{activity1})
+		setupWorker(domain0, tasklist0, portCluster0, []interface{}{wf0}, []interface{}{})
 		logger.Info("workers running for cluster 0....")
 		select {}
 	case "worker1":
-		setupWorker(domain1, tasklist, portCluster1, []interface{}{wf1}, []interface{}{activity1})
+		setupWorker(domain1, tasklist1, portCluster1, []interface{}{wf1}, []interface{}{activity1})
 		logger.Info("workers running for cluster 1....")
 		select {}
-	case "cross-cluster":
+	case "worker2":
+		setupWorker(domain2, tasklist2, portCluster2, []interface{}{wf2}, []interface{}{activity2})
+		logger.Info("workers running for cluster 1....")
+		select {}
+	case "start":
 		client1 := setupClient(domain0, portCluster0)
 		id := uuid.New().String()
-		res, err := client1.StartWorkflow(context.Background(), client.StartWorkflowOptions{
+		ctx, close := context.WithTimeout(context.Background(), time.Second*30)
+		defer close()
+
+		res, err := client1.StartWorkflow(ctx, client.StartWorkflowOptions{
 			ID:                           id,
-			TaskList:                     tasklist,
+			TaskList:                     tasklist0,
 			ExecutionStartToCloseTimeout: 30 * time.Second,
-		}, wf0, "args")
+		}, wf0)
 		if err != nil {
 			logger.Error("error starting workflow", zap.Error(err))
 		}
