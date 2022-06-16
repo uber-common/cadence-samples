@@ -154,9 +154,15 @@ crossdomain:
 	go build -o bin/crossdomain cmd/samples/recipes/crossdomain/*.go
 
 crossdomain-setup:
-	cadence --ad 127.0.0.1:7933 --env development --do domain0 domain register --ac cluster0 --gd true # global domain required
-	cadence -ad 127.0.0.1:7933 --env development --do domain1 domain register --ac cluster0 --gd true
-	cadence -ad 127.0.0.1:7933 --env development --do domain2 domain register --ac cluster0 --gd true
+	# use the ..cadence-server --env development_xdc_cluster0 ... to set up three
+	cadence --ad 127.0.0.1:7933 --env development --do domain0 domain register --ac cluster0 --gd true --clusters cluster0 cluster1 # global domain required
+	cadence --ad 127.0.0.1:7933 --env development --do domain1 domain register --ac cluster1 --gd true --clusters cluster0 cluster1
+	cadence --ad 127.0.0.1:7933 --env development --do domain2 domain register --ac cluster0 --gd true --clusters cluster0 cluster1
+
+crossdomain-run: crossdomain
+	tmux split-window -h './bin/crossdomain -m "worker0"' \; \
+		split-window -v './bin/crossdomain -m "worker1"' \; \
+		split-window -v './bin/crossdomain -m "worker2"'
 
 sideeffect:
 	go build -i -o bin/sideeffect cmd/samples/recipes/sideeffect/*.go
