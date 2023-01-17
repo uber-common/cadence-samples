@@ -1,6 +1,9 @@
 .PHONY: test bins clean
 PROJECT_ROOT = github.com/uber-common/cadence-samples
 
+# change this to grpc to use gRPC transport or leave it blank to use thrift
+TAGS = ''
+
 export PATH := $(GOPATH)/bin:$(PATH)
 
 # default target
@@ -70,88 +73,88 @@ TEST_DIRS=./cmd/samples/cron \
 
 
 cancelactivity:
-	go build -i -o bin/cancelactivity cmd/samples/recipes/cancelactivity/*.go
+	go build -tags $(TAGS) -o bin/cancelactivity cmd/samples/recipes/cancelactivity/*.go
 
 helloworld:
-	go build -i -o bin/helloworld cmd/samples/recipes/helloworld/*.go
+	go build -tags $(TAGS) -o bin/helloworld cmd/samples/recipes/helloworld/*.go
 
 branch:
-	go build -i -o bin/branch cmd/samples/recipes/branch/*.go
+	go build -tags $(TAGS) -o bin/branch cmd/samples/recipes/branch/*.go
 
 childworkflow:
-	go build -i -o bin/childworkflow cmd/samples/recipes/childworkflow/*.go
+	go build -tags $(TAGS) -o bin/childworkflow cmd/samples/recipes/childworkflow/*.go
 
 choice:
-	go build -i -o bin/choice cmd/samples/recipes/choice/*.go
+	go build -tags $(TAGS) -o bin/choice cmd/samples/recipes/choice/*.go
 
 dynamic:
-	go build -i -o bin/dynamic cmd/samples/recipes/dynamic/*.go
+	go build -tags $(TAGS) -o bin/dynamic cmd/samples/recipes/dynamic/*.go
 
 greetings:
-	go build -i -o bin/greetings cmd/samples/recipes/greetings/*.go
+	go build -tags $(TAGS) -o bin/greetings cmd/samples/recipes/greetings/*.go
 
 pickfirst:
-	go build -i -o bin/pickfirst cmd/samples/recipes/pickfirst/*.go
+	go build -tags $(TAGS) -o bin/pickfirst cmd/samples/recipes/pickfirst/*.go
 
 mutex:
-	go build -i -o bin/mutex cmd/samples/recipes/mutex/*.go
+	go build -tags $(TAGS) -o bin/mutex cmd/samples/recipes/mutex/*.go
 
 retryactivity:
-	go build -i -o bin/retryactivity cmd/samples/recipes/retryactivity/*.go
+	go build -tags $(TAGS) -o bin/retryactivity cmd/samples/recipes/retryactivity/*.go
 
 splitmerge:
-	go build -i -o bin/splitmerge cmd/samples/recipes/splitmerge/*.go
+	go build -tags $(TAGS) -o bin/splitmerge cmd/samples/recipes/splitmerge/*.go
 
 searchattributes:
-	go build -i -o bin/searchattributes cmd/samples/recipes/searchattributes/*.go
+	go build -tags $(TAGS) -o bin/searchattributes cmd/samples/recipes/searchattributes/*.go
 
 timer:
-	go build -i -o bin/timer cmd/samples/recipes/timer/*.go
+	go build -tags $(TAGS) -o bin/timer cmd/samples/recipes/timer/*.go
 
 localactivity:
-	go build -i -o bin/localactivity cmd/samples/recipes/localactivity/*.go
+	go build -tags $(TAGS) -o bin/localactivity cmd/samples/recipes/localactivity/*.go
 
 query:
-	go build -i -o bin/query cmd/samples/recipes/query/*.go
+	go build -tags $(TAGS) -o bin/query cmd/samples/recipes/query/*.go
 
 consistentquery:
-	go build -i -o bin/consistentquery cmd/samples/recipes/consistentquery/*.go
+	go build -tags $(TAGS) -o bin/consistentquery cmd/samples/recipes/consistentquery/*.go
 
 ctxpropagation:
-	go build -i -o bin/ctxpropagation cmd/samples/recipes/ctxpropagation/*.go
+	go build -tags $(TAGS) -o bin/ctxpropagation cmd/samples/recipes/ctxpropagation/*.go
 
 tracing:
-	go build -i -o bin/tracing cmd/samples/recipes/tracing/*.go
+	go build -tags $(TAGS) -o bin/tracing cmd/samples/recipes/tracing/*.go
 
 cron:
-	go build -i -o bin/cron cmd/samples/cron/*.go
+	go build -tags $(TAGS) -o bin/cron cmd/samples/cron/*.go
 
 dsl:
-	go build -i -o bin/dsl cmd/samples/dsl/*.go
+	go build -tags $(TAGS) -o bin/dsl cmd/samples/dsl/*.go
 
 fileprocessing:
-	go build -i -o bin/fileprocessing cmd/samples/fileprocessing/*.go
+	go build -tags $(TAGS) -o bin/fileprocessing cmd/samples/fileprocessing/*.go
 
 expense_dummy:
-	go build -i -o bin/expense_dummy cmd/samples/expense/server/*.go
+	go build -tags $(TAGS) -o bin/expense_dummy cmd/samples/expense/server/*.go
 
 expense:
-	go build -i -o bin/expense cmd/samples/expense/*.go
+	go build -tags $(TAGS) -o bin/expense cmd/samples/expense/*.go
 
 recovery:
-	go build -i -o bin/recovery cmd/samples/recovery/*.go
+	go build -tags $(TAGS) -o bin/recovery cmd/samples/recovery/*.go
 
 pso:
-	go build -i -o bin/pso cmd/samples/pso/*.go
+	go build -tags $(TAGS) -o bin/pso cmd/samples/pso/*.go
 
 pageflow:
-	go build -i -o bin/pageflow cmd/samples/pageflow/*.go
+	go build -tags $(TAGS) -o bin/pageflow cmd/samples/pageflow/*.go
 
 signalcounter:
-	go build -i -o bin/signalcounter cmd/samples/recipes/signalcounter/*.go
+	go build -tags $(TAGS) -o bin/signalcounter cmd/samples/recipes/signalcounter/*.go
 
 crossdomain:
-	go build -o bin/crossdomain cmd/samples/recipes/crossdomain/*.go
+	go build -tags $(TAGS) -o bin/crossdomain cmd/samples/recipes/crossdomain/*.go
 
 crossdomain-setup:
 	# use the ..cadence-server --env development_xdc_cluster0 ... to set up three
@@ -165,7 +168,7 @@ crossdomain-run: crossdomain
 		split-window -v './bin/crossdomain -m "worker2"'
 
 sideeffect:
-	go build -i -o bin/sideeffect cmd/samples/recipes/sideeffect/*.go
+	go build -tags $(TAGS) -o bin/sideeffect cmd/samples/recipes/sideeffect/*.go
 
 bins: helloworld \
 	branch \
