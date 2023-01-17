@@ -3,7 +3,7 @@ package common
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/opentracing/opentracing-go"
@@ -93,7 +93,7 @@ func (h *SampleHelper) SetupServiceConfig() {
 		h.configFile = defaultConfigFile
 	}
 	// Initialize developer config for running samples
-	configData, err := ioutil.ReadFile(h.configFile)
+	configData, err := os.ReadFile(h.configFile)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to log config file: %v, Error: %v", defaultConfigFile, err))
 	}

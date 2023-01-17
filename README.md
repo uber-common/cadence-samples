@@ -11,6 +11,7 @@ See instructions for running the Cadence Server: https://github.com/uber/cadence
 See instructions for using CLI to register a domain(name as "samples-domain"): https://cadenceworkflow.io/docs/cli/#quick-start
  or https://github.com/uber/cadence/blob/master/tools/cli/README.md
 
+By default cadence samples uses Thrift protocol to communicate with cadence server on port 7933. If you want to change the protocol to gRPC, add `grpc` to the [Makefile](Makefile)'s TAGS variable, and do not forget to modify the [config/development.yaml](config/development.yaml) host configuration to port `7833` then add this port to your docker-compose file. ⚠️ This port is not exposed by the default!
 
 ## Steps to run samples
 ### Build Samples

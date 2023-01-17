@@ -1,7 +1,9 @@
 # config for sample
 domain: "samples-domain"
 service: "cadence-frontend"
-host: "127.0.0.1:7833"
+# If you want to use gRPC protocol instead of Thrift protocol use 7833 port but
+# do not forget to expose this port on your docker-compose configuration too.
+host: "127.0.0.1:7933"
 # config for emitting metrics
 #prometheus:
 #  listenAddress: "127.0.0.1:9098"
