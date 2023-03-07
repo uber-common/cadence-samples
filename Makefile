@@ -70,85 +70,85 @@ TEST_DIRS=./cmd/samples/cron \
 
 
 cancelactivity:
-	go build -i -o bin/cancelactivity cmd/samples/recipes/cancelactivity/*.go
+	go build -o bin/cancelactivity cmd/samples/recipes/cancelactivity/*.go
 
 helloworld:
-	go build -i -o bin/helloworld cmd/samples/recipes/helloworld/*.go
+	go build -o bin/helloworld cmd/samples/recipes/helloworld/*.go
 
 branch:
-	go build -i -o bin/branch cmd/samples/recipes/branch/*.go
+	go build -o bin/branch cmd/samples/recipes/branch/*.go
 
 childworkflow:
-	go build -i -o bin/childworkflow cmd/samples/recipes/childworkflow/*.go
+	go build -o bin/childworkflow cmd/samples/recipes/childworkflow/*.go
 
 choice:
-	go build -i -o bin/choice cmd/samples/recipes/choice/*.go
+	go build -o bin/choice cmd/samples/recipes/choice/*.go
 
 dynamic:
-	go build -i -o bin/dynamic cmd/samples/recipes/dynamic/*.go
+	go build -o bin/dynamic cmd/samples/recipes/dynamic/*.go
 
 greetings:
-	go build -i -o bin/greetings cmd/samples/recipes/greetings/*.go
+	go build -o bin/greetings cmd/samples/recipes/greetings/*.go
 
 pickfirst:
-	go build -i -o bin/pickfirst cmd/samples/recipes/pickfirst/*.go
+	go build -o bin/pickfirst cmd/samples/recipes/pickfirst/*.go
 
 mutex:
-	go build -i -o bin/mutex cmd/samples/recipes/mutex/*.go
+	go build -o bin/mutex cmd/samples/recipes/mutex/*.go
 
 retryactivity:
-	go build -i -o bin/retryactivity cmd/samples/recipes/retryactivity/*.go
+	go build -o bin/retryactivity cmd/samples/recipes/retryactivity/*.go
 
 splitmerge:
-	go build -i -o bin/splitmerge cmd/samples/recipes/splitmerge/*.go
+	go build -o bin/splitmerge cmd/samples/recipes/splitmerge/*.go
 
 searchattributes:
-	go build -i -o bin/searchattributes cmd/samples/recipes/searchattributes/*.go
+	go build -o bin/searchattributes cmd/samples/recipes/searchattributes/*.go
 
 timer:
-	go build -i -o bin/timer cmd/samples/recipes/timer/*.go
+	go build -o bin/timer cmd/samples/recipes/timer/*.go
 
 localactivity:
-	go build -i -o bin/localactivity cmd/samples/recipes/localactivity/*.go
+	go build -o bin/localactivity cmd/samples/recipes/localactivity/*.go
 
 query:
-	go build -i -o bin/query cmd/samples/recipes/query/*.go
+	go build -o bin/query cmd/samples/recipes/query/*.go
 
 consistentquery:
-	go build -i -o bin/consistentquery cmd/samples/recipes/consistentquery/*.go
+	go build -o bin/consistentquery cmd/samples/recipes/consistentquery/*.go
 
 ctxpropagation:
-	go build -i -o bin/ctxpropagation cmd/samples/recipes/ctxpropagation/*.go
+	go build -o bin/ctxpropagation cmd/samples/recipes/ctxpropagation/*.go
 
 tracing:
-	go build -i -o bin/tracing cmd/samples/recipes/tracing/*.go
+	go build -o bin/tracing cmd/samples/recipes/tracing/*.go
 
 cron:
-	go build -i -o bin/cron cmd/samples/cron/*.go
+	go build -o bin/cron cmd/samples/cron/*.go
 
 dsl:
-	go build -i -o bin/dsl cmd/samples/dsl/*.go
+	go build -o bin/dsl cmd/samples/dsl/*.go
 
 fileprocessing:
-	go build -i -o bin/fileprocessing cmd/samples/fileprocessing/*.go
+	go build -o bin/fileprocessing cmd/samples/fileprocessing/*.go
 
 expense_dummy:
-	go build -i -o bin/expense_dummy cmd/samples/expense/server/*.go
+	go build -o bin/expense_dummy cmd/samples/expense/server/*.go
 
 expense:
-	go build -i -o bin/expense cmd/samples/expense/*.go
+	go build -o bin/expense cmd/samples/expense/*.go
 
 recovery:
-	go build -i -o bin/recovery cmd/samples/recovery/*.go
+	go build -o bin/recovery cmd/samples/recovery/*.go
 
 pso:
-	go build -i -o bin/pso cmd/samples/pso/*.go
+	go build -o bin/pso cmd/samples/pso/*.go
 
 pageflow:
-	go build -i -o bin/pageflow cmd/samples/pageflow/*.go
+	go build -o bin/pageflow cmd/samples/pageflow/*.go
 
 signalcounter:
-	go build -i -o bin/signalcounter cmd/samples/recipes/signalcounter/*.go
+	go build -o bin/signalcounter cmd/samples/recipes/signalcounter/*.go
 
 crossdomain:
 	go build -o bin/crossdomain cmd/samples/recipes/crossdomain/*.go
@@ -165,7 +165,7 @@ crossdomain-run: crossdomain
 		split-window -v './bin/crossdomain -m "worker2"'
 
 sideeffect:
-	go build -i -o bin/sideeffect cmd/samples/recipes/sideeffect/*.go
+	go build -o bin/sideeffect cmd/samples/recipes/sideeffect/*.go
 
 bins: helloworld \
 	branch \
