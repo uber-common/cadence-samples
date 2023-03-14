@@ -10,7 +10,7 @@ import (
 )
 
 // This replay test is the recommended way to make sure changing workflow code is backward compatible without non-deterministic errors.
-// "helloworld.json" can be downloaded from cadence CLI:
+// "greetings.json" can be downloaded from cadence CLI:
 //
 //	cadence --do samples-domain wf show -w greetings_5d5f8e5c-4807-444d-9dc5-80abea22a324 --output_filename ~/tmp/greetings.json
 //
