@@ -19,6 +19,7 @@ const (
 // Make sure cadence-server is running at the address specified in the
 // config/development.yaml file before running this test
 func TestWorkflowShadowing(t *testing.T) {
+	t.Skip("need connection to cadence server")
 
 	shadowOptions := worker.ShadowOptions{
 		WorkflowTypes:  []string{"sampleGreetingsWorkflow"},
