@@ -1,7 +1,6 @@
-This sample workflow demos how to use local activity to execute short/quick operations efficiently.
+### Background 
 
-local_activity_workflow.go shows how to use local activity
-local_activity_workflow_test.go shows how to unit-test workflow with local activity
+This sample workflow demos a normal and local activity as they deal with a crashing, timing out, misbehaving activity through an aggressive retry policy.
 
 Steps to run this sample:
 1) You need a cadence service running. See details in cmd/samples/README.md
@@ -9,19 +8,13 @@ Steps to run this sample:
 ```
 ./bin/localactivityfailure -m worker
 ```
-3) Run the following command to trigger a workflow execution. You should see workflowID and runID print out on screen.
+3) Run the following command to trigger a local workflow execution. You should see workflowID and runID print out on screen and a final log entry showing the final result.
 ```
-./bin/localactivityfailure -m trigger
+./bin/localactivityfailure -m trigger-local
 ```
-4) Run the following command to send signal "_1_" to the running workflow. You should see output that indicate 5 local activity has been run to check the conditions and one condition will be true which result in one activity to be scheduled.
-```
-./bin/localactivityfailure -m signal -s _1_ -w <workflow ID from step 3>
-```
-5) Repeat step 4, but with different signal data, for example, send signal like _2_4_ to make 2 conditions true.
-```
-./bin/localactivityfailure -m signal -s _2_4_ -w <workflow ID from step 3>
-```
-6) Run the following command this will exit the workflow.
-```
-./bin/localactivityfailure -m signal -s exit
-```
+
+## Test
+
+The test is relatively simple: Run an activity which will fail quite a lot, or timeout, and retry it sufficiently that it completes, eventually. Do this 20 times.
+
+As a simple verification, the integer returned (5 in this instance) run 20 times ought to equal 100 if all the activities eventually pass. More than that would be a failure of correctless and less would indicate the failures caused the activity to not complete sufficiently.
