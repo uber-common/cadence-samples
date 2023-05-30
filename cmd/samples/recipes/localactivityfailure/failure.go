@@ -18,7 +18,8 @@ func init() {
 
 var globalMu sync.Mutex
 
-// a data-racy, completely problematic
+// a data-racy, completely problematic means to capture the completion of an activity
+// locally and show where sometimes it's being retried
 var sideEffectsCapture int
 
 type Result struct {
@@ -29,7 +30,7 @@ func testLocalActivity(ctx workflow.Context) error {
 	log := workflow.GetLogger(ctx)
 	// zero out the global variable to start with to ensure test is sane
 	// this workflow is only a demonstration and global variables like this are *A BAD IDEA*
-	// it's being expicitly used to demonstrate how the local activities can cause side-effects to be replaced
+	// it's being expicitly used to demonstrate how side-effects are occurring
 	sideEffectsCapture = 0
 	ao := workflow.LocalActivityOptions{
 		ScheduleToCloseTimeout: time.Second,
