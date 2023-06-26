@@ -3,7 +3,7 @@ package common
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/opentracing/opentracing-go"
@@ -24,6 +24,14 @@ import (
 
 const (
 	defaultConfigFile = "config/development.yaml"
+)
+
+type KeyType string
+
+const (
+	KeyTypePrivate KeyType = "private key"
+
+	KeyTypePublic KeyType = "public key"
 )
 
 type (
@@ -50,6 +58,8 @@ type (
 		ServiceName     string                    `yaml:"service"`
 		HostNameAndPort string                    `yaml:"host"`
 		Prometheus      *prometheus.Configuration `yaml:"prometheus"`
+		// PrivateKey is the private key path used for JWT
+		PrivateKey string `yaml:"privateKey"`
 	}
 
 	registryOption struct {
@@ -93,7 +103,7 @@ func (h *SampleHelper) SetupServiceConfig() {
 		h.configFile = defaultConfigFile
 	}
 	// Initialize developer config for running samples
-	configData, err := ioutil.ReadFile(h.configFile)
+	configData, err := os.ReadFile(h.configFile)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to log config file: %v, Error: %v", defaultConfigFile, err))
 	}
@@ -143,6 +153,7 @@ func (h *SampleHelper) SetupServiceConfig() {
 			SanitizeOptions: &sanitizeOptions,
 		}, 1*time.Second)
 	}
+
 	h.Builder = NewBuilder(logger).
 		SetHostPort(h.Config.HostNameAndPort).
 		SetDomain(h.Config.DomainName).
@@ -150,6 +161,16 @@ func (h *SampleHelper) SetupServiceConfig() {
 		SetDataConverter(h.DataConverter).
 		SetTracer(h.Tracer).
 		SetContextPropagators(h.CtxPropagators)
+
+	if len(h.Config.PrivateKey) > 0 {
+		pk, err := os.ReadFile(h.Config.PrivateKey)
+		if err != nil {
+			panic(err)
+		}
+		logger.Info("Using JWT Authorization")
+		h.Builder.SetAuthorizer(worker.NewAdminJwtAuthorizationProvider(pk))
+	}
+
 	service, err := h.Builder.BuildServiceClient()
 	if err != nil {
 		panic(err)
@@ -159,7 +180,7 @@ func (h *SampleHelper) SetupServiceConfig() {
 	domainClient, _ := h.Builder.BuildCadenceDomainClient()
 	_, err = domainClient.Describe(context.Background(), h.Config.DomainName)
 	if err != nil {
-		logger.Info("Domain doesn't exist", zap.String("Domain", h.Config.DomainName), zap.Error(err))
+		logger.Info("Cannot describe domain", zap.String("Domain", h.Config.DomainName), zap.Error(err))
 	} else {
 		logger.Info("Domain successfully registered.", zap.String("Domain", h.Config.DomainName))
 	}

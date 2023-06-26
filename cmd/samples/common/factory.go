@@ -1,7 +1,10 @@
 package common
 
 import (
+	"context"
 	"errors"
+	"go.uber.org/cadence/worker"
+	"go.uber.org/yarpc/api/transport"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber-go/tally"
@@ -17,9 +20,29 @@ import (
 )
 
 const (
-	_cadenceClientName      = "cadence-client"
-	_cadenceFrontendService = "cadence-frontend"
+	_cadenceClientName            = "cadence-client"
+	_cadenceFrontendService       = "cadence-frontend"
+	_authorizationTokenHeaderName = "cadence-authorization"
 )
+
+type authOutboundMiddleware struct {
+	authProvider worker.AuthorizationProvider
+}
+
+func (m *authOutboundMiddleware) Call(ctx context.Context, request *transport.Request, out transport.UnaryOutbound) (*transport.Response, error) {
+	if m.authProvider == nil {
+		return out.Call(ctx, request)
+	}
+
+	token, err := m.authProvider.GetAuthToken()
+	if err != nil {
+		return nil, err
+	}
+	request.Headers = request.Headers.
+		With(_authorizationTokenHeaderName, string(token))
+
+	return out.Call(ctx, request)
+}
 
 // WorkflowClientBuilder build client to cadence service
 type WorkflowClientBuilder struct {
@@ -32,6 +55,7 @@ type WorkflowClientBuilder struct {
 	ctxProps       []workflow.ContextPropagator
 	dataConverter  encoded.DataConverter
 	tracer         opentracing.Tracer
+	authorizer     worker.AuthorizationProvider
 }
 
 // NewBuilder creates a new WorkflowClientBuilder
@@ -89,6 +113,11 @@ func (b *WorkflowClientBuilder) SetTracer(tracer opentracing.Tracer) *WorkflowCl
 	return b
 }
 
+func (b *WorkflowClientBuilder) SetAuthorizer(provider worker.AuthorizationProvider) *WorkflowClientBuilder {
+	b.authorizer = provider
+	return b
+}
+
 // BuildCadenceClient builds a client to cadence service
 func (b *WorkflowClientBuilder) BuildCadenceClient() (client.Client, error) {
 	service, err := b.BuildServiceClient()
@@ -108,6 +137,7 @@ func (b *WorkflowClientBuilder) BuildCadenceClient() (client.Client, error) {
 			FeatureFlags: client.FeatureFlags{
 				WorkflowExecutionAlreadyCompletedErrorEnabled: true,
 			},
+			Authorization: b.authorizer,
 		}), nil
 }
 
@@ -127,6 +157,7 @@ func (b *WorkflowClientBuilder) BuildCadenceDomainClient() (client.DomainClient,
 			FeatureFlags: client.FeatureFlags{
 				WorkflowExecutionAlreadyCompletedErrorEnabled: true,
 			},
+			Authorization: b.authorizer,
 		},
 	), nil
 }
@@ -167,6 +198,9 @@ func (b *WorkflowClientBuilder) build() error {
 		Name: _cadenceClientName,
 		Outbounds: yarpc.Outbounds{
 			_cadenceFrontendService: {Unary: grpc.NewTransport().NewSingleOutbound(b.hostPort)},
+		},
+		OutboundMiddleware: yarpc.OutboundMiddleware{
+			Unary: &authOutboundMiddleware{b.authorizer},
 		},
 	})
 
