@@ -16,8 +16,8 @@ type sampleInput struct {
 // HelloWorldWorkflow greets the caller.
 func HelloWorldWorkflow(ctx workflow.Context, input sampleInput) (string, error) {
 	ao := workflow.ActivityOptions{
-		StartToCloseTimeout:    time.Minute,
 		ScheduleToStartTimeout: time.Minute,
+		StartToCloseTimeout:    time.Minute,
 	}
 	ctx = workflow.WithActivityOptions(ctx, ao)
 
