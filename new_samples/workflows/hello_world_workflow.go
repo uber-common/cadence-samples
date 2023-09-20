@@ -9,8 +9,12 @@ import (
 	"time"
 )
 
+type sampleInput struct {
+	Message string `json:"message"`
+}
+
 // HelloWorldWorkflow greets the caller.
-func HelloWorldWorkflow(ctx workflow.Context, input SampleInput) error {
+func HelloWorldWorkflow(ctx workflow.Context, input sampleInput) error {
 	ao := workflow.ActivityOptions{
 		StartToCloseTimeout:    time.Minute,
 		ScheduleToStartTimeout: time.Minute,
@@ -32,7 +36,7 @@ func HelloWorldWorkflow(ctx workflow.Context, input SampleInput) error {
 }
 
 // HelloWorldActivity constructs the greeting message from input.
-func HelloWorldActivity(ctx context.Context, input SampleInput) (string, error) {
+func HelloWorldActivity(ctx context.Context, input sampleInput) (string, error) {
 	logger := activity.GetLogger(ctx)
 	logger.Info("HelloWorldActivity started")
 	return fmt.Sprintf("Hello, %s!", input.Message), nil
