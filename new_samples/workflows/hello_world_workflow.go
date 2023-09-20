@@ -14,7 +14,7 @@ type sampleInput struct {
 }
 
 // HelloWorldWorkflow greets the caller.
-func HelloWorldWorkflow(ctx workflow.Context, input sampleInput) error {
+func HelloWorldWorkflow(ctx workflow.Context, input sampleInput) (string, error) {
 	ao := workflow.ActivityOptions{
 		StartToCloseTimeout:    time.Minute,
 		ScheduleToStartTimeout: time.Minute,
@@ -28,11 +28,11 @@ func HelloWorldWorkflow(ctx workflow.Context, input sampleInput) error {
 	err := workflow.ExecuteActivity(ctx, HelloWorldActivity, input).Get(ctx, &greetingMsg)
 	if err != nil {
 		logger.Error("HelloWorldActivity failed", zap.Error(err))
-		return err
+		return "", err
 	}
 
 	logger.Info("Workflow result", zap.String("greeting", greetingMsg))
-	return nil
+	return greetingMsg, nil
 }
 
 // HelloWorldActivity constructs the greeting message from input.
