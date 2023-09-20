@@ -2,11 +2,14 @@
 package worker
 
 import (
+	"github.com/uber-common/cadence-samples/new_samples/workflows"
 	"github.com/uber-go/tally"
 	apiv1 "github.com/uber/cadence-idl/go/proto/api/v1"
 	"go.uber.org/cadence/.gen/go/cadence/workflowserviceclient"
+	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/compatibility"
 	"go.uber.org/cadence/worker"
+	"go.uber.org/cadence/workflow"
 	"go.uber.org/yarpc"
 	"go.uber.org/yarpc/transport/grpc"
 	"go.uber.org/zap"
@@ -36,12 +39,16 @@ func StartWorker() {
 		Domain,
 		TaskListName,
 		workerOptions)
+	// HelloWorld workflow registration
+	w.RegisterWorkflowWithOptions(workflows.HelloWorldWorkflow, workflow.RegisterOptions{Name: "cadence_samples.HelloWorldWorkflow"})
+	w.RegisterActivityWithOptions(workflows.HelloWorldActivity, activity.RegisterOptions{Name: "cadence_samples.HelloWorldActivity"})
+
 	err := w.Start()
 	if err != nil {
 		panic("Failed to start worker")
 	}
-
 	logger.Info("Started Worker.", zap.String("worker", TaskListName))
+
 }
 
 func buildCadenceClient() workflowserviceclient.Interface {
