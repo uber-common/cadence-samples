@@ -5,12 +5,8 @@ These are some samples to demonstrate various capabilities of Cadence client and
 
 ## Prerequisite
 0. Install Cadence CLI. See instruction [here](https://cadenceworkflow.io/docs/cli/).
-1. Run Cadence Server
-
-    See instructions for running the Cadence Server: https://github.com/uber/cadence/blob/master/README.md
-2. Register a domain 
-
-    See instructions for using CLI to register a domain(name as "cadence-samples-domain"): https://cadenceworkflow.io/docs/cli/#quick-start or https://github.com/uber/cadence/blob/master/tools/cli/README.md
+1. Run the Cadence server: https://github.com/uber/cadence/blob/master/README.md
+2. Register the `cadence-samples` domain: https://cadenceworkflow.io/docs/cli/#quick-start or https://github.com/uber/cadence/blob/master/tools/cli/README.md
 
 
 
