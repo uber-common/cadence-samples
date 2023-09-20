@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// HelloWorldWorkflow greets the caller.
 func HelloWorldWorkflow(ctx workflow.Context, input SampleInput) error {
 	ao := workflow.ActivityOptions{
 		StartToCloseTimeout:    time.Minute,
@@ -30,6 +31,7 @@ func HelloWorldWorkflow(ctx workflow.Context, input SampleInput) error {
 	return nil
 }
 
+// HelloWorldActivity constructs the greeting message from input.
 func HelloWorldActivity(ctx context.Context, input SampleInput) (string, error) {
 	logger := activity.GetLogger(ctx)
 	logger.Info("HelloWorldActivity started")

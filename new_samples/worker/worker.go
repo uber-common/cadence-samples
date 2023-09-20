@@ -1,3 +1,4 @@
+// Package worker implements a Cadence worker with basic configurations.
 package worker
 
 import (
@@ -20,6 +21,7 @@ const (
 	CadenceService = "cadence-frontend"
 )
 
+// StartWorker creates and starts a basic Cadence worker.
 func StartWorker() {
 	// TaskListName identifies set of client workflows, activities, and workers.
 	// It could be your group or client or application name.
