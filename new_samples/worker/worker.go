@@ -17,8 +17,10 @@ import (
 )
 
 const (
-	HostPort       = "127.0.0.1:7833"
-	Domain         = "cadence-samples-domain"
+	HostPort = "127.0.0.1:7833"
+	Domain   = "cadence-samples"
+	// TaskListName identifies set of client workflows, activities, and workers.
+	// It could be your group or client or application name.
 	TaskListName   = "cadence-samples-worker"
 	ClientName     = "cadence-samples-worker"
 	CadenceService = "cadence-frontend"
@@ -26,8 +28,6 @@ const (
 
 // StartWorker creates and starts a basic Cadence worker.
 func StartWorker() {
-	// TaskListName identifies set of client workflows, activities, and workers.
-	// It could be your group or client or application name.
 	logger, cadenceClient := buildLogger(), buildCadenceClient()
 	workerOptions := worker.Options{
 		Logger:       logger,
