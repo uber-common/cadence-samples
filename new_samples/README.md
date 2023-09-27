@@ -23,11 +23,11 @@ Here are a list of example CLIs you may use to play with the samples.
 This workflow takes an input message and greet you as response. Try the following CLI
 ```bash
 cadence --env development \
---domain cadence-samples-domain \
-workflow start \
---workflow_type cadence_samples.HelloWorldWorkflow \
---tl cadence-samples-worker \
---et 60 \
---input '{"message":"Uber"}'
+  --domain cadence-samples \
+  workflow start \
+  --workflow_type cadence_samples.HelloWorldWorkflow \
+  --tl cadence-samples-worker \
+  --et 60 \
+  --input '{"message":"Uber"}'
 ```
 Try to inspect the log message for the output.
