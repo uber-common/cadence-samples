@@ -12,7 +12,7 @@ func main() {
 	worker.StartWorker()
 
 	done := make(chan os.Signal, 1)
-	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(done, syscall.SIGINT)
 	fmt.Println("Cadence worker started, press ctrl+c to terminate...")
 	<-done
 }
