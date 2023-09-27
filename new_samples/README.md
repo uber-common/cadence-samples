@@ -16,8 +16,8 @@ Simply start the go binary by running
 ```bash
 go run main.go
 ```
-The worker will listen to `localhost:3000`. Then you may interact with the samples using Cadence CLI.
-Here are a list of example CLIs you may use to play with the samples.
+Then you may interact with the samples using Cadence CLI. You may start multiple workers by running
+this binary. Here are a list of example CLIs you may use to play with the samples.
 
 ### HelloWorld workflow
 This workflow takes an input message and greet you as response. Try the following CLI
