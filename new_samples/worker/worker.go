@@ -59,7 +59,7 @@ func buildCadenceClient() workflowserviceclient.Interface {
 		},
 	})
 	if err := dispatcher.Start(); err != nil {
-		panic("Failed to start dispatcher")
+		panic("Failed to start dispatcher: " + err.Error())
 	}
 
 	clientConfig := dispatcher.ClientConfig(CadenceService)
