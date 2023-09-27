@@ -31,7 +31,7 @@ func StartWorker() {
 	logger, cadenceClient := buildLogger(), buildCadenceClient()
 	workerOptions := worker.Options{
 		Logger:       logger,
-		MetricsScope: tally.NewTestScope(TaskListName, map[string]string{}),
+		MetricsScope: tally.NewTestScope(TaskListName, nil),
 	}
 
 	w := worker.New(
