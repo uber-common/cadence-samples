@@ -79,7 +79,7 @@ func buildLogger() *zap.Logger {
 	var err error
 	logger, err := config.Build()
 	if err != nil {
-		panic("Failed to setup logger")
+		panic("Failed to setup logger: " + err.Error())
 	}
 
 	return logger
