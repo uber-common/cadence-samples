@@ -45,7 +45,7 @@ func StartWorker() {
 
 	err := w.Start()
 	if err != nil {
-		panic("Failed to start worker")
+		panic("Failed to start worker: " + err.Error())
 	}
 	logger.Info("Started Worker.", zap.String("worker", TaskListName))
 
