@@ -43,6 +43,14 @@ func StartWorker() {
 	w.RegisterWorkflowWithOptions(workflows.HelloWorldWorkflow, workflow.RegisterOptions{Name: "cadence_samples.HelloWorldWorkflow"})
 	w.RegisterActivityWithOptions(workflows.HelloWorldActivity, activity.RegisterOptions{Name: "cadence_samples.HelloWorldActivity"})
 
+	// Signal workflow registration
+	w.RegisterWorkflowWithOptions(workflows.SignalGreeterMultiLanguageWorkflow, workflow.RegisterOptions{Name: "cadence_samples.SignalGreeterMultiLanguageWorkflow"})
+	w.RegisterActivityWithOptions(workflows.GenerateGreetingMessage, activity.RegisterOptions{Name: "cadence_samples.GenerateGreetingMessage"})
+
+	// Dynamic workflow registration
+	w.RegisterWorkflowWithOptions(workflows.DynamicWorkflow, workflow.RegisterOptions{Name: "cadence_samples.DynamicWorkflow"})
+	w.RegisterActivityWithOptions(workflows.DynamicGreetingActivity, activity.RegisterOptions{Name: "cadence_samples.DynamicGreetingActivity"})
+
 	err := w.Start()
 	if err != nil {
 		panic("Failed to start worker: " + err.Error())
