@@ -28,7 +28,7 @@ const (
 
 // StartWorker creates and starts a basic Cadence worker.
 func StartWorker() {
-	logger, cadenceClient := buildLogger(), buildCadenceClient()
+	logger, cadenceClient := BuildLogger(), BuildCadenceClient()
 	workerOptions := worker.Options{
 		Logger:       logger,
 		MetricsScope: tally.NewTestScope(TaskListName, nil),
@@ -59,7 +59,7 @@ func StartWorker() {
 
 }
 
-func buildCadenceClient() workflowserviceclient.Interface {
+func BuildCadenceClient() workflowserviceclient.Interface {
 	dispatcher := yarpc.NewDispatcher(yarpc.Config{
 		Name: ClientName,
 		Outbounds: yarpc.Outbounds{
@@ -80,7 +80,7 @@ func buildCadenceClient() workflowserviceclient.Interface {
 	)
 }
 
-func buildLogger() *zap.Logger {
+func BuildLogger() *zap.Logger {
 	config := zap.NewDevelopmentConfig()
 	config.Level.SetLevel(zapcore.InfoLevel)
 
