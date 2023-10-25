@@ -101,5 +101,3 @@ cadence --env development \
   --et 60 \
   --input '{}'
 ```
-
-You should see the second activity in the output because it finishes first. 
