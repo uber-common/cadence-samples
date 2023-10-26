@@ -51,6 +51,10 @@ func StartWorker() {
 	w.RegisterWorkflowWithOptions(workflows.DynamicWorkflow, workflow.RegisterOptions{Name: "cadence_samples.DynamicWorkflow"})
 	w.RegisterActivityWithOptions(workflows.DynamicGreetingActivity, activity.RegisterOptions{Name: "cadence_samples.DynamicGreetingActivity"})
 
+	// ParallelPickFirst workflow registration
+	w.RegisterWorkflowWithOptions(workflows.ParallelBranchPickFirstWorkflow, workflow.RegisterOptions{Name: "cadence_samples.ParallelBranchPickFirstWorkflow"})
+	w.RegisterActivityWithOptions(workflows.ParallelActivity, activity.RegisterOptions{Name: "cadence_samples.ParallelActivity"})
+
 	err := w.Start()
 	if err != nil {
 		panic("Failed to start worker: " + err.Error())

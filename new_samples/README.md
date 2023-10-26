@@ -87,3 +87,17 @@ cadence --env development \
 ```
 Try to inspect the log message for the output.
 
+### Parallel pick first workflow
+This example runs two activities in parallel and output the first successful response. Change the 
+configuration for `WaitForCancellation` in the activity options will change the behavior of canceling
+other unfinished activities. Here is a sample CLI
+
+```bash
+cadence --env development \
+  --domain cadence-samples \
+  workflow start \
+  --workflow_type cadence_samples.ParallelBranchPickFirstWorkflow \
+  --tl cadence-samples-worker \
+  --et 60 \
+  --input '{}'
+```
