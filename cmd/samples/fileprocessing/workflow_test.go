@@ -14,10 +14,30 @@ import (
 type UnitTestSuite struct {
 	suite.Suite
 	testsuite.WorkflowTestSuite
+
+	env *testsuite.TestWorkflowEnvironment
 }
 
 func TestUnitTestSuite(t *testing.T) {
 	suite.Run(t, new(UnitTestSuite))
+}
+
+func (s *UnitTestSuite) SetupTest() {
+	s.env = s.NewTestWorkflowEnvironment()
+	s.env.RegisterWorkflow(sampleFileProcessingWorkflow)
+	s.env.RegisterActivityWithOptions(downloadFileActivity, activity.RegisterOptions{
+		Name: downloadFileActivityName,
+	})
+	s.env.RegisterActivityWithOptions(processFileActivity, activity.RegisterOptions{
+		Name: processFileActivityName,
+	})
+	s.env.RegisterActivityWithOptions(uploadFileActivity, activity.RegisterOptions{
+		Name: uploadFileActivityName,
+	})
+}
+
+func (s *UnitTestSuite) TearDownTest() {
+	s.env.AssertExpectations(s.T())
 }
 
 func (s *UnitTestSuite) Test_SampleFileProcessingWorkflow() {
@@ -29,8 +49,7 @@ func (s *UnitTestSuite) Test_SampleFileProcessingWorkflow() {
 	}
 
 	var activityCalled []string
-	env := s.NewTestWorkflowEnvironment()
-	env.SetOnActivityStartedListener(func(activityInfo *activity.Info, ctx context.Context, args encoded.Values) {
+	s.env.SetOnActivityStartedListener(func(activityInfo *activity.Info, ctx context.Context, args encoded.Values) {
 		activityType := activityInfo.ActivityType.Name
 		if strings.HasPrefix(activityType, "internalSession") {
 			return
@@ -53,9 +72,9 @@ func (s *UnitTestSuite) Test_SampleFileProcessingWorkflow() {
 			panic("unexpected activity call")
 		}
 	})
-	env.ExecuteWorkflow(SampleFileProcessingWorkflow, fileID)
+	s.env.ExecuteWorkflow(sampleFileProcessingWorkflow, fileID)
 
-	s.True(env.IsWorkflowCompleted())
-	s.NoError(env.GetWorkflowError())
+	s.True(s.env.IsWorkflowCompleted())
+	s.NoError(s.env.GetWorkflowError())
 	s.Equal(expectedCall, activityCalled)
 }

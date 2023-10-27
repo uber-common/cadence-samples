@@ -8,14 +8,16 @@ import (
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/testsuite"
 	"go.uber.org/cadence/worker"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 type UnitTestSuite struct {
 	suite.Suite
 	testsuite.WorkflowTestSuite
+
 	env *testsuite.TestWorkflowEnvironment
 }
 
@@ -25,6 +27,9 @@ func TestUnitTestSuite(t *testing.T) {
 
 func (s *UnitTestSuite) SetupTest() {
 	s.env = s.NewTestWorkflowEnvironment()
+	s.env.RegisterWorkflow(mutexWorkflow)
+	s.env.RegisterWorkflow(sampleWorkflowWithMutex)
+	s.env.RegisterActivity(signalWithStartMutexWorkflowActivity)
 
 	var h common.SampleHelper
 	s.env.SetWorkerOptions(worker.Options{
@@ -32,26 +37,26 @@ func (s *UnitTestSuite) SetupTest() {
 	})
 }
 
-func (s *UnitTestSuite) Test_Workflow_Success() {
-	env := s.NewTestWorkflowEnvironment()
-	mockResourceID := "mockResourceID"
-	MockMutexLock(env, mockResourceID, nil)
-	env.ExecuteWorkflow(SampleWorkflowWithMutex, mockResourceID)
+func (s *UnitTestSuite) TearDownTest() {
+	s.env.AssertExpectations(s.T())
+}
 
-	s.True(env.IsWorkflowCompleted())
-	s.NoError(env.GetWorkflowError())
-	env.AssertExpectations(s.T())
+func (s *UnitTestSuite) Test_Workflow_Success() {
+	mockResourceID := "mockResourceID"
+	MockMutexLock(s.env, mockResourceID, nil)
+	s.env.ExecuteWorkflow(sampleWorkflowWithMutex, mockResourceID)
+
+	s.True(s.env.IsWorkflowCompleted())
+	s.NoError(s.env.GetWorkflowError())
 }
 
 func (s *UnitTestSuite) Test_Workflow_Error() {
-	env := s.NewTestWorkflowEnvironment()
 	mockResourceID := "mockResourceID"
-	MockMutexLock(env, mockResourceID, errors.New("bad-error"))
-	env.ExecuteWorkflow(SampleWorkflowWithMutex, mockResourceID)
+	MockMutexLock(s.env, mockResourceID, errors.New("bad-error"))
+	s.env.ExecuteWorkflow(sampleWorkflowWithMutex, mockResourceID)
 
-	s.True(env.IsWorkflowCompleted())
-	s.EqualError(env.GetWorkflowError(), "bad-error")
-	env.AssertExpectations(s.T())
+	s.True(s.env.IsWorkflowCompleted())
+	s.EqualError(s.env.GetWorkflowError(), "bad-error")
 }
 
 func (s *UnitTestSuite) Test_MutexWorkflow_Success() {
@@ -69,7 +74,7 @@ func (s *UnitTestSuite) Test_MutexWorkflow_Success() {
 		AcquireLockSignalName, mock.Anything).Return(nil)
 
 	s.env.ExecuteWorkflow(
-		MutexWorkflow,
+		mutexWorkflow,
 		mockNamespace,
 		mockResourceID,
 		mockUnlockTimeout,
@@ -91,7 +96,7 @@ func (s *UnitTestSuite) Test_MutexWorkflow_TimeoutSuccess() {
 		AcquireLockSignalName, mock.Anything).Return(nil)
 
 	s.env.ExecuteWorkflow(
-		MutexWorkflow,
+		mutexWorkflow,
 		mockNamespace,
 		mockResourceID,
 		mockUnlockTimeout,

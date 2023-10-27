@@ -5,9 +5,10 @@ import (
 	"time"
 
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 // This needs to be done as part of a bootstrap step when the process starts.
@@ -15,7 +16,7 @@ import (
 func startWorkers(h *common.SampleHelper) {
 	// Configure worker options.
 	workerOptions := worker.Options{
-		MetricsScope: h.Scope,
+		MetricsScope: h.WorkerMetricScope,
 		Logger:       h.Logger,
 		MaxConcurrentActivityExecutionSize: 3,
 	}
@@ -30,7 +31,7 @@ func startWorkflow(h *common.SampleHelper) {
 		ExecutionStartToCloseTimeout:    time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
 	}
-	h.StartWorkflow(workflowOptions, SampleTimerWorkflow, time.Second*3)
+	h.StartWorkflow(workflowOptions, sampleTimerWorkflow, time.Second*3)
 }
 
 func main() {
@@ -43,6 +44,9 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(sampleTimerWorkflow)
+		h.RegisterActivity(orderProcessingActivity)
+		h.RegisterActivity(sendEmailActivity)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

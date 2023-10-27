@@ -5,15 +5,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go.uber.org/cadence/activity"
 	"strconv"
 	"time"
 
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/.gen/go/shared"
+	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 /**
@@ -38,15 +39,8 @@ var (
 	ErrCadenceClientNotFound = errors.New("failed to retrieve cadence client from context")
 )
 
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.Register(SearchAttributesWorkflow)
-	activity.Register(listExecutions)
-}
-
-// SearchAttributesWorkflow workflow decider
-func SearchAttributesWorkflow(ctx workflow.Context) error {
+// searchAttributesWorkflow workflow decider
+func searchAttributesWorkflow(ctx workflow.Context) error {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("SearchAttributes workflow started")
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"time"
 
 	"go.uber.org/cadence/workflow"
@@ -11,14 +12,8 @@ import (
  * This sample workflow executes multiple branches in parallel using workflow.Go() method.
  */
 
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.Register(SampleParallelWorkflow)
-}
-
-// SampleParallelWorkflow workflow decider
-func SampleParallelWorkflow(ctx workflow.Context) error {
+// sampleParallelWorkflow workflow decider
+func sampleParallelWorkflow(ctx workflow.Context) error {
 	waitChannel := workflow.NewChannel(ctx)
 
 	ao := workflow.ActivityOptions{
@@ -33,25 +28,39 @@ func SampleParallelWorkflow(ctx workflow.Context) error {
 		err := workflow.ExecuteActivity(ctx, sampleActivity, "branch1.1").Get(ctx, nil)
 		if err != nil {
 			logger.Error("Activity failed", zap.Error(err))
+			waitChannel.Send(ctx, err.Error())
+			return
 		}
 		err = workflow.ExecuteActivity(ctx, sampleActivity, "branch1.2").Get(ctx, nil)
 		if err != nil {
 			logger.Error("Activity failed", zap.Error(err))
+			waitChannel.Send(ctx, err.Error())
+			return
 		}
-		waitChannel.Send(ctx, true)
+		waitChannel.Send(ctx, "")
 	})
 
 	workflow.Go(ctx, func(ctx workflow.Context) {
 		err := workflow.ExecuteActivity(ctx, sampleActivity, "branch2").Get(ctx, nil)
 		if err != nil {
 			logger.Error("Activity failed", zap.Error(err))
+			waitChannel.Send(ctx, err.Error())
+			return
 		}
-		waitChannel.Send(ctx, true)
+		waitChannel.Send(ctx, "")
 	})
 
 	// wait for both of the coroutinue to complete.
-	waitChannel.Receive(ctx, nil)
-	waitChannel.Receive(ctx, nil)
+	var errMsg string
+	for i := 0; i != 2; i++ {
+		waitChannel.Receive(ctx, &errMsg)
+		if errMsg != "" {
+			err := errors.New(errMsg)
+			logger.Error("Coroutine failed", zap.Error(err))
+			return err
+		}
+	}
+
 	logger.Info("Workflow completed.")
 	return nil
 }

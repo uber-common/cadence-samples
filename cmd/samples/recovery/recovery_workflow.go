@@ -3,16 +3,18 @@ package main
 import (
 	"context"
 	"errors"
+	"time"
+
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
-	"github.com/uber-common/cadence-samples/cmd/samples/recovery/cache"
 	"go.uber.org/cadence"
 	"go.uber.org/cadence/.gen/go/shared"
 	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
-	"time"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
+	"github.com/uber-common/cadence-samples/cmd/samples/recovery/cache"
 )
 
 type (
@@ -70,13 +72,13 @@ var (
 // This is registration process where you register all your workflows
 // and activity function handlers.
 func init() {
-	workflow.RegisterWithOptions(RecoverWorkflow, workflow.RegisterOptions{Name: "RecoverWorkflow"})
+	workflow.RegisterWithOptions(recoverWorkflow, workflow.RegisterOptions{Name: "recoverWorkflow"})
 	activity.Register(listOpenExecutions)
 	activity.Register(recoverExecutions)
 }
 
-// RecoverWorkflow is the workflow implementation to recover TripWorkflow executions
-func RecoverWorkflow(ctx workflow.Context, params Params) error {
+// recoverWorkflow is the workflow implementation to recover TripWorkflow executions
+func recoverWorkflow(ctx workflow.Context, params Params) error {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("Recover workflow started.")
 

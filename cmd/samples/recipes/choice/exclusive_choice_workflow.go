@@ -5,7 +5,6 @@ import (
 	"math/rand"
 	"time"
 
-	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
 )
@@ -26,19 +25,8 @@ const (
 
 var _orderChoices = []string{orderChoiceApple, orderChoiceBanana, orderChoiceCherry, orderChoiceOrange}
 
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.Register(ExclusiveChoiceWorkflow)
-	activity.Register(getOrderActivity)
-	activity.Register(orderAppleActivity)
-	activity.Register(orderBananaActivity)
-	activity.Register(orderCherryActivity)
-	activity.Register(orderOrangeActivity)
-}
-
-// ExclusiveChoiceWorkflow Workflow Decider.
-func ExclusiveChoiceWorkflow(ctx workflow.Context) error {
+// exclusiveChoiceWorkflow Workflow Decider.
+func exclusiveChoiceWorkflow(ctx workflow.Context) error {
 	// Get order.
 	ao := workflow.ActivityOptions{
 		ScheduleToStartTimeout: time.Minute,

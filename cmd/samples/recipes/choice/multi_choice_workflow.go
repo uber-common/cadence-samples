@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-
 	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
@@ -16,15 +15,8 @@ import (
  * This multi choice sample workflow Execute different parallel branches based on the result of an activity.
  */
 
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.Register(MultiChoiceWorkflow)
-	activity.Register(getBasketOrderActivity)
-}
-
-// MultiChoiceWorkflow Workflow Decider.
-func MultiChoiceWorkflow(ctx workflow.Context) error {
+// multiChoiceWorkflow Workflow Decider.
+func multiChoiceWorkflow(ctx workflow.Context) error {
 	// Get basket order.
 	ao := workflow.ActivityOptions{
 		ScheduleToStartTimeout: time.Minute,

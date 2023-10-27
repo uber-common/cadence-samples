@@ -1,17 +1,20 @@
 package main
 
 import (
+	"testing"
+	"time"
+
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/cadence/.gen/go/shared"
 	"go.uber.org/cadence/testsuite"
-	"testing"
-	"time"
 )
 
 func Test_Workflow(t *testing.T) {
 	testSuite := &testsuite.WorkflowTestSuite{}
 	env := testSuite.NewTestWorkflowEnvironment()
+	env.RegisterWorkflow(searchAttributesWorkflow)
+	env.RegisterActivity(listExecutions)
 
 	// mock search attributes on start
 	env.SetSearchAttributesOnStart(getSearchAttributesForStart())
@@ -35,7 +38,7 @@ func Test_Workflow(t *testing.T) {
 	// mock activity
 	env.OnActivity(listExecutions, mock.Anything, mock.Anything).Return([]*shared.WorkflowExecutionInfo{{}}, nil).Once()
 
-	env.ExecuteWorkflow(SearchAttributesWorkflow)
+	env.ExecuteWorkflow(searchAttributesWorkflow)
 	require.True(t, env.IsWorkflowCompleted())
 	require.NoError(t, env.GetWorkflowError())
 }

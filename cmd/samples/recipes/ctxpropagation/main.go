@@ -6,10 +6,11 @@ import (
 	"time"
 
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
 	"go.uber.org/cadence/workflow"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 // This needs to be done as part of a bootstrap step when the process starts.
@@ -17,7 +18,7 @@ import (
 func startWorkers(h *common.SampleHelper) {
 	// Configure worker options. Setup a custom context propagator.
 	workerOptions := worker.Options{
-		MetricsScope:          h.Scope,
+		MetricsScope:          h.WorkerMetricScope,
 		Logger:                h.Logger,
 		EnableLoggingInReplay: true,
 		ContextPropagators: []workflow.ContextPropagator{
@@ -36,7 +37,7 @@ func startWorkflow(h *common.SampleHelper) {
 	}
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, propagateKey, &Values{Key: "test", Value: "tested"})
-	h.StartWorkflowWithCtx(ctx, workflowOptions, CtxPropWorkflow)
+	h.StartWorkflowWithCtx(ctx, workflowOptions, sampleCtxPropWorkflow)
 }
 
 func main() {
@@ -53,6 +54,8 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(sampleCtxPropWorkflow)
+		h.RegisterActivityWithAlias(sampleActivity, sampleActivityName)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"strings"
+	"time"
+
 	"go.uber.org/cadence"
 	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
-	"strings"
-	"time"
 )
 
 /**
@@ -19,21 +20,6 @@ const ApplicationName = "localActivityGroup"
 
 // SignalName is the signal name that workflow is waiting for
 const SignalName = "trigger-signal"
-
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.Register(ProcessingWorkflow)
-	workflow.Register(SignalHandlingWorkflow)
-
-	activity.Register(activityForCondition0)
-	activity.Register(activityForCondition1)
-	activity.Register(activityForCondition2)
-	activity.Register(activityForCondition3)
-	activity.Register(activityForCondition4)
-
-	// no need to register local activities
-}
 
 type conditionAndAction struct {
 	// condition is a function pointer to a local activity
@@ -50,13 +36,13 @@ var checks = []conditionAndAction{
 	{checkCondition4, activityForCondition4},
 }
 
-// ProcessingWorkflow is a workflow that process a given signal data. It evaluates if any conditions are meet for
+// processingWorkflow is a workflow that process a given signal data. It evaluates if any conditions are meet for
 // the given signal data by using LocalActivity which runs as local function and then schedule activities to handle
 // it if the condition is meet. The idea is that you could have many conditions (for example 100 conditions) that needs
 // to be evaluated, and only a couple of them will meet the condition and needs to be processed by an activity. Using
 // local activity is very efficient in this case because local activity is execute as local function directly by decider
 // worker.
-func ProcessingWorkflow(ctx workflow.Context, data string) (string, error) {
+func processingWorkflow(ctx workflow.Context, data string) (string, error) {
 	logger := workflow.GetLogger(ctx)
 
 	lao := workflow.LocalActivityOptions{
@@ -99,8 +85,8 @@ func ProcessingWorkflow(ctx workflow.Context, data string) (string, error) {
 	return processResult, nil
 }
 
-// SignalHandlingWorkflow is a workflow that waits on signal and then sends that signal to be processed by a child workflow.
-func SignalHandlingWorkflow(ctx workflow.Context) error {
+// signalHandlingWorkflow is a workflow that waits on signal and then sends that signal to be processed by a child workflow.
+func signalHandlingWorkflow(ctx workflow.Context) error {
 	logger := workflow.GetLogger(ctx)
 	ch := workflow.GetSignalChannel(ctx, SignalName)
 	for {
@@ -125,7 +111,7 @@ func SignalHandlingWorkflow(ctx workflow.Context) error {
 		childCtx := workflow.WithChildOptions(ctx, cwo)
 
 		var processResult string
-		err := workflow.ExecuteChildWorkflow(childCtx, ProcessingWorkflow, signal).Get(childCtx, &processResult)
+		err := workflow.ExecuteChildWorkflow(childCtx, processingWorkflow, signal).Get(childCtx, &processResult)
 		if err != nil {
 			return err
 		}

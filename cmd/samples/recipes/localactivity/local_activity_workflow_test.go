@@ -1,60 +1,82 @@
 package main
 
 import (
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"
-	"go.uber.org/cadence/testsuite"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/suite"
+	"go.uber.org/cadence/testsuite"
 )
 
-func Test_ProcessingWorkflow_SingleAction(t *testing.T) {
+type UnitTestSuite struct {
+	suite.Suite
+	testsuite.WorkflowTestSuite
+
+	env *testsuite.TestWorkflowEnvironment
+}
+
+func TestUnitTestSuite(t *testing.T) {
+	suite.Run(t, new(UnitTestSuite))
+}
+
+func (s *UnitTestSuite) SetupTest() {
+	s.env = s.NewTestWorkflowEnvironment()
+	s.env.RegisterWorkflow(processingWorkflow)
+	s.env.RegisterWorkflow(signalHandlingWorkflow)
+	s.env.RegisterActivity(activityForCondition0)
+	s.env.RegisterActivity(activityForCondition1)
+	s.env.RegisterActivity(activityForCondition2)
+	s.env.RegisterActivity(activityForCondition3)
+	s.env.RegisterActivity(activityForCondition4)
+}
+
+func (s *UnitTestSuite) TearDownTest() {
+	s.env.AssertExpectations(s.T())
+}
+
+func (s *UnitTestSuite) Test_ProcessingWorkflow_SingleAction() {
 	signalData := "_1_"
-	testSuite := &testsuite.WorkflowTestSuite{}
-	env := testSuite.NewTestWorkflowEnvironment()
+
 	// mock activityForCondition1 so it won't wait on real clock
-	env.OnActivity(activityForCondition1, mock.Anything, signalData).Return("processed_1", nil)
-	env.ExecuteWorkflow(ProcessingWorkflow, signalData)
-	env.AssertExpectations(t)
-	require.True(t, env.IsWorkflowCompleted())
-	require.NoError(t, env.GetWorkflowError())
+	s.env.OnActivity(activityForCondition1, mock.Anything, signalData).Return("processed_1", nil)
+
+	s.env.ExecuteWorkflow(processingWorkflow, signalData)
+	s.True(s.env.IsWorkflowCompleted())
+	s.NoError(s.env.GetWorkflowError())
+
 	var actualResult string
-	require.NoError(t, env.GetWorkflowResult(&actualResult))
-	require.Equal(t, "processed_1", actualResult)
+	s.NoError(s.env.GetWorkflowResult(&actualResult))
+	s.Equal("processed_1", actualResult)
 }
 
-func Test_ProcessingWorkflow_MultiAction(t *testing.T) {
+func (s *UnitTestSuite) Test_ProcessingWorkflow_MultiAction() {
 	signalData := "_1_, _3_"
-	testSuite := &testsuite.WorkflowTestSuite{}
-	env := testSuite.NewTestWorkflowEnvironment()
+
 	// mock activityForCondition1 so it won't wait on real clock
-	env.OnActivity(activityForCondition1, mock.Anything, signalData).Return("processed_1", nil)
-	env.OnActivity(activityForCondition3, mock.Anything, signalData).Return("processed_3", nil)
-	env.ExecuteWorkflow(ProcessingWorkflow, signalData)
-	env.AssertExpectations(t)
-	require.True(t, env.IsWorkflowCompleted())
-	require.NoError(t, env.GetWorkflowError())
+	s.env.OnActivity(activityForCondition1, mock.Anything, signalData).Return("processed_1", nil)
+	s.env.OnActivity(activityForCondition3, mock.Anything, signalData).Return("processed_3", nil)
+
+	s.env.ExecuteWorkflow(processingWorkflow, signalData)
+	s.True(s.env.IsWorkflowCompleted())
+	s.NoError(s.env.GetWorkflowError())
+
 	var actualResult string
-	require.NoError(t, env.GetWorkflowResult(&actualResult))
-	require.Equal(t, "processed_1processed_3", actualResult)
+	s.NoError(s.env.GetWorkflowResult(&actualResult))
+	s.Equal("processed_1processed_3", actualResult)
 }
 
-func Test_SignalHandlingWorkflow(t *testing.T) {
-	testSuite := &testsuite.WorkflowTestSuite{}
-	env := testSuite.NewTestWorkflowEnvironment()
+func (s *UnitTestSuite) Test_SignalHandlingWorkflow() {
+	s.env.OnActivity(activityForCondition1, mock.Anything, "_1_").Return("processed_1", nil)
 
-	env.OnActivity(activityForCondition1, mock.Anything, "_1_").Return("processed_1", nil)
-
-	env.RegisterDelayedCallback(func() {
-		env.SignalWorkflow("trigger-signal", "_1_")
+	s.env.RegisterDelayedCallback(func() {
+		s.env.SignalWorkflow("trigger-signal", "_1_")
 	}, time.Minute)
-
-	env.RegisterDelayedCallback(func() {
-		env.SignalWorkflow("trigger-signal", "exit")
+	s.env.RegisterDelayedCallback(func() {
+		s.env.SignalWorkflow("trigger-signal", "exit")
 	}, time.Minute*2)
 
-	env.ExecuteWorkflow(SignalHandlingWorkflow)
-	env.AssertExpectations(t)
-	require.True(t, env.IsWorkflowCompleted())
-	require.NoError(t, env.GetWorkflowError())
+	s.env.ExecuteWorkflow(signalHandlingWorkflow)
+	s.True(s.env.IsWorkflowCompleted())
+	s.NoError(s.env.GetWorkflowError())
 }

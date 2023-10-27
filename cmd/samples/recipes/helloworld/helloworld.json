@@ -7,7 +7,7 @@
     "taskId":33554432,
     "workflowExecutionStartedEventAttributes":{
       "workflowType":{
-        "name":"github.com/uber-common/cadence-samples/cmd/samples/recipes/helloworld.Workflow"
+        "name":"github.com/uber-common/cadence-samples/cmd/samples/recipes/helloworld.helloWorldWorkflow"
       },
       "taskList":{
         "name":"helloWorldGroup"
@@ -68,7 +68,7 @@
     "activityTaskScheduledEventAttributes":{
       "activityId":"0",
       "activityType":{
-        "name":"main.helloworldActivity"
+        "name":"github.com/uber-common/cadence-samples/cmd/samples/recipes/helloworld.helloWorldActivity"
       },
       "taskList":{
         "name":"helloWorldGroup"

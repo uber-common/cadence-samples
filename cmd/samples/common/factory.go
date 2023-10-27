@@ -3,13 +3,16 @@ package common
 import (
 	"errors"
 
+	"github.com/opentracing/opentracing-go"
 	"github.com/uber-go/tally"
+	apiv1 "github.com/uber/cadence-idl/go/proto/api/v1"
 	"go.uber.org/cadence/.gen/go/cadence/workflowserviceclient"
 	"go.uber.org/cadence/client"
-	"go.uber.org/cadence/workflow"
+	"go.uber.org/cadence/compatibility"
 	"go.uber.org/cadence/encoded"
+	"go.uber.org/cadence/workflow"
 	"go.uber.org/yarpc"
-	"go.uber.org/yarpc/transport/tchannel"
+	"go.uber.org/yarpc/transport/grpc"
 	"go.uber.org/zap"
 )
 
@@ -28,6 +31,7 @@ type WorkflowClientBuilder struct {
 	Logger         *zap.Logger
 	ctxProps       []workflow.ContextPropagator
 	dataConverter  encoded.DataConverter
+	tracer         opentracing.Tracer
 }
 
 // NewBuilder creates a new WorkflowClientBuilder
@@ -70,11 +74,18 @@ func (b *WorkflowClientBuilder) SetDispatcher(dispatcher *yarpc.Dispatcher) *Wor
 // SetContextPropagators sets the context propagators for the builder
 func (b *WorkflowClientBuilder) SetContextPropagators(ctxProps []workflow.ContextPropagator) *WorkflowClientBuilder {
 	b.ctxProps = ctxProps
-  return b
+	return b
 }
+
 // SetDataConverter sets the data converter for the builder
 func (b *WorkflowClientBuilder) SetDataConverter(dataConverter encoded.DataConverter) *WorkflowClientBuilder {
 	b.dataConverter = dataConverter
+	return b
+}
+
+// SetTracer sets the tracer for the builder
+func (b *WorkflowClientBuilder) SetTracer(tracer opentracing.Tracer) *WorkflowClientBuilder {
+	b.tracer = tracer
 	return b
 }
 
@@ -86,7 +97,18 @@ func (b *WorkflowClientBuilder) BuildCadenceClient() (client.Client, error) {
 	}
 
 	return client.NewClient(
-		service, b.domain, &client.Options{Identity: b.clientIdentity, MetricsScope: b.metricsScope, DataConverter: b.dataConverter, ContextPropagators: b.ctxProps}), nil
+		service,
+		b.domain,
+		&client.Options{
+			Identity:           b.clientIdentity,
+			MetricsScope:       b.metricsScope,
+			DataConverter:      b.dataConverter,
+			ContextPropagators: b.ctxProps,
+			Tracer:             b.tracer,
+			FeatureFlags: client.FeatureFlags{
+				WorkflowExecutionAlreadyCompletedErrorEnabled: true,
+			},
+		}), nil
 }
 
 // BuildCadenceDomainClient builds a domain client to cadence service
@@ -97,7 +119,16 @@ func (b *WorkflowClientBuilder) BuildCadenceDomainClient() (client.DomainClient,
 	}
 
 	return client.NewDomainClient(
-		service, &client.Options{Identity: b.clientIdentity, MetricsScope: b.metricsScope, ContextPropagators: b.ctxProps}), nil
+		service,
+		&client.Options{
+			Identity:           b.clientIdentity,
+			MetricsScope:       b.metricsScope,
+			ContextPropagators: b.ctxProps,
+			FeatureFlags: client.FeatureFlags{
+				WorkflowExecutionAlreadyCompletedErrorEnabled: true,
+			},
+		},
+	), nil
 }
 
 // BuildServiceClient builds a rpc service client to cadence service
@@ -110,7 +141,13 @@ func (b *WorkflowClientBuilder) BuildServiceClient() (workflowserviceclient.Inte
 		b.Logger.Fatal("No RPC dispatcher provided to create a connection to Cadence Service")
 	}
 
-	return workflowserviceclient.New(b.dispatcher.ClientConfig(_cadenceFrontendService)), nil
+	clientConfig := b.dispatcher.ClientConfig(_cadenceFrontendService)
+	return compatibility.NewThrift2ProtoAdapter(
+		apiv1.NewDomainAPIYARPCClient(clientConfig),
+		apiv1.NewWorkflowAPIYARPCClient(clientConfig),
+		apiv1.NewWorkerAPIYARPCClient(clientConfig),
+		apiv1.NewVisibilityAPIYARPCClient(clientConfig),
+	), nil
 }
 
 func (b *WorkflowClientBuilder) build() error {
@@ -122,12 +159,6 @@ func (b *WorkflowClientBuilder) build() error {
 		return errors.New("HostPort is empty")
 	}
 
-	ch, err := tchannel.NewChannelTransport(
-		tchannel.ServiceName(_cadenceClientName))
-	if err != nil {
-		b.Logger.Fatal("Failed to create transport channel", zap.Error(err))
-	}
-
 	b.Logger.Debug("Creating RPC dispatcher outbound",
 		zap.String("ServiceName", _cadenceFrontendService),
 		zap.String("HostPort", b.hostPort))
@@ -135,7 +166,7 @@ func (b *WorkflowClientBuilder) build() error {
 	b.dispatcher = yarpc.NewDispatcher(yarpc.Config{
 		Name: _cadenceClientName,
 		Outbounds: yarpc.Outbounds{
-			_cadenceFrontendService: {Unary: ch.NewSingleOutbound(b.hostPort)},
+			_cadenceFrontendService: {Unary: grpc.NewTransport().NewSingleOutbound(b.hostPort)},
 		},
 	})
 

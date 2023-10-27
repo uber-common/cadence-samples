@@ -5,9 +5,10 @@ import (
 	"time"
 
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 const (
@@ -20,8 +21,11 @@ const (
 func startWorkers(h *common.SampleHelper) {
 	// Configure worker options.
 	workerOptions := worker.Options{
-		MetricsScope: h.Scope,
+		MetricsScope: h.WorkerMetricScope,
 		Logger:       h.Logger,
+		FeatureFlags: client.FeatureFlags{
+			WorkflowExecutionAlreadyCompletedErrorEnabled: true,
+		},
 	}
 	h.StartWorkers(h.Config.DomainName, ApplicationName, workerOptions)
 }
@@ -39,7 +43,7 @@ func startWorkflow(h *common.SampleHelper, cron string) {
 		DecisionTaskStartToCloseTimeout: time.Minute,
 		CronSchedule:                    cron,
 	}
-	h.StartWorkflow(workflowOptions, SampleCronWorkflow)
+	h.StartWorkflow(workflowOptions, sampleCronWorkflow)
 }
 
 func main() {
@@ -54,6 +58,8 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(sampleCronWorkflow)
+		h.RegisterActivity(sampleCronActivity)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

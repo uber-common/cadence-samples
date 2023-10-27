@@ -6,9 +6,10 @@ import (
 	"time"
 
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 const (
@@ -23,21 +24,13 @@ const (
 func startWorkers(h *common.SampleHelper) {
 	// Configure worker options.
 	workerOptions := worker.Options{
-		MetricsScope: h.Scope,
-		Logger:       h.Logger,
+		MetricsScope:              h.WorkerMetricScope,
+		Logger:                    h.Logger,
 		BackgroundActivityContext: context.WithValue(context.Background(), _sampleHelperContextKey, h),
 	}
 
 	// Start Worker.
-	worker := worker.New(
-		h.Service,
-		h.Config.DomainName,
-		ApplicationName,
-		workerOptions)
-	err := worker.Start()
-	if err != nil {
-		panic("Failed to start workers")
-	}
+	h.StartWorkers(h.Config.DomainName, ApplicationName, workerOptions)
 }
 
 // startTwoWorkflows starts two workflows that operate on the same recourceID
@@ -49,7 +42,7 @@ func startTwoWorkflows(h *common.SampleHelper) {
 		ExecutionStartToCloseTimeout:    10 * time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
 	},
-		SampleWorkflowWithMutex,
+		sampleWorkflowWithMutex,
 		resourceID)
 	h.StartWorkflow(client.StartWorkflowOptions{
 		ID:                              "SampleWorkflowWithMutex_" + uuid.New(),
@@ -57,7 +50,7 @@ func startTwoWorkflows(h *common.SampleHelper) {
 		ExecutionStartToCloseTimeout:    10 * time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
 	},
-		SampleWorkflowWithMutex,
+		sampleWorkflowWithMutex,
 		resourceID)
 }
 
@@ -71,6 +64,9 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(mutexWorkflow)
+		h.RegisterWorkflow(sampleWorkflowWithMutex)
+		h.RegisterActivity(signalWithStartMutexWorkflowActivity)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

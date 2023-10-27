@@ -5,9 +5,10 @@ import (
 	"time"
 
 	"github.com/pborman/uuid"
-	"github.com/uber-common/cadence-samples/cmd/samples/common"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/worker"
+
+	"github.com/uber-common/cadence-samples/cmd/samples/common"
 )
 
 // This needs to be done as part of a bootstrap step when the process starts.
@@ -15,20 +16,12 @@ import (
 func startWorkers(h *common.SampleHelper) {
 	// Configure worker options.
 	workerOptions := worker.Options{
-		MetricsScope: h.Scope,
+		MetricsScope: h.WorkerMetricScope,
 		Logger:       h.Logger,
 	}
 
 	// Start Worker.
-	worker := worker.New(
-		h.Service,
-		h.Config.DomainName,
-		ApplicationName,
-		workerOptions)
-	err := worker.Start()
-	if err != nil {
-		panic("Failed to start workers")
-	}
+	h.StartWorkers(h.Config.DomainName, ApplicationName, workerOptions)
 }
 
 func startWorkflowMultiChoice(h *common.SampleHelper) {
@@ -38,7 +31,7 @@ func startWorkflowMultiChoice(h *common.SampleHelper) {
 		ExecutionStartToCloseTimeout:    time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
 	}
-	h.StartWorkflow(workflowOptions, MultiChoiceWorkflow)
+	h.StartWorkflow(workflowOptions, multiChoiceWorkflow)
 }
 
 func startWorkflowExclusiveChoice(h *common.SampleHelper) {
@@ -48,7 +41,7 @@ func startWorkflowExclusiveChoice(h *common.SampleHelper) {
 		ExecutionStartToCloseTimeout:    time.Minute,
 		DecisionTaskStartToCloseTimeout: time.Minute,
 	}
-	h.StartWorkflow(workflowOptions, ExclusiveChoiceWorkflow)
+	h.StartWorkflow(workflowOptions, exclusiveChoiceWorkflow)
 }
 
 func main() {
@@ -62,6 +55,14 @@ func main() {
 
 	switch mode {
 	case "worker":
+		h.RegisterWorkflow(exclusiveChoiceWorkflow)
+		h.RegisterWorkflow(multiChoiceWorkflow)
+		h.RegisterActivity(getOrderActivity)
+		h.RegisterActivity(orderAppleActivity)
+		h.RegisterActivity(orderBananaActivity)
+		h.RegisterActivity(orderCherryActivity)
+		h.RegisterActivity(orderOrangeActivity)
+		h.RegisterActivity(getBasketOrderActivity)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.

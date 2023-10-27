@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"go.uber.org/cadence/activity"
 	"go.uber.org/cadence/workflow"
 	"go.uber.org/zap"
 )
@@ -17,17 +16,8 @@ import (
 // ApplicationName is the task list for this sample
 const ApplicationName = "greetingsGroup"
 
-// This is registration process where you register all your workflows
-// and activity function handlers.
-func init() {
-	workflow.Register(SampleGreetingsWorkflow)
-	activity.Register(getGreetingActivity)
-	activity.Register(getNameActivity)
-	activity.Register(sayGreetingActivity)
-}
-
-// SampleGreetingsWorkflow Workflow Decider.
-func SampleGreetingsWorkflow(ctx workflow.Context) error {
+// sampleGreetingsWorkflow Workflow Decider.
+func sampleGreetingsWorkflow(ctx workflow.Context) error {
 	// Get Greeting.
 	ao := workflow.ActivityOptions{
 		ScheduleToStartTimeout: time.Minute,

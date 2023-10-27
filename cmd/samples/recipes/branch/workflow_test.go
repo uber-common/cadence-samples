@@ -10,24 +10,35 @@ import (
 type UnitTestSuite struct {
 	suite.Suite
 	testsuite.WorkflowTestSuite
+
+	env *testsuite.TestWorkflowEnvironment
 }
 
 func TestUnitTestSuite(t *testing.T) {
 	suite.Run(t, new(UnitTestSuite))
 }
 
-func (s *UnitTestSuite) Test_BranchWorkflow() {
-	env := s.NewTestWorkflowEnvironment()
-	env.ExecuteWorkflow(SampleBranchWorkflow)
+func (s *UnitTestSuite) SetupTest() {
+	s.env = s.NewTestWorkflowEnvironment()
+	s.env.RegisterWorkflow(sampleBranchWorkflow)
+	s.env.RegisterWorkflow(sampleParallelWorkflow)
+	s.env.RegisterActivity(sampleActivity)
+}
 
-	s.True(env.IsWorkflowCompleted())
-	s.NoError(env.GetWorkflowError())
+func (s *UnitTestSuite) TearDownTest() {
+	s.env.AssertExpectations(s.T())
+}
+
+func (s *UnitTestSuite) Test_BranchWorkflow() {
+	s.env.ExecuteWorkflow(sampleBranchWorkflow)
+
+	s.True(s.env.IsWorkflowCompleted())
+	s.NoError(s.env.GetWorkflowError())
 }
 
 func (s *UnitTestSuite) Test_ParallelWorkflow() {
-	env := s.NewTestWorkflowEnvironment()
-	env.ExecuteWorkflow(SampleParallelWorkflow)
+	s.env.ExecuteWorkflow(sampleParallelWorkflow)
 
-	s.True(env.IsWorkflowCompleted())
-	s.NoError(env.GetWorkflowError())
+	s.True(s.env.IsWorkflowCompleted())
+	s.NoError(s.env.GetWorkflowError())
 }

@@ -1,15 +1,17 @@
 package main
 
 import (
-	"github.com/stretchr/testify/require"
-	"go.uber.org/cadence/testsuite"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
+	"go.uber.org/cadence/testsuite"
 )
 
 func Test_QueryWorkflow(t *testing.T) {
 	ts := &testsuite.WorkflowTestSuite{}
 	env := ts.NewTestWorkflowEnvironment()
+	env.RegisterWorkflow(queryWorkflow)
 
 	w := false
 	env.RegisterDelayedCallback(func() {
@@ -17,7 +19,7 @@ func Test_QueryWorkflow(t *testing.T) {
 		w = true
 	}, time.Minute*1)
 
-	env.ExecuteWorkflow(QueryWorkflow)
+	env.ExecuteWorkflow(queryWorkflow)
 	require.True(t, env.IsWorkflowCompleted())
 	require.NoError(t, env.GetWorkflowError())
 	require.True(t, w, "state at timer not verified")

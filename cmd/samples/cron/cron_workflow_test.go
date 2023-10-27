@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
-	"go.uber.org/cadence/activity"
-	"go.uber.org/cadence/encoded"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
+	"go.uber.org/cadence/activity"
+	"go.uber.org/cadence/encoded"
 	"go.uber.org/cadence/testsuite"
 	"go.uber.org/cadence/workflow"
 )
@@ -16,10 +16,22 @@ import (
 type UnitTestSuite struct {
 	suite.Suite
 	testsuite.WorkflowTestSuite
+
+	env *testsuite.TestWorkflowEnvironment
 }
 
 func TestUnitTestSuite(t *testing.T) {
 	suite.Run(t, new(UnitTestSuite))
+}
+
+func (s *UnitTestSuite) SetupTest() {
+	s.env = s.NewTestWorkflowEnvironment()
+	s.env.RegisterWorkflow(sampleCronWorkflow)
+	s.env.RegisterActivity(sampleCronActivity)
+}
+
+func (s *UnitTestSuite) TearDownTest() {
+	s.env.AssertExpectations(s.T())
 }
 
 func (s *UnitTestSuite) Test_CronWorkflow() {
@@ -29,21 +41,19 @@ func (s *UnitTestSuite) Test_CronWorkflow() {
 			CronSchedule:                 "0 * * * *", // hourly
 		})
 
-		cronFuture := workflow.ExecuteChildWorkflow(ctx1, SampleCronWorkflow) // cron never stop so this future won't return
+		cronFuture := workflow.ExecuteChildWorkflow(ctx1, sampleCronWorkflow) // cron never stop so this future won't return
 
 		// wait 2 hours for the cron (cron will execute 3 times)
 		workflow.Sleep(ctx, time.Hour*2)
 		s.False(cronFuture.IsReady())
 		return nil
 	}
+	s.env.RegisterWorkflow(testWorkflow)
 
-	workflow.Register(testWorkflow)
-
-	env := s.NewTestWorkflowEnvironment()
-	env.OnActivity(sampleCronActivity, mock.Anything, mock.Anything, mock.Anything).Return(nil).Times(3)
+	s.env.OnActivity(sampleCronActivity, mock.Anything, mock.Anything, mock.Anything).Return(nil).Times(3)
 
 	var startTimeList, endTimeList []time.Time
-	env.SetOnActivityStartedListener(func(activityInfo *activity.Info, ctx context.Context, args encoded.Values) {
+	s.env.SetOnActivityStartedListener(func(activityInfo *activity.Info, ctx context.Context, args encoded.Values) {
 		var startTime, endTime time.Time
 		err := args.Get(&startTime, &endTime)
 		s.NoError(err)
@@ -53,14 +63,13 @@ func (s *UnitTestSuite) Test_CronWorkflow() {
 	})
 
 	startTime, _ := time.Parse(time.RFC3339, "2018-12-20T16:30:00-80:00")
-	env.SetStartTime(startTime)
+	s.env.SetStartTime(startTime)
 
-	env.ExecuteWorkflow(testWorkflow)
+	s.env.ExecuteWorkflow(testWorkflow)
 
-	s.True(env.IsWorkflowCompleted())
-	err := env.GetWorkflowError()
+	s.True(s.env.IsWorkflowCompleted())
+	err := s.env.GetWorkflowError()
 	s.NoError(err)
-	env.AssertExpectations(s.T())
 
 	s.Equal(3, len(startTimeList))
 	s.True(startTimeList[0].Equal(time.Time{}))
