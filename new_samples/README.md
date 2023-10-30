@@ -102,7 +102,9 @@ cadence --env development \
   --input '{}'
 ```
 
-### Cancellation  workflow
+### Cancellation workflow
+This workflow simulates a situation which an activity is subject to cancellation. The activity will keep
+listening to the context cancellation signal and fail the workflow if the context is timeout. 
 
 ```bash
 cadence --env development \
