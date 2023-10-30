@@ -101,3 +101,15 @@ cadence --env development \
   --et 60 \
   --input '{}'
 ```
+
+### Cancellation  workflow
+
+```bash
+cadence --env development \
+  --domain cadence-samples \
+  workflow start \
+  --workflow_type cadence_samples.CancellationWorkflow \
+  --tl cadence-samples-worker \
+  --et 60 \
+  --input '{}'
+```

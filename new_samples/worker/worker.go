@@ -55,6 +55,10 @@ func StartWorker() {
 	w.RegisterWorkflowWithOptions(workflows.ParallelBranchPickFirstWorkflow, workflow.RegisterOptions{Name: "cadence_samples.ParallelBranchPickFirstWorkflow"})
 	w.RegisterActivityWithOptions(workflows.ParallelActivity, activity.RegisterOptions{Name: "cadence_samples.ParallelActivity"})
 
+	// Cancellation workflow registration
+	w.RegisterWorkflowWithOptions(workflows.CancellationWorkflow, workflow.RegisterOptions{Name: "cadence_samples.CancellationWorkflow"})
+	w.RegisterActivityWithOptions(workflows.CancellationActivity, activity.RegisterOptions{Name: "cadence_samples.CancellationActivity"})
+
 	err := w.Start()
 	if err != nil {
 		panic("Failed to start worker: " + err.Error())
