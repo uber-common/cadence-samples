@@ -19,24 +19,26 @@ func startWorkers(h *common.SampleHelper) {
 		MetricsScope: h.WorkerMetricScope,
 		Logger:       h.Logger,
 	}
-
-	// Start Worker.
 	h.StartWorkers(h.Config.DomainName, ApplicationName, workerOptions)
 }
 
 func startWorkflow(h *common.SampleHelper) {
 	workflowOptions := client.StartWorkflowOptions{
-		ID:                              "pickfirst_" + uuid.New(),
+		ID:                              "signal_counter_" + uuid.New(),
 		TaskList:                        ApplicationName,
-		ExecutionStartToCloseTimeout:    time.Minute,
+		ExecutionStartToCloseTimeout:    time.Hour,
 		DecisionTaskStartToCloseTimeout: time.Minute,
 	}
-	h.StartWorkflow(workflowOptions, samplePickFirstWorkflow)
+	h.StartWorkflow(workflowOptions, sampleSignalCounterWorkflow, 0)
 }
 
 func main() {
 	var mode string
-	flag.StringVar(&mode, "m", "trigger", "Mode is worker or trigger.")
+	var workflowID string
+	var signalValue int
+	flag.StringVar(&mode, "m", "trigger", "Mode is worker, trigger(start a new workflow), or signal.")
+	flag.StringVar(&workflowID, "w", "", "the workflowID to send signal")
+	flag.IntVar(&signalValue, "sig", 1, "the value that is sent to the counter workflow")
 	flag.Parse()
 
 	var h common.SampleHelper
@@ -44,8 +46,7 @@ func main() {
 
 	switch mode {
 	case "worker":
-		h.RegisterWorkflow(samplePickFirstWorkflow)
-		h.RegisterActivity(sampleActivity)
+		h.RegisterWorkflow(sampleSignalCounterWorkflow)
 		startWorkers(&h)
 
 		// The workers are supposed to be long running process that should not exit.
@@ -53,5 +54,8 @@ func main() {
 		select {}
 	case "trigger":
 		startWorkflow(&h)
+	case "signal":
+		h.SignalWorkflow(workflowID, "channelA", signalValue)
+		h.SignalWorkflow(workflowID, "channelB", signalValue)
 	}
 }

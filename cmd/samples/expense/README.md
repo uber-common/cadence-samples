@@ -13,7 +13,7 @@ This sample rely on an a dummy expense server to work.
 * You need a cadence service running. See https://github.com/uber/cadence/blob/master/README.md for more details.
 * Start the dummy server 
 ```
-./bin/dummy
+./bin/expense_dummy
 ```
 If dummy is not found, run make to build it.
 * Start workflow and activity workers

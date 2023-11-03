@@ -5,8 +5,8 @@ import (
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber-go/tally"
+	apiv1 "github.com/uber/cadence-idl/go/proto/api/v1"
 	"go.uber.org/cadence/.gen/go/cadence/workflowserviceclient"
-	apiv1 "go.uber.org/cadence/.gen/proto/api/v1"
 	"go.uber.org/cadence/client"
 	"go.uber.org/cadence/compatibility"
 	"go.uber.org/cadence/encoded"

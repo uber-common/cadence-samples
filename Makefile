@@ -9,6 +9,7 @@ default: test
 PROGS = helloworld \
 	branch \
 	childworkflow \
+	crossdomain \
 	choice \
 	dynamic \
 	greetings \
@@ -18,17 +19,20 @@ PROGS = helloworld \
 	timer \
 	localactivity \
 	query \
+	consistentquery \
 	cron \
 	tracing \
 	dsl \
 	fileprocessing \
-	dummy \
+	expense_dummy \
 	expense \
 	recovery \
 	cancelactivity \
 	ctxpropagation \
 	pso \
 	pageflow \
+	signalcounter \
+	sideeffect \
 
 TEST_ARG ?= -race -v -timeout 5m
 BUILD := ./build
@@ -56,89 +60,116 @@ TEST_DIRS=./cmd/samples/cron \
 	./cmd/samples/recipes/timer \
 	./cmd/samples/recipes/localactivity \
 	./cmd/samples/recipes/query \
+	./cmd/samples/recipes/consistentquery \
 	./cmd/samples/recipes/ctxpropagation \
 	./cmd/samples/recipes/searchattributes \
+	./cmd/samples/recipes/sideeffect \
+	./cmd/samples/recipes/signalcounter \
 	./cmd/samples/recovery \
 	./cmd/samples/pso \
 
 
 cancelactivity:
-	go build -i -o bin/cancelactivity cmd/samples/recipes/cancelactivity/*.go
+	go build -o bin/cancelactivity cmd/samples/recipes/cancelactivity/*.go
 
 helloworld:
-	go build -i -o bin/helloworld cmd/samples/recipes/helloworld/*.go
+	go build -o bin/helloworld cmd/samples/recipes/helloworld/*.go
 
 branch:
-	go build -i -o bin/branch cmd/samples/recipes/branch/*.go
+	go build -o bin/branch cmd/samples/recipes/branch/*.go
 
 childworkflow:
-	go build -i -o bin/childworkflow cmd/samples/recipes/childworkflow/*.go
+	go build -o bin/childworkflow cmd/samples/recipes/childworkflow/*.go
 
 choice:
-	go build -i -o bin/choice cmd/samples/recipes/choice/*.go
+	go build -o bin/choice cmd/samples/recipes/choice/*.go
 
 dynamic:
-	go build -i -o bin/dynamic cmd/samples/recipes/dynamic/*.go
+	go build -o bin/dynamic cmd/samples/recipes/dynamic/*.go
 
 greetings:
-	go build -i -o bin/greetings cmd/samples/recipes/greetings/*.go
+	go build -o bin/greetings cmd/samples/recipes/greetings/*.go
 
 pickfirst:
-	go build -i -o bin/pickfirst cmd/samples/recipes/pickfirst/*.go
+	go build -o bin/pickfirst cmd/samples/recipes/pickfirst/*.go
 
 mutex:
-	go build -i -o bin/mutex cmd/samples/recipes/mutex/*.go
+	go build -o bin/mutex cmd/samples/recipes/mutex/*.go
 
 retryactivity:
-	go build -i -o bin/retryactivity cmd/samples/recipes/retryactivity/*.go
+	go build -o bin/retryactivity cmd/samples/recipes/retryactivity/*.go
 
 splitmerge:
-	go build -i -o bin/splitmerge cmd/samples/recipes/splitmerge/*.go
+	go build -o bin/splitmerge cmd/samples/recipes/splitmerge/*.go
 
 searchattributes:
-	go build -i -o bin/searchattributes cmd/samples/recipes/searchattributes/*.go
+	go build -o bin/searchattributes cmd/samples/recipes/searchattributes/*.go
 
 timer:
-	go build -i -o bin/timer cmd/samples/recipes/timer/*.go
+	go build -o bin/timer cmd/samples/recipes/timer/*.go
 
 localactivity:
-	go build -i -o bin/localactivity cmd/samples/recipes/localactivity/*.go
+	go build -o bin/localactivity cmd/samples/recipes/localactivity/*.go
 
 query:
-	go build -i -o bin/query cmd/samples/recipes/query/*.go
+	go build -o bin/query cmd/samples/recipes/query/*.go
+
+consistentquery:
+	go build -o bin/consistentquery cmd/samples/recipes/consistentquery/*.go
 
 ctxpropagation:
-	go build -i -o bin/ctxpropagation cmd/samples/recipes/ctxpropagation/*.go
+	go build -o bin/ctxpropagation cmd/samples/recipes/ctxpropagation/*.go
 
 tracing:
-	go build -i -o bin/tracing cmd/samples/recipes/tracing/*.go
+	go build -o bin/tracing cmd/samples/recipes/tracing/*.go
 
 cron:
-	go build -i -o bin/cron cmd/samples/cron/*.go
+	go build -o bin/cron cmd/samples/cron/*.go
 
 dsl:
-	go build -i -o bin/dsl cmd/samples/dsl/*.go
+	go build -o bin/dsl cmd/samples/dsl/*.go
 
 fileprocessing:
-	go build -i -o bin/fileprocessing cmd/samples/fileprocessing/*.go
+	go build -o bin/fileprocessing cmd/samples/fileprocessing/*.go
 
-dummy:
-	go build -i -o bin/dummy cmd/samples/expense/server/*.go
+expense_dummy:
+	go build -o bin/expense_dummy cmd/samples/expense/server/*.go
 
 expense:
-	go build -i -o bin/expense cmd/samples/expense/*.go
+	go build -o bin/expense cmd/samples/expense/*.go
 
 recovery:
-	go build -i -o bin/recovery cmd/samples/recovery/*.go
+	go build -o bin/recovery cmd/samples/recovery/*.go
 
 pso:
-	go build -i -o bin/pso cmd/samples/pso/*.go
+	go build -o bin/pso cmd/samples/pso/*.go
 
 pageflow:
-	go build -i -o bin/pageflow cmd/samples/pageflow/*.go
+	go build -o bin/pageflow cmd/samples/pageflow/*.go
+
+signalcounter:
+	go build -o bin/signalcounter cmd/samples/recipes/signalcounter/*.go
+
+crossdomain:
+	go build -o bin/crossdomain cmd/samples/recipes/crossdomain/*.go
+
+crossdomain-setup:
+	# use the ..cadence-server --env development_xdc_cluster0 ... to set up three
+	cadence --ad 127.0.0.1:7933 --env development --do domain0 domain register --ac cluster0 --gd true --clusters cluster0 cluster1 # global domain required
+	cadence --ad 127.0.0.1:7933 --env development --do domain1 domain register --ac cluster1 --gd true --clusters cluster0 cluster1
+	cadence --ad 127.0.0.1:7933 --env development --do domain2 domain register --ac cluster0 --gd true --clusters cluster0 cluster1
+
+crossdomain-run: crossdomain
+	tmux split-window -h './bin/crossdomain -m "worker0"' \; \
+		split-window -v './bin/crossdomain -m "worker1"' \; \
+		split-window -v './bin/crossdomain -m "worker2"'
+
+sideeffect:
+	go build -o bin/sideeffect cmd/samples/recipes/sideeffect/*.go
 
 bins: helloworld \
 	branch \
+	crossdomain \
 	childworkflow \
 	choice \
 	dynamic \
@@ -154,14 +185,17 @@ bins: helloworld \
 	tracing \
 	dsl \
 	fileprocessing \
-	dummy \
+	expense_dummy \
 	expense \
 	localactivity \
 	query \
+	consistentquery \
 	recovery \
 	ctxpropagation \
 	pso \
 	pageflow \
+	signalcounter \
+	sideeffect \
 
 test: bins
 	@rm -f test
