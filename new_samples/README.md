@@ -101,3 +101,27 @@ cadence --env development \
   --et 60 \
   --input '{}'
 ```
+
+### Cancel workflow
+This workflow includes multiple activities and each will respond to the workflow `cancel` action differently.
+To start the workflow first, simply run
+
+```bash
+cadence --env development \
+  --domain cadence-samples \
+  workflow start \
+  --workflow_type cadence_samples.CancelWorkflow \
+  --tl cadence-samples-worker \
+  --et 60 \
+  --input '{}'
+```
+
+You should have a workflow ID output in the terminal. Then to cancel the workflow, run
+```bash
+cadence --env development \
+  --domain cadence-samples \
+  workflow cancel \
+  --workflow_id <YOUR_WORKFLOW_ID>
+```
+
+Inspect the behavior of the activities in the console. 
