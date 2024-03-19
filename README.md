@@ -1,4 +1,5 @@
-# Cadence Samples
+# Cadence Samples ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/uber-common/cadence-samples/build.yml)
+
 These are some samples to demostrate various capabilities of Cadence client and server.  You can learn more about cadence at:
 * Cadence: https://github.com/uber/cadence
 * Cadence Client: https://github.com/uber-go/cadence-client
