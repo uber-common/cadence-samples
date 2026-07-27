@@ -23,3 +23,4 @@ new_samples/client_samples/helloworld_tls/credentials/
 
 # Python SDK Samples
 __pycache__/
+python_sdk_samples/research_reports/
