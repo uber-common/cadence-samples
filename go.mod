@@ -1,8 +1,6 @@
 module github.com/uber-common/cadence-samples
 
-go 1.23
-
-toolchain go1.24.2
+go 1.25
 
 require (
 	github.com/google/uuid v1.6.0
@@ -24,7 +22,7 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
-	github.com/apache/thrift v0.16.0 // indirect
+	github.com/apache/thrift v0.24.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
